@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import Aurora from "../blocks/Backgrounds/Aurora/Aurora";
+import { usePathname } from "next/navigation";
 
 const navigation = [
     { name: "Home", href: "#home" },
@@ -12,6 +14,7 @@ const navigation = [
 ];
 
 export default function Navbar() {
+    const [current, setCurrent] = useState(0);
     return (
         <header className="w-screen absolute">
             <Aurora
@@ -21,12 +24,13 @@ export default function Navbar() {
                 speed={0.5}
             />
             <nav className="fixed top-0 flex justify-center w-full z-50 py-2">
-                <div className="py-2 px-4 rounded-full flex gap-6 backdrop-blur-lg bg-primary/10 border-b border-white/20 shadow-sm">
-                    {navigation.map((item) => (
+                <div className="rounded-full flex gap-2 backdrop-blur-lg bg-primary/10 border-b border-white/20 shadow-sm">
+                    {navigation.map((item, index) => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className="text-muted-foreground hover:text-white transition-colors duration-200"
+                            onClick={() => setCurrent(index)}
+                            className={`text-muted-foreground hover:text-white transition-colors rounded-full py-1 px-4 duration-200 ${current === index && "bg-primary text-white"}`}
                         >
                             {item.name}
                         </Link>
