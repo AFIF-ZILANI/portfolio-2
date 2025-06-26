@@ -48,21 +48,25 @@ export default function Skills() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {skillsData.map(({ title, items }, index) => (
-                        <PixelCard key={index}>
-                            <div className="absolute">
-                                <h3 className="text-2xl font-semibold mb-4 text-pretty">{title}</h3>
-                                <div className="flex flex-col gap-2">
-                                    {items.map((item, index) => (
-                                        <span
-                                            key={index}
-                                            className="bg-primary-foreground text-muted-foreground px-4 py-2 rounded-lg hover:bg-primary hover:text-primary-foreground"
-                                        >
-                                            {item}
-                                        </span>
-                                    ))}
+                        <div className="mx-auto" key={index}>
+                            <PixelCard variant="green">
+                                <div className="absolute">
+                                    <h3 className="text-2xl font-semibold mb-4 text-pretty">
+                                        {title}
+                                    </h3>
+                                    <div className="flex flex-col gap-2">
+                                        {items.map((item, index) => (
+                                            <span
+                                                key={index}
+                                                className="bg-primary-foreground text-muted-foreground px-4 py-2 rounded-lg hover:bg-primary hover:text-primary-foreground"
+                                            >
+                                                {item}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        </PixelCard>
+                            </PixelCard>
+                        </div>
                     ))}
                 </div>
             </div>
