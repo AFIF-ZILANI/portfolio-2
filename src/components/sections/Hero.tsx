@@ -11,6 +11,16 @@ import TrueFocus from "../blocks/TextAnimations/TrueFocus/TrueFocus";
 import { useGSAP } from "@gsap/react";
 import { Button } from "../ui/button";
 import gsap from "gsap";
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import ContactForm from "./ContactMe";
 
 export default function Hero() {
     useGSAP(() => {
@@ -24,7 +34,7 @@ export default function Hero() {
         gsap.to("#heroImg", { opacity: 1, delay: 1 });
     });
     return (
-        <div className="grid md:grid-cols-2 grid-cols-1 pt-8 h-screen">
+        <div className="md:grid md:grid-cols-2 md:pt-8 h-screen">
             <div className="flex items-center justify-center">
                 <div className="w-full h-[30rem] relative">
                     <Orb
@@ -34,11 +44,14 @@ export default function Hero() {
                         forceHoverState={false}
                     />
                 </div>
-                <div id="heroImg" className="w-[20rem] h-[20rem] absolute rounded-full opacity-0">
+                <div
+                    id="heroImg"
+                    className="md:w-[20rem] w-[15rem] md:h-[20rem] h-[15rem] absolute rounded-full opacity-0"
+                >
                     <Image className="rounded-full" src={HeroImage} alt="Hero Image" fill />
                 </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center relative bottom-16 md:bottom-0">
                 <div className="flex flex-col items-center gap-5">
                     <TrueFocus
                         sentence="AFIF ZILANI"
@@ -48,11 +61,11 @@ export default function Hero() {
                         animationDuration={2}
                         pauseBetweenAnimations={1}
                     />
-                    <div className="flex flex-col items-center gap-1">
-                        <span className="font-semibold text-xl text-muted-foreground tracking-[0.55em]">
+                    <div className="flex flex-col items-center gap-2">
+                        <span className="font-semibold md:text-xl text-center text-muted-foreground sm:tracking-[0.55em] tracking-[0.7em]">
                             FULL STACK WEB DEVELOPER
                         </span>
-                        <span className="tracking-widest text-muted-foreground">
+                        <span className="tracking-widest text-muted-foreground sm:text-sm text-xs">
                             📍 Naogaon, Dhaka, Bangladesh
                         </span>
                         <div className="flex gap-4 mt-1">
@@ -99,12 +112,25 @@ export default function Hero() {
                                 <FaFacebook />
                             </a>
                         </div>
-                        <Button
-                            id="fromDown"
-                            className="mt-8 hover:text-white duration-300 cursor-pointer opacity-0 relative top-[200px]"
-                        >
-                            Get in Touch
-                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button
+                                    id="fromDown"
+                                    className="mt-8 hover:text-white duration-300 cursor-pointer opacity-0 relative top-[200px]"
+                                >
+                                    Get in Touch
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Contact With Me</AlertDialogTitle>
+                                </AlertDialogHeader>
+                                <ContactForm />
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 </div>
             </div>
