@@ -6,7 +6,7 @@ export default function About() {
     return (
         <section
             id="about"
-            className="relative h-screen flex items-center justify-center px-6 sm:px-12 mt-4"
+            className="relative h-screen flex items-center justify-center mt-4 overflow-hidden"
         >
             <Waves
                 lineColor="#fff"
@@ -20,7 +20,7 @@ export default function About() {
                 xGap={12}
                 yGap={36}
             />
-            <div className="relative max-w-3xl w-full mx-auto backdrop-blur-md bg-white/5 p-8 rounded-2xl border border-white/10 shadow-md">
+            <div className="relative w-full sm:max-w-3xl backdrop-blur-md bg-white/5 p-8 rounded-2xl border border-white/10 shadow-md">
                 <div className="mb-6 text-center">
                     <SplitText
                         text="About Myself"
