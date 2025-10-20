@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import Orb from "../blocks/Backgrounds/Orb/Orb";
 import Image from "next/image";
-import HeroImage from "@/assets/images/prfile.png";
+// import HeroImage from "@/assets/images/prfile.png";
 import { FaXTwitter, FaInstagram, FaLinkedin } from "react-icons/fa6";
 import { FaGithub, FaFacebook } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
@@ -48,7 +48,7 @@ export default function Hero() {
                     id="heroImg"
                     className="md:w-[20rem] w-[15rem] md:h-[20rem] h-[15rem] absolute rounded-full opacity-0"
                 >
-                    <Image className="rounded-full" src={HeroImage} alt="Hero Image" fill />
+                    <Image className="rounded-full" src={"/afif2.avif"} alt="Hero Image" fill />
                 </div>
             </div>
             <div className="flex items-center relative bottom-16 md:bottom-0">
