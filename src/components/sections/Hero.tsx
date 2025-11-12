@@ -48,7 +48,7 @@ export default function Hero() {
                     id="heroImg"
                     className="md:w-[20rem] w-[15rem] md:h-[20rem] h-[15rem] absolute rounded-full opacity-0"
                 >
-                    <Image className="rounded-full" src={"/afif2.avif"} alt="Hero Image" fill />
+                    <Image className="rounded-full" src={"/afif.jpg"} alt="Hero Image" fill />
                 </div>
             </div>
             <div className="flex items-center relative bottom-16 md:bottom-0">

@@ -27,7 +27,19 @@ export async function POST(request: NextRequest) {
             from: `${name} <${email}>`,
             to: process.env.CONTACT_EMAIL,
             subject: `[Contact] ${subject}`,
-            text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+            html: `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #e2e2e2; border-radius: 8px; padding: 20px; background-color: #f9f9f9;">
+      <h2 style="color: #2d3748;">New Contact Message</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> <a href="mailto:${email}" style="color: #3182ce;">${email}</a></p>
+      <p><strong>Subject:</strong> ${subject}</p>
+      <hr style="border: none; border-top: 1px solid #e2e2e2; margin: 20px 0;">
+      <p style="white-space: pre-line;">${message}</p>
+      <footer style="margin-top: 30px; font-size: 12px; color: #718096;">
+        This message was sent from your portfolio contact form.
+      </footer>
+    </div>
+  `,
         });
         return NextResponse.json({ status: "success" }, { status: 200 });
     } catch {
