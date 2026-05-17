@@ -4,7 +4,6 @@ import nodemailer from "nodemailer";
 type ContactFormState = {
     name: string;
     email: string;
-    subject?: string;
     message: string;
 };
 
@@ -20,29 +19,28 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(request: NextRequest) {
     const data: ContactFormState = await request.json();
-    const { name, email, subject = "No subject", message } = data;
+    const { name, email, message } = data;
 
     try {
         await transporter.sendMail({
             from: `${name} <${email}>`,
             to: process.env.CONTACT_EMAIL,
-            subject: `[Contact] ${subject}`,
+            subject: `[afif.dev] New message from ${name}`,
+            text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
             html: `
-    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #e2e2e2; border-radius: 8px; padding: 20px; background-color: #f9f9f9;">
-      <h2 style="color: #2d3748;">New Contact Message</h2>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> <a href="mailto:${email}" style="color: #3182ce;">${email}</a></p>
-      <p><strong>Subject:</strong> ${subject}</p>
-      <hr style="border: none; border-top: 1px solid #e2e2e2; margin: 20px 0;">
-      <p style="white-space: pre-line;">${message}</p>
-      <footer style="margin-top: 30px; font-size: 12px; color: #718096;">
-        This message was sent from your portfolio contact form.
-      </footer>
-    </div>
-  `,
+        <div style="font-family:monospace;background:#0d0d0d;color:#e2e8f0;padding:24px;border-radius:4px;max-width:600px">
+          <div style="color:#4ade80;font-size:14px;margin-bottom:16px">afif@dev:contact$ cat message.txt</div>
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <tr><td style="color:#94a3b8;padding:4px 12px 4px 0;width:80px">name</td><td style="color:#e2e8f0">${name}</td></tr>
+            <tr><td style="color:#94a3b8;padding:4px 12px 4px 0">email</td><td><a href="mailto:${email}" style="color:#4ade80">${email}</a></td></tr>
+            <tr><td style="color:#94a3b8;padding:4px 12px 4px 0;vertical-align:top">message</td><td style="color:#e2e8f0;white-space:pre-wrap">${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</td></tr>
+          </table>
+          <div style="margin-top:24px;font-size:11px;color:#475569">Sent via afif.dev contact terminal</div>
+        </div>
+      `,
         });
-        return NextResponse.json({ status: "success" }, { status: 200 });
+        return NextResponse.json({ status: "success", ok: true }, { status: 200 });
     } catch {
-        return NextResponse.json({ status: "error" }, { status: 500 });
+        return NextResponse.json({ status: "error", ok: false }, { status: 500 });
     }
 }
