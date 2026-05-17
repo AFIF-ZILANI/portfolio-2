@@ -99,13 +99,6 @@ export function Contact() {
         }
     }, [history, dots]);
 
-    // focus input on step change
-    useEffect(() => {
-        if (step !== "loading" && step !== "success") {
-            setTimeout(() => inputRef.current?.focus(), 50);
-        }
-    }, [step]);
-
     // loading dots animation
     useEffect(() => {
         if (step !== "loading") {

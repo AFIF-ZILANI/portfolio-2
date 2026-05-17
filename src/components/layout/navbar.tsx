@@ -12,14 +12,7 @@ export function Navbar() {
 
     const scrollTo = (id: string) => {
         if (pathname !== "/") {
-            router.push("/");
-            // Wait for navigation and then scroll
-            setTimeout(() => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.scrollIntoView({ behavior: "smooth" });
-                }
-            }, 100);
+            router.push(`/#${id}`);
             return;
         }
         const element = document.getElementById(id);
@@ -27,7 +20,6 @@ export function Navbar() {
             element.scrollIntoView({ behavior: "smooth" });
         }
     };
-
     return (
         <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
             <div className="container mx-auto px-6 h-16 flex items-center justify-between">
