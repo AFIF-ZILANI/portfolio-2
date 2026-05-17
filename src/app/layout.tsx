@@ -1,49 +1,46 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import Navbar from "@/components/sections/Navbar";
-import Footer from "@/components/sections/Footer";
-
-const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
-});
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+import PersonSchema from "@/components/PersonaSchema";
 
 export const metadata: Metadata = {
-    title: "AFIF ZILANI | Full-Stack Developer Portfolio",
+    metadataBase: new URL("https://afifzilani.com"),
+    title: "AFIF ZILANI — Entrepreneur, Programmer & Co-Founder of ZeroD",
     description:
-        "Welcome to the portfolio of AFIF ZILANI, showcasing modern web applications built with Next.js, React, MongoDB, Tailwind CSS, and more.",
-    keywords: [
-        "AFIF ZILANI",
-        "Full Stack Developer",
-        "Next.js",
-        "React",
-        "Portfolio",
-        "Web Development",
-    ],
-    authors: [{ name: "AFIF ZILANI", url: "https://afifzilani.com" }],
+        "Afif Zilani — Entrepreneur, programmer, and co-founder of ZeroD. Building tech for real-world impact in Bangladesh.",
+    robots: { index: true, follow: true },
+    alternates: {
+        canonical: "/",
+    },
     openGraph: {
-        title: "AFIF ZILANI | Full-Stack Developer Portfolio",
+        type: "website",
+        url: "https://afifzilani.com/",
+        title: "AFIF ZILANI — Entrepreneur, Programmer & Co-Founder of ZeroD",
         description:
-            "Explore my web development projects and case studies built with modern technologies.",
-        url: "https://afifzilani.com",
-        siteName: "AFIF ZILANI Portfolio",
+            "Afif Zilani — Entrepreneur, programmer, and co-founder of ZeroD. Building tech for real-world impact in Bangladesh.",
         images: [
             {
-                url: "https://afifzilani.com/og-image.png",
-                width: 1200,
-                height: 630,
-                alt: "AFIF ZILANI Portfolio Open Graph Image",
+                url: "/afifzilani-profile.webp",
+                width: 1535,
+                height: 1536,
+            },
+            {
+                url: "/afifzilani-about.webp",
+                width: 1254,
+                height: 1254,
             },
         ],
         locale: "en_US",
-        type: "website",
+        siteName: "AFIF ZILANI",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "AFIF ZILANI — Entrepreneur, Programmer & Co-Founder of ZeroD",
+        description:
+            "Afif Zilani — Entrepreneur, programmer, and co-founder of ZeroD. Building tech for real-world impact in Bangladesh.",
+        images: ["/profile.jpg"],
     },
 };
 
@@ -53,9 +50,9 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning >
+        <html lang="en" suppressHydrationWarning>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
+                className={`antialiased overflow-x-hidden font-mono selection:bg-primary/30 min-h-screen bg-background text-foreground`}
             >
                 <ThemeProvider
                     attribute="class"
@@ -64,6 +61,7 @@ export default function RootLayout({
                     disableTransitionOnChange
                 >
                     <Navbar />
+                    <PersonSchema />
                     <main>{children}</main>
                     <Footer />
                 </ThemeProvider>

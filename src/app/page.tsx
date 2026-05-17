@@ -1,35 +1,21 @@
-import About from "@/components/sections/About";
-import ContactForm from "@/components/sections/ContactMe";
-import Experience from "@/components/sections/Experience";
-import Hero from "@/components/sections/Hero";
-import Projects from "@/components/sections/Projects";
-import Skills from "@/components/sections/Skills";
-import SplitText from "@/components/blocks/TextAnimations/SplitText/SplitText";
+import { Hero } from "@/components/sections/hero";
+import { About } from "@/components/sections/about";
+import { Skills } from "@/components/sections/skills";
+import { Projects } from "@/components/sections/projects";
+import { Experience } from "@/components/sections/experience";
+// import { Events } from "@/components/sections/events";
+import { Contact } from "@/components/sections/contact";
 
 export default function Home() {
     return (
-        <div>
+        <main className="flex flex-col">
             <Hero />
             <About />
             <Skills />
             <Projects />
             <Experience />
-            <section id="contact" className="flex flex-col sm:w-xl items-center mb-32 mx-auto">
-                <SplitText
-                    text="Contact Me"
-                    className="text-4xl font-semibold text-center text-primary mb-12"
-                    delay={100}
-                    duration={0.6}
-                    ease="power3.out"
-                    splitType="chars"
-                    from={{ opacity: 0, y: 40 }}
-                    to={{ opacity: 1, y: 0 }}
-                    threshold={0.1}
-                    rootMargin="-100px"
-                    textAlign="center"
-                />
-                <ContactForm />
-            </section>
-        </div>
+            {/* <Events /> */}
+            <Contact />
+        </main>
     );
 }

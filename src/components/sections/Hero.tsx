@@ -1,139 +1,158 @@
 "use client";
 
-import React from "react";
-import Orb from "../blocks/Backgrounds/Orb/Orb";
+import { motion } from "framer-motion";
+import { ChevronRight, Terminal } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
-// import HeroImage from "@/assets/images/prfile.png";
-import { FaXTwitter, FaInstagram, FaLinkedin } from "react-icons/fa6";
-import { FaGithub, FaFacebook } from "react-icons/fa";
-import { IoIosMail } from "react-icons/io";
-import TrueFocus from "../blocks/TextAnimations/TrueFocus/TrueFocus";
-import { useGSAP } from "@gsap/react";
-import { Button } from "../ui/button";
-import gsap from "gsap";
-import {
-    AlertDialog,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import ContactForm from "./ContactMe";
+import { DEFAULT_SITE_DATA as data } from "@/lib/site-data";
 
-export default function Hero() {
-    useGSAP(() => {
-        gsap.to("#fromDown", {
-            opacity: 1,
-            y: -200,
-            delay: 2,
-            ease: "expo.out",
-        });
+export function Hero() {
+    const scrollTo = (id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+        }
+    };
 
-        gsap.to("#heroImg", { opacity: 1, delay: 1 });
-    });
     return (
-        <div className="md:grid md:grid-cols-2 md:pt-8 h-screen">
-            <div className="flex items-center justify-center">
-                <div className="w-full h-[30rem] relative">
-                    <Orb
-                        hoverIntensity={0.5}
-                        rotateOnHover={true}
-                        hue={0}
-                        forceHoverState={false}
-                    />
-                </div>
-                <div
-                    id="heroImg"
-                    className="md:w-[20rem] w-[15rem] md:h-[20rem] h-[15rem] absolute rounded-full opacity-0"
-                >
-                    <Image className="rounded-full" src={"/afif.jpg"} alt="Hero Image" fill />
-                </div>
+        <section
+            id="hero"
+            className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16"
+        >
+            {/* Background Grid */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+
+            {/* Animated Code Particles */}
+            <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+                {[...Array(20)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute text-primary text-xs font-mono whitespace-nowrap"
+                        initial={{
+                            top: "-10%",
+                            left: `${Math.random() * 100}%`,
+                            opacity: 0,
+                        }}
+                        animate={{
+                            top: "110%", // Animates safely from top to bottom of the container
+                            opacity: [0, 1, 0],
+                        }}
+                        transition={{
+                            duration: Math.random() * 5 + 5,
+                            repeat: Infinity,
+                            ease: "linear",
+                            delay: Math.random() * 5,
+                        }}
+                    >
+                        {Math.random().toString(36).substring(2, 10)}
+                    </motion.div>
+                ))}
             </div>
-            <div className="flex items-center relative bottom-16 md:bottom-0">
-                <div className="flex flex-col items-center gap-5">
-                    <TrueFocus
-                        sentence="AFIF ZILANI"
-                        manualMode={false}
-                        blurAmount={5}
-                        borderColor="blue"
-                        animationDuration={2}
-                        pauseBetweenAnimations={1}
-                    />
-                    <div className="flex flex-col items-center gap-2">
-                        <span className="font-semibold md:text-xl text-center text-muted-foreground sm:tracking-[0.55em] tracking-[0.7em]">
-                            FULL STACK WEB DEVELOPER
-                        </span>
-                        <span className="tracking-widest text-muted-foreground sm:text-sm text-xs">
-                            📍 Naogaon, Dhaka, Bangladesh
-                        </span>
-                        <div className="flex gap-4 mt-1">
-                            <a
-                                href="https://github.com/AFIF-ZILANI"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <FaGithub />
-                            </a>
-                            <a
-                                href="https://linkedin.com/in/afifzilani/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <FaLinkedin />
-                            </a>
-                            <a
-                                href="https://x.com/afif_zilani/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <FaXTwitter />
-                            </a>
-                            <a
-                                href="mailto:afifzilani4566@gmail.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <IoIosMail />
-                            </a>
-                            <a
-                                href="https://instagram.com/afif.zilani/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <FaInstagram />
-                            </a>
-                            <a
-                                href="https://www.facebook.com/AFIF.ZILANI00/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <FaFacebook />
-                            </a>
+
+            <div className="container px-6 relative z-10">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+                    {/* Text Content */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="max-w-2xl"
+                    >
+                        <div className="flex items-center gap-2 text-primary mb-6">
+                            <Terminal size={20} />
+                            <span className="font-mono text-sm uppercase tracking-wider">
+                                System ready_
+                            </span>
                         </div>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button
-                                    id="fromDown"
-                                    className="mt-8 hover:text-white duration-300 cursor-pointer opacity-0 relative top-[200px]"
-                                >
-                                    Get in Touch
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Contact With Me</AlertDialogTitle>
-                                </AlertDialogHeader>
-                                <ContactForm />
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </div>
+
+                        <motion.h1
+                            className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 text-foreground"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                        >
+                            {data.name}
+                            <br />
+                            <span className="text-muted-foreground">{data.title}</span>
+                        </motion.h1>
+
+                        <motion.p
+                            className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl leading-relaxed"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                        >
+                            {data.tagline}
+                        </motion.p>
+
+                        <motion.div
+                            className="flex flex-col sm:flex-row gap-4"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                        >
+                            <Button
+                                size="lg"
+                                className="bg-primary text-primary-foreground hover:bg-primary/90 group font-bold font-mono tracking-wide rounded-none border border-primary"
+                                onClick={() => scrollTo("projects")}
+                                data-testid="button-hero-projects"
+                            >
+                                /view_projects
+                                <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="group font-mono tracking-wide rounded-none border-muted-foreground/30 hover:border-primary hover:text-primary transition-colors"
+                                onClick={() => scrollTo("contact")}
+                                data-testid="button-hero-contact"
+                            >
+                                /contact_me
+                            </Button>
+                        </motion.div>
+                    </motion.div>
+
+                    {/* Profile Photo */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                        className="relative shrink-0"
+                    >
+                        {/* Outer glow ring */}
+                        <motion.div
+                            className="absolute -inset-2 rounded-full opacity-60"
+                            style={{
+                                background:
+                                    "conic-gradient(from 0deg, hsl(142 71% 45%), transparent, hsl(142 71% 45%))",
+                            }}
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                        />
+                        {/* Photo container */}
+                        <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-2 border-primary bg-card">
+                            <Image
+                                src={data.heroImage}
+                                alt={"Afif Zilani"}
+                                fill
+                                className="w-full h-full object-cover object-top"
+                                data-testid="img-profile-hero"
+                            />
+                            {/* Green scanline overlay */}
+                            <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.08)_2px,rgba(0,0,0,0.08)_4px)] pointer-events-none" />
+                        </div>
+                        {/* Terminal label below photo */}
+                        <motion.div
+                            className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-xs text-primary border border-primary/40 px-3 py-1 bg-background"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.9 }}
+                        >
+                            afif@dev:~$
+                        </motion.div>
+                    </motion.div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 }
