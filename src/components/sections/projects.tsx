@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
+import Image from "next/image";
 import { DEFAULT_SITE_DATA as data } from "@/lib/site-data";
 
 export function Projects() {
@@ -35,11 +36,14 @@ export function Projects() {
                                 >
                                     <div className="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors z-10 duration-500" />
                                     {project.coverImage ? (
-                                        <img
-                                            src={project.coverImage}
-                                            alt={project.title}
-                                            className="w-full h-auto aspect-video object-cover border border-border group-hover:border-primary/50 transition-colors"
-                                        />
+                                        <div className="relative w-full aspect-video">
+                                            <Image
+                                                src={project.coverImage}
+                                                alt={`${project.title} — project by Afif Zilani`}
+                                                fill
+                                                className="object-cover border border-border group-hover:border-primary/50 transition-colors"
+                                            />
+                                        </div>
                                     ) : (
                                         <div className="w-full aspect-video border border-border group-hover:border-primary/50 transition-colors bg-card flex items-center justify-center">
                                             <span className="font-mono text-muted-foreground text-sm">

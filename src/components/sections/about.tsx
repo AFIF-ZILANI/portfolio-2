@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 import { DEFAULT_SITE_DATA as data } from "@/lib/site-data";
 
@@ -126,12 +127,12 @@ export function About() {
                             {/* Photo wrapped in terminal chrome */}
                             <div className="relative group border border-border rounded-sm overflow-hidden">
                                 <TerminalTitleBar label="afif_zilani.webp — Preview" />
-                                <div className="relative overflow-hidden">
-                                    <img
+                                <div className="relative w-full aspect-5/4 overflow-hidden">
+                                    <Image
                                         src={data.aboutImage}
-                                        alt={data.name}
-                                        loading="lazy"
-                                        className="w-full aspect-5/4 object-cover object-bottom grayscale group-hover:grayscale-0 transition-all duration-700"
+                                        alt="Kazi Afif Zilani (AFIF ZILANI) — Entrepreneur and Full-Stack Developer from Naogaon, Bangladesh"
+                                        fill
+                                        className="object-cover object-bottom grayscale group-hover:grayscale-0 transition-all duration-700"
                                         data-testid="img-profile-about"
                                     />
                                     {/* Subtle scanlines */}
