@@ -91,6 +91,16 @@ export const metadata: Metadata = {
             },
         ],
     },
+    verification: {
+        google: "mf5qC5eIPTRicnBVnF9ENjPhDYSQOBsEeDrv4u6SFT8",
+    },
+    applicationName: "Afif Zilani",
+    appleWebApp: {
+        capable: true,
+        title: "Afif Zilani",
+        statusBarStyle: "black-translucent",
+    },
+    category: "technology",
 };
 
 export default function RootLayout({
@@ -100,6 +110,15 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
+            <head>
+                <link rel="me" href="https://github.com/AFIF-ZILANI" />
+                <link rel="me" href="https://www.linkedin.com/in/afifzilani" />
+                <link rel="me" href="https://x.com/afif_zilani" />
+                <link rel="me" href="https://bsky.app/profile/afif-zilani.bsky.social" />
+                <link rel="me" href="https://instagram.com/afif.zilani" />
+                <link rel="me" href="https://facebook.com/AFIF.ZILANI00" />
+                <link rel="me" href="mailto:afifzilani4566@gmail.com" />
+            </head>
             <body
                 className={`antialiased overflow-x-hidden font-mono selection:bg-primary/30 min-h-screen bg-background text-foreground`}
             >
