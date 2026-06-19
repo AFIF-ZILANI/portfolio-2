@@ -133,8 +133,9 @@ export function Hero() {
                         <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-2 border-primary bg-card">
                             <Image
                                 src={data.heroImage}
-                                alt={"Afif Zilani"}
+                                alt="Afif Zilani (Kazi Afif Zilani) — Full-Stack Developer and Co-Founder of ZeroD, Naogaon, Bangladesh"
                                 fill
+                                priority
                                 className="w-full h-full object-cover object-top"
                                 data-testid="img-profile-hero"
                             />
