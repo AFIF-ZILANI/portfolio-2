@@ -1,8 +1,9 @@
+import { SITE_URL } from "@/lib/site";
 export default function PersonSchema() {
     const person = {
         "@context": "https://schema.org",
         "@type": "Person",
-        "@id": "https://afifzilani.com/#person",
+        "@id": `${SITE_URL}/#person`,
         name: "Afif Zilani",
         alternateName: [
             "AFIF ZILANI",
@@ -14,13 +15,13 @@ export default function PersonSchema() {
         givenName: "Afif",
         familyName: "Zilani",
         additionalName: "Kazi",
-        url: "https://afifzilani.com",
+        url: SITE_URL,
         email: "afifzilani4566@gmail.com",
         image: {
             "@type": "ImageObject",
-            "@id": "https://afifzilani.com/#image",
-            url: "https://afifzilani.com/afifzilani-profile.webp",
-            contentUrl: "https://afifzilani.com/afifzilani-profile.webp",
+            "@id": `${SITE_URL}/#image`,
+            url: `${SITE_URL}/afifzilani-profile.webp`,
+            contentUrl: `${SITE_URL}/afifzilani-profile.webp`,
             caption: "Afif Zilani — Full-Stack Developer and Co-Founder of ZeroD",
             description: "Portrait of Kazi Afif Zilani, full-stack developer and entrepreneur from Naogaon, Bangladesh",
             width: 1535,
@@ -83,17 +84,17 @@ export default function PersonSchema() {
     const website = {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "@id": "https://afifzilani.com/#website",
+        "@id": `${SITE_URL}/#website`,
         name: "Afif Zilani",
         alternateName: ["AFIF ZILANI", "Kazi Afif Zilani Portfolio"],
-        url: "https://afifzilani.com",
+        url: SITE_URL,
         description: "Official portfolio and personal website of Afif Zilani (Kazi Afif Zilani) — full-stack developer and co-founder of ZeroD, based in Naogaon, Bangladesh.",
-        author: { "@id": "https://afifzilani.com/#person" },
+        author: { "@id": `${SITE_URL}/#person` },
         potentialAction: {
             "@type": "SearchAction",
             target: {
                 "@type": "EntryPoint",
-                urlTemplate: "https://afifzilani.com/?q={search_term_string}",
+                urlTemplate: `${SITE_URL}/?q={search_term_string}`,
             },
             "query-input": "required name=search_term_string",
         },
@@ -123,12 +124,12 @@ export function ProfilePageSchema() {
     const webpage = {
         "@context": "https://schema.org",
         "@type": "ProfilePage",
-        "@id": "https://afifzilani.com/#webpage",
-        url: "https://afifzilani.com",
+        "@id": `${SITE_URL}/#webpage`,
+        url: SITE_URL,
         name: "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD",
-        isPartOf: { "@id": "https://afifzilani.com/#website" },
-        about: { "@id": "https://afifzilani.com/#person" },
-        primaryImageOfPage: { "@id": "https://afifzilani.com/#image" },
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        about: { "@id": `${SITE_URL}/#person` },
+        primaryImageOfPage: { "@id": `${SITE_URL}/#image` },
         description:
             "Official portfolio page of Kazi Afif Zilani (AFIF ZILANI), full-stack developer and co-founder of ZeroD, from Naogaon, Bangladesh.",
         breadcrumb: {
@@ -138,7 +139,7 @@ export function ProfilePageSchema() {
                     "@type": "ListItem",
                     position: 1,
                     name: "Afif Zilani",
-                    item: "https://afifzilani.com",
+                    item: SITE_URL,
                 },
             ],
         },

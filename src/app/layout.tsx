@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { SITE_URL } from "@/lib/site";
 
 const TITLE = "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD";
 const DESCRIPTION =
     "Kazi Afif Zilani (AFIF ZILANI) — Full-stack developer, entrepreneur, and co-founder of ZeroD. Building high-performance web systems and tech for real-world impact from Naogaon, Bangladesh.";
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://afifzilani.com"),
+    metadataBase: new URL(SITE_URL),
     title: {
         default: TITLE,
         template: "%s | Afif Zilani",
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
         "Next.js developer Bangladesh",
         "React developer Bangladesh",
     ],
-    authors: [{ name: "Afif Zilani", url: "https://afifzilani.com" }],
+    authors: [{ name: "Afif Zilani", url: SITE_URL }],
     creator: "Afif Zilani",
     publisher: "Afif Zilani",
     robots: {
@@ -47,13 +48,14 @@ export const metadata: Metadata = {
     },
     alternates: {
         canonical: "/",
+        types: { "application/rss+xml": `${SITE_URL}/feed.xml` },
     },
     openGraph: {
         type: "profile",
         firstName: "Afif",
         lastName: "Zilani",
         username: "afifzilani",
-        url: "https://afifzilani.com/",
+        url: `${SITE_URL}/`,
         title: TITLE,
         description: DESCRIPTION,
         images: [

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { getPublishedPosts } from "@/lib/blog";
 import { BlogIndex } from "@/components/blog/blog-index";
+import { SITE_URL } from "@/lib/site";
 
 // Short window so scheduled posts appear without a deploy.
 export const revalidate = 60;
 
-const SITE = "https://afifzilani.com";
+
 
 export const metadata: Metadata = {
     title: "Blog",
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
     alternates: { canonical: "/blogs" },
     openGraph: {
         type: "website",
-        url: `${SITE}/blogs`,
+        url: `${SITE_URL}/blogs`,
         title: "Blog | Afif Zilani",
         description:
             "Writing by Afif Zilani on web development, Next.js, TypeScript, and building software.",
@@ -27,14 +28,14 @@ export default async function BlogsPage() {
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Blog",
-        "@id": `${SITE}/blogs#blog`,
-        url: `${SITE}/blogs`,
+        "@id": `${SITE_URL}/blogs#blog`,
+        url: `${SITE_URL}/blogs`,
         name: "Afif Zilani — Blog",
-        author: { "@id": `${SITE}/#person` },
+        author: { "@id": `${SITE_URL}/#person` },
         blogPost: posts.slice(0, 20).map((p) => ({
             "@type": "BlogPosting",
             headline: p.title,
-            url: `${SITE}/blogs/${p.slug}`,
+            url: `${SITE_URL}/blogs/${p.slug}`,
             datePublished: p.publishedAt?.toISOString(),
         })),
     };

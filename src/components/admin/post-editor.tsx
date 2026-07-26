@@ -214,13 +214,25 @@ export function PostEditor({
                     </div>
 
                     <div className="space-y-2">
-                        <Label className={labelClass}>
-                            Excerpt
-                            <Req />
-                            <span className="normal-case tracking-normal ml-1">
-                                (card blurb + meta description fallback)
+                        <div className="flex justify-between items-baseline">
+                            <Label className={labelClass}>
+                                Excerpt
+                                <Req />
+                                <span className="normal-case tracking-normal ml-1">
+                                    (card blurb + meta description fallback)
+                                </span>
+                            </Label>
+                            <span
+                                className={`text-xs font-mono ${
+                                    excerpt.length > 160 && !seoDescription
+                                        ? "text-destructive"
+                                        : "text-muted-foreground"
+                                }`}
+                                title="Search engines truncate descriptions past ~160 characters"
+                            >
+                                {excerpt.length}/160
                             </span>
-                        </Label>
+                        </div>
                         <Textarea
                             value={excerpt}
                             onChange={(e) => setExcerpt(e.target.value)}

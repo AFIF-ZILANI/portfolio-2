@@ -8,10 +8,11 @@ import { prisma } from "@/lib/prisma";
 import { Markdown } from "@/components/blog/markdown";
 import { SeriesNav } from "@/components/blog/series-nav";
 import { ViewCounter } from "@/components/blog/view-counter";
+import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 60;
 
-const SITE = "https://afifzilani.com";
+
 
 export async function generateStaticParams() {
     const posts = await prisma.post.findMany({
@@ -42,7 +43,7 @@ export async function generateMetadata({
         robots: post.noindex ? { index: false, follow: false } : undefined,
         openGraph: {
             type: "article",
-            url: `${SITE}/blogs/${post.slug}`,
+            url: `${SITE_URL}/blogs/${post.slug}`,
             title,
             description,
             publishedTime: post.publishedAt?.toISOString(),
@@ -75,20 +76,47 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "@id": `${SITE}/blogs/${post.slug}#post`,
-        mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}/blogs/${post.slug}` },
+        "@id": `${SITE_URL}/blogs/${post.slug}#post`,
+        mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blogs/${post.slug}` },
         headline: post.title,
         description: post.seoDescription ?? post.excerpt,
-        image: post.ogImage ?? post.coverImage ?? undefined,
         datePublished: post.publishedAt?.toISOString(),
         dateModified: post.updatedAt.toISOString(),
         keywords: post.tags.join(", "),
         wordCount: post.content.trim().split(/\s+/).length,
         // Attach to the Person entity the homepage already declares, so posts
         // reinforce the existing name-ranking signal rather than creating a new author.
-        author: { "@id": `${SITE}/#person` },
-        publisher: { "@id": `${SITE}/#person` },
-        isPartOf: { "@id": `${SITE}/blogs#blog` },
+        author: { "@id": `${SITE_URL}/#person` },
+        publisher: { "@id": `${SITE_URL}/#person` },
+        isPartOf: { "@id": `${SITE_URL}/blogs#blog` },
+        inLanguage: "en",
+        // A described image is eligible for image results; a bare URL string is not.
+        ...(post.coverImage
+            ? {
+                  image: {
+                      "@type": "ImageObject",
+                      url: post.coverImage,
+                      caption: post.coverAlt || post.title,
+                  },
+              }
+            : {}),
+    };
+
+    // Breadcrumbs give search results the Home › Blog › Post trail instead of a
+    // bare URL, and tell crawlers how this page sits in the site.
+    const breadcrumbs = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+            { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blogs` },
+            {
+                "@type": "ListItem",
+                position: 3,
+                name: post.title,
+                item: `${SITE_URL}/blogs/${post.slug}`,
+            },
+        ],
     };
 
     return (
@@ -137,7 +165,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                         <div className="relative w-full aspect-video border border-border">
                             <Image
                                 src={post.coverImage}
-                                alt={post.coverAlt ?? ""}
+                                alt={post.coverAlt || post.title}
                                 fill
                                 priority
                                 sizes="(max-width: 768px) 100vw, 768px"
@@ -161,6 +189,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
             />
         </>
     );
