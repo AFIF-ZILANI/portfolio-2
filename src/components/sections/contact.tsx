@@ -256,7 +256,7 @@ export function Contact({ heading }: { heading: string }) {
                     transition={{ duration: 0.5 }}
                 >
                     <h2 className="text-3xl font-bold mb-2 flex items-center gap-2">
-                        <span className="text-primary">05.</span> {heading}
+                        <span className="text-primary">06.</span> {heading}
                     </h2>
                     <p className="text-muted-foreground font-mono text-sm mb-8">
                         # Type directly in the terminal below.

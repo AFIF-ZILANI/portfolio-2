@@ -16,6 +16,14 @@ export function AdminLink() {
 
     useEffect(() => {
         let active = true;
+
+        // Clerk sets __client_uat readable (not httpOnly) precisely so the client can
+        // tell whether a session might exist. "0" or absent means signed out.
+        // Without this check every anonymous visitor paid an ~800ms Clerk round-trip
+        // for a question only one person's answer differs on.
+        const uat = document.cookie.match(/(?:^|;\s*)__client_uat=([^;]*)/)?.[1];
+        if (!uat || uat === "0") return;
+
         fetch("/api/admin/whoami")
             .then((r) => (r.ok ? r.json() : { admin: false }))
             .then((d: { admin?: boolean }) => {

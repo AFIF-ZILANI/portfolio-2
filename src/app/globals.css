@@ -1,9 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+/* Space Mono is loaded via next/font in layout.tsx — self-hosted, preloaded,
+   and no render-blocking round-trip to fonts.googleapis.com. */
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
+
+/* Animated sections (hero particles, project entrance offsets) briefly extend
+   past the viewport. body had overflow-x:hidden but html did not, so the page
+   still scrolled ~26px sideways on a 390px screen. `clip` contains it without
+   creating a scroll container, which `hidden` would — that breaks sticky. */
+html {
+    overflow-x: clip;
+}
 
 @theme inline {
   --color-background: hsl(var(--background));
@@ -118,9 +127,9 @@
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
 
-  --app-font-sans: 'Space Mono', monospace;
+  --app-font-sans: var(--font-space-mono), 'Space Mono', monospace;
   --app-font-serif: Georgia, serif;
-  --app-font-mono: 'Space Mono', monospace;
+  --app-font-mono: var(--font-space-mono), 'Space Mono', monospace;
   --radius: 0rem; 
 
   --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.05);

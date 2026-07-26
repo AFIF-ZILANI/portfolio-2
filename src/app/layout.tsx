@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
+import { Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { SITE_URL } from "@/lib/site";
+
+// Self-hosted at build time: no fonts.googleapis.com round-trip on first paint,
+// and a size-adjusted fallback so swapping in the real face doesn't shift layout.
+const spaceMono = Space_Mono({
+    subsets: ["latin"],
+    weight: ["400", "700"],
+    style: ["normal", "italic"],
+    display: "swap",
+    variable: "--font-space-mono",
+});
 
 const TITLE = "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD";
 const DESCRIPTION =
@@ -108,7 +119,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" className={spaceMono.variable} suppressHydrationWarning>
             <head>
                 <link rel="me" href="https://github.com/AFIF-ZILANI" />
                 <link rel="me" href="https://www.linkedin.com/in/afifzilani" />

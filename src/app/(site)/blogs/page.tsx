@@ -46,7 +46,7 @@ export default async function BlogsPage() {
                 <div className="container mx-auto px-6 max-w-6xl space-y-12">
                     <header className="space-y-4">
                         <h1 className="text-3xl md:text-4xl font-bold">
-                            <span className="text-primary font-mono">06.</span> Blog
+                            Blog
                         </h1>
                         <p className="text-muted-foreground max-w-2xl">
                             Notes on what I build and what breaks along the way.
