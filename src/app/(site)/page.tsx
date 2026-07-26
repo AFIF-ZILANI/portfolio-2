@@ -1,34 +1,30 @@
-"use client";
+import { getSiteData } from "@/lib/site-content";
 import { Hero } from "@/components/sections/hero";
 import { About } from "@/components/sections/about";
 import { Skills } from "@/components/sections/skills";
 import { Projects } from "@/components/sections/projects";
 import { Experience } from "@/components/sections/experience";
-// import { Events } from "@/components/sections/events";
 import { Contact } from "@/components/sections/contact";
 import { ProfilePageSchema } from "@/components/PersonaSchema";
-import { useEffect } from "react";
+import { ScrollToHash } from "@/components/layout/scroll-to-hash";
 
-export default function Home() {
-    useEffect(() => {
-        window.history.scrollRestoration = "manual";
-        window.scrollTo(0, 0);
+// A server component now: content comes from the database and is edited at
+// /admin/site/*. Saving there calls revalidatePath("/"), so this window is only
+// a backstop.
+export const revalidate = 60;
 
-        const hash = window.location.hash.slice(1);
-        if (!hash) return;
-        setTimeout(() => {
-            document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
-        }, 300);
-    }, []);
+export default async function Home() {
+    const data = await getSiteData();
+
     return (
         <main className="flex flex-col">
-            <Hero />
-            <About />
-            <Skills />
-            <Projects />
-            <Experience />
-            {/* <Events /> */}
-            <Contact />
+            <ScrollToHash />
+            <Hero data={data} />
+            <About data={data} />
+            <Skills skills={data.skills} />
+            <Projects projects={data.projects} />
+            <Experience experiences={data.experiences} />
+            <Contact heading={data.contact.heading} />
             <ProfilePageSchema />
         </main>
     );

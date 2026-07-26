@@ -1,12 +1,29 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { DEFAULT_SITE_DATA as data } from "@/lib/site-data";
+import type { SiteData } from "@/lib/site-data";
 
-export function Hero() {
+type Particle = { id: number; left: number; duration: number; delay: number; text: string };
+
+export function Hero({ data }: { data: SiteData }) {
+    const [particles, setParticles] = useState<Particle[]>([]);
+
+    useEffect(() => {
+        setParticles(
+            Array.from({ length: 20 }, (_, id) => ({
+                id,
+                left: Math.random() * 100,
+                duration: Math.random() * 5 + 5,
+                delay: Math.random() * 5,
+                text: Math.random().toString(36).substring(2, 10),
+            }))
+        );
+    }, []);
+
     const scrollTo = (id: string) => {
         const element = document.getElementById(id);
         if (element) {
@@ -22,29 +39,28 @@ export function Hero() {
             {/* Background Grid */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
 
-            {/* Animated Code Particles */}
+            {/* Animated Code Particles — generated after mount. Math.random() during
+                render produced different values on the server and the client, which
+                is a hydration mismatch. Purely decorative, so rendering nothing on
+                the server costs us nothing. */}
             <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
-                {[...Array(20)].map((_, i) => (
+                {particles.map((p) => (
                     <motion.div
-                        key={i}
+                        key={p.id}
                         className="absolute text-primary text-xs font-mono whitespace-nowrap"
-                        initial={{
-                            top: "-10%",
-                            left: `${Math.random() * 100}%`,
-                            opacity: 0,
-                        }}
+                        initial={{ top: "-10%", left: `${p.left}%`, opacity: 0 }}
                         animate={{
                             top: "110%", // Animates safely from top to bottom of the container
                             opacity: [0, 1, 0],
                         }}
                         transition={{
-                            duration: Math.random() * 5 + 5,
+                            duration: p.duration,
                             repeat: Infinity,
                             ease: "linear",
-                            delay: Math.random() * 5,
+                            delay: p.delay,
                         }}
                     >
-                        {Math.random().toString(36).substring(2, 10)}
+                        {p.text}
                     </motion.div>
                 ))}
             </div>
@@ -136,6 +152,7 @@ export function Hero() {
                                 alt="Afif Zilani (Kazi Afif Zilani) — Full-Stack Developer and Co-Founder of ZeroD, Naogaon, Bangladesh"
                                 fill
                                 priority
+                                sizes="(max-width: 768px) 224px, 288px"
                                 className="w-full h-full object-cover object-top"
                                 data-testid="img-profile-hero"
                             />

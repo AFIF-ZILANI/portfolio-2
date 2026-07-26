@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-import { DEFAULT_SITE_DATA as data } from "@/lib/site-data";
+import type { SiteData } from "@/lib/site-data";
 
 function TerminalTitleBar({ label }: { label: string }) {
     return (
@@ -50,7 +50,7 @@ function TerminalLine({
     return <div className={`font-mono text-sm pl-4 ${line.color}`}>{line.output}</div>;
 }
 
-export function About() {
+export function About({ data }: { data: SiteData }) {
     const [visibleLines, setVisibleLines] = useState<number[]>([]);
     const [hasStarted, setHasStarted] = useState(false);
 
@@ -132,6 +132,7 @@ export function About() {
                                         src={data.aboutImage}
                                         alt="Kazi Afif Zilani (AFIF ZILANI) — Entrepreneur and Full-Stack Developer from Naogaon, Bangladesh"
                                         fill
+                                        sizes="(max-width: 768px) 100vw, 480px"
                                         className="object-cover object-bottom grayscale group-hover:grayscale-0 transition-all duration-700"
                                         data-testid="img-profile-about"
                                     />

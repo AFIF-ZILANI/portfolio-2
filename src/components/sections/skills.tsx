@@ -1,67 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
-import {
-    SiReact,
-    SiTypescript,
-    SiNodedotjs,
-    SiPython,
-    SiPostgresql,
-    SiDocker,
-    SiGit,
-    SiTailwindcss,
-    SiNextdotjs,
-    SiLinux,
-    SiHono,
-    SiPrisma,
-    SiRust,
-    SiGo,
-    SiRedis,
-    SiMongodb,
-    SiJavascript,
-    SiKotlin,
-    SiC,
-    SiCplusplus,
-    SiGithub,
-    SiSqlite,
-    SiDrizzle,
-    SiExpress,
-    SiBun,
-} from "react-icons/si";
-
-const skills = [
-    // Languages
-    { id: "s1", name: "TypeScript", category: "Languages", icon: SiTypescript },
-    { id: "s2", name: "JavaScript", category: "Languages", icon: SiJavascript },
-    { id: "s3", name: "Python", category: "Languages", icon: SiPython },
-    { id: "s4", name: "Go", category: "Languages", icon: SiGo },
-    { id: "s5", name: "Rust", category: "Languages", icon: SiRust },
-    { id: "s6", name: "Kotlin", category: "Languages", icon: SiKotlin },
-    { id: "s7", name: "C", category: "Languages", icon: SiC },
-    { id: "s8", name: "C++", category: "Languages", icon: SiCplusplus },
-
-    // Web Development
-    { id: "s9", name: "React", category: "WebDev", icon: SiReact },
-    { id: "s10", name: "Next.js", category: "WebDev", icon: SiNextdotjs },
-    { id: "s11", name: "Tailwind CSS", category: "WebDev", icon: SiTailwindcss },
-    { id: "s12", name: "Node.js", category: "WebDev", icon: SiNodedotjs },
-    { id: "s13", name: "Hono", category: "WebDev", icon: SiHono },
-    { id: "s14", name: "Express.js", category: "WebDev", icon: SiExpress },
-    { id: "s15", name: "Bun.js", category: "WebDev", icon: SiBun },
-
-    // DevOps
-    { id: "s16", name: "Docker", category: "DevOps", icon: SiDocker },
-    { id: "s17", name: "Linux", category: "DevOps", icon: SiLinux },
-    { id: "s18", name: "Git", category: "DevOps", icon: SiGit },
-    { id: "s19", name: "Git Hub", category: "DevOps", icon: SiGithub },
-
-    // Database
-    { id: "s20", name: "PostgreSQL", category: "Database", icon: SiPostgresql },
-    { id: "s21", name: "MongoDB", category: "Database", icon: SiMongodb },
-    { id: "s22", name: "SQLite", category: "Database", icon: SiSqlite },
-    { id: "s23", name: "Redis", category: "Database", icon: SiRedis },
-    { id: "s24", name: "Drizzle ORM", category: "Database", icon: SiDrizzle },
-    { id: "s25", name: "Prisma", category: "Database", icon: SiPrisma },
-];
+import type { Skill } from "@/lib/site-data";
+import { SkillIcon } from "@/lib/icons";
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -77,7 +17,7 @@ const itemVariants = {
     },
 };
 
-export function Skills() {
+export function Skills({ skills }: { skills: Skill[] }) {
     const categories = Array.from(new Set(skills.map((s) => s.category)));
 
     return (
@@ -115,7 +55,11 @@ export function Skills() {
                                                     variants={itemVariants}
                                                     className="group flex flex-col items-center justify-center p-4 bg-card border border-border hover:border-primary transition-all duration-300"
                                                 >
-                                                    <skill.icon className="text-3xl text-muted-foreground group-hover:text-primary transition-colors mb-3" />
+                                                    <SkillIcon
+                                                        name={skill.icon}
+                                                        size={30}
+                                                        className="text-muted-foreground group-hover:text-primary transition-colors mb-3"
+                                                    />
 
                                                     <span className="text-xs font-mono font-medium text-center">
                                                         {skill.name}

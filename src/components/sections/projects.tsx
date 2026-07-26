@@ -3,10 +3,10 @@
 import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
 import Image from "next/image";
-import { DEFAULT_SITE_DATA as data } from "@/lib/site-data";
+import type { Project } from "@/lib/site-data";
 
-export function Projects() {
-    const featured = data.projects.filter((p) => p.featured);
+export function Projects({ projects }: { projects: Project[] }) {
+    const featured = projects.filter((p) => p.featured);
 
     return (
         <section id="projects" className="py-24 bg-card/30 border-y border-border">

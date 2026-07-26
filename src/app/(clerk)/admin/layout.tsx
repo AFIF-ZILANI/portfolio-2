@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Terminal } from "lucide-react";
 import { isAdmin } from "@/lib/admin";
+import { AdminSidebar } from "@/components/admin/admin-sidebar";
 
 export const metadata = {
     title: "Admin",
@@ -18,37 +19,23 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="min-h-screen bg-background">
             <header className="border-b border-border sticky top-0 z-50 bg-background/80 backdrop-blur-md">
                 <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-8 font-mono text-sm">
-                        <Link
-                            href="/"
-                            className="flex items-center gap-2 text-primary font-bold text-lg"
-                        >
-                            <Terminal size={20} />
-                            <span>afif@admin</span>
-                        </Link>
-                        <Link
-                            href="/admin/blogs"
-                            className="text-muted-foreground hover:text-primary transition-colors"
-                        >
-                            /posts
-                        </Link>
-                        <Link
-                            href="/admin/series"
-                            className="text-muted-foreground hover:text-primary transition-colors"
-                        >
-                            /series
-                        </Link>
-                        <Link
-                            href="/blogs"
-                            className="text-muted-foreground hover:text-primary transition-colors"
-                        >
-                            /view-site
-                        </Link>
-                    </div>
+                    <Link
+                        href="/admin/blogs"
+                        className="flex items-center gap-2 text-primary font-mono font-bold text-lg"
+                    >
+                        <Terminal size={20} />
+                        <span>afif@admin</span>
+                    </Link>
                     <UserButton />
                 </div>
             </header>
-            <main className="container mx-auto px-6 py-10">{children}</main>
+
+            <div className="container mx-auto px-6 py-10 flex flex-col md:flex-row gap-10">
+                <aside className="md:w-56 shrink-0 md:sticky md:top-24 md:self-start">
+                    <AdminSidebar />
+                </aside>
+                <main className="min-w-0 flex-1">{children}</main>
+            </div>
         </div>
     );
 }

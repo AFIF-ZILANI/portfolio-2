@@ -10,6 +10,20 @@ datasource db {
   provider = "postgresql"
 }
 
+/// Everything the homepage renders — name, bio, social links, skills, projects,
+/// experience, stats, contact — as one row holding the SiteData shape from
+/// src/lib/site-data.ts.
+///
+/// ponytail: a single Json column, not five normalized tables. There is exactly
+/// one editor (Afif), nothing queries an individual skill or social link, and
+/// this way adding a field is a TypeScript change with no migration. Normalize
+/// if some feature ever needs to query or join on these rows.
+model SiteContent {
+  id        String   @id @default("singleton")
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
 enum PostStatus {
   DRAFT
   PUBLISHED

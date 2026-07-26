@@ -1,10 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { DEFAULT_SITE_DATA as data } from "@/lib/site-data";
+import type { Experience as ExperienceItem } from "@/lib/site-data";
 
-export function Experience() {
-    const experiences = data.experiences;
+export function Experience({ experiences }: { experiences: ExperienceItem[] }) {
 
     return (
         <section id="experience" className="py-24">
