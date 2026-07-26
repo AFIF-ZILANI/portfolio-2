@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { readingMinutes, slugify } from "@/lib/blog";
+import { cleanupOrphans, recordUpload } from "@/lib/uploads";
 
 export type PostInput = {
     id?: string;
@@ -134,6 +135,49 @@ export async function deletePost(id: string): Promise<void> {
     revalidateBlog(post.slug);
 }
 
+/**
+ * Flip a post between draft and published from the list, without opening the editor.
+ *
+ * Publishing a post that has never had a date sets it to now. Unpublishing keeps
+ * the existing date so re-publishing restores the original one.
+ */
+export async function togglePostStatus(id: string): Promise<SaveResult> {
+    await requireAdmin();
+
+    const post = await prisma.post.findUnique({
+        where: { id },
+        select: { slug: true, status: true, publishedAt: true },
+    });
+    if (!post) return { ok: false, error: "That post no longer exists." };
+
+    const publishing = post.status === "DRAFT";
+    await prisma.post.update({
+        where: { id },
+        data: {
+            status: publishing ? "PUBLISHED" : "DRAFT",
+            publishedAt: publishing ? (post.publishedAt ?? new Date()) : post.publishedAt,
+        },
+    });
+
+    revalidateBlog(post.slug);
+    return { ok: true, slug: post.slug };
+}
+
+/** Destroy Cloudinary images that nothing references any more. */
+export async function cleanupUnusedImages(): Promise<
+    { ok: true; deleted: number } | { ok: false; error: string }
+> {
+    await requireAdmin();
+    const { deleted, failed } = await cleanupOrphans();
+    if (failed.length > 0) {
+        return {
+            ok: false,
+            error: `Deleted ${deleted}, but ${failed.length} failed: ${failed[0].detail}`,
+        };
+    }
+    return { ok: true, deleted };
+}
+
 export async function upsertSeries(input: {
     id?: string;
     title: string;
@@ -204,8 +248,17 @@ export async function uploadImage(formData: FormData): Promise<UploadResult> {
         return { ok: false, error: `Cloudinary rejected the upload (${res.status}).` };
     }
 
-    const json = (await res.json()) as { secure_url?: string };
+    const json = (await res.json()) as {
+        secure_url?: string;
+        public_id?: string;
+        bytes?: number;
+    };
     if (!json.secure_url) return { ok: false, error: "Cloudinary returned no URL." };
+
+    // Track it so an image that's uploaded and then abandoned can be cleaned up.
+    if (json.public_id) {
+        await recordUpload(json.public_id, json.secure_url, json.bytes ?? 0);
+    }
 
     return { ok: true, url: json.secure_url };
 }

@@ -8,6 +8,7 @@ import {
     ExternalLink,
     FileText,
     FolderGit2,
+    Image as ImageIcon,
     Layers,
     Mail,
     Share2,
@@ -21,6 +22,7 @@ const GROUPS = [
         items: [
             { href: "/admin/blogs", label: "Posts", icon: FileText },
             { href: "/admin/series", label: "Series", icon: Layers },
+            { href: "/admin/media", label: "Media", icon: ImageIcon },
         ],
     },
     {

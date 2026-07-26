@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Moon, Sun, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AdminLink } from "@/components/layout/admin-link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 
@@ -81,7 +82,8 @@ export function Navbar() {
                     </button>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
+                    <AdminLink />
                     <Button
                         variant="ghost"
                         size="icon"

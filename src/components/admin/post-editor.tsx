@@ -64,7 +64,11 @@ export function PostEditor({
     const [ogImage, setOgImage] = useState<string | null>(post?.ogImage ?? null);
     const [tags, setTags] = useState((post?.tags ?? []).join(", "));
     const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">(post?.status ?? "DRAFT");
-    const [publishedAt, setPublishedAt] = useState(toLocalInput(post?.publishedAtDate ?? null));
+    // New posts default to right now, so publishing is one click. Editing keeps
+    // whatever date the post already had.
+    const [publishedAt, setPublishedAt] = useState(
+        toLocalInput(post ? post.publishedAtDate : new Date())
+    );
     const [seriesId, setSeriesId] = useState(post?.seriesId ?? "");
     const [seriesOrder, setSeriesOrder] = useState(post?.seriesOrder?.toString() ?? "");
     const [seoTitle, setSeoTitle] = useState(post?.seoTitle ?? "");
@@ -75,6 +79,9 @@ export function PostEditor({
     const [seriesList, setSeriesList] = useState(series);
     const [newSeries, setNewSeries] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
+    // generateMetadata already falls back to the cover when ogImage is null, so
+    // "same as cover" is simply ogImage = null — no extra column needed.
+    const [ogSameAsCover, setOgSameAsCover] = useState(!post?.ogImage);
 
     const effectiveSlug = slugTouched ? slugify(slug) : slugify(title);
     const minutes = useMemo(() => readingMinutes(content), [content]);
@@ -128,7 +135,7 @@ export function PostEditor({
                     content,
                     coverImage,
                     coverAlt: coverAlt || null,
-                    ogImage,
+                    ogImage: ogSameAsCover ? null : ogImage,
                     tags: tags
                         .split(",")
                         .map((t) => t.trim())
@@ -382,12 +389,27 @@ export function PostEditor({
                                 className="text-xs"
                             />
                         </div>
-                        <ImageField
-                            label="OG image"
-                            hint="Social share card. Falls back to the cover image."
-                            value={ogImage}
-                            onChange={setOgImage}
-                        />
+                        <div className="pt-2 border-t border-border space-y-3">
+                            <div className="flex items-center justify-between gap-3">
+                                <Label className={labelClass}>Use cover as OG image</Label>
+                                <Switch
+                                    checked={ogSameAsCover}
+                                    onCheckedChange={setOgSameAsCover}
+                                />
+                            </div>
+                            {ogSameAsCover ? (
+                                <p className="text-xs text-muted-foreground">
+                                    Social shares will use the cover image.
+                                </p>
+                            ) : (
+                                <ImageField
+                                    label="OG image"
+                                    hint="Shown on social shares instead of the cover."
+                                    value={ogImage}
+                                    onChange={setOgImage}
+                                />
+                            )}
+                        </div>
                     </section>
 
                     <section className="border border-border p-4 space-y-4">

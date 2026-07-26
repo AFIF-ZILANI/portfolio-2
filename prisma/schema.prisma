@@ -24,6 +24,22 @@ model SiteContent {
   updatedAt DateTime @updatedAt
 }
 
+/// One row per image uploaded through the admin panel.
+///
+/// Deliberately has NO "used" flag: a boolean set at publish time goes stale the
+/// moment an image is swapped, and it can't tell that an unpublished draft still
+/// needs its cover. Instead cleanup derives what's referenced by scanning the
+/// actual content (see src/lib/uploads.ts), which is always the truth.
+model Upload {
+  id        String   @id @default(cuid())
+  publicId  String   @unique // Cloudinary public_id — required to destroy it
+  url       String   @unique // secure_url, i.e. what gets stored in content
+  bytes     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 enum PostStatus {
   DRAFT
   PUBLISHED

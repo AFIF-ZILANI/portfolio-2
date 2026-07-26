@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DeletePostButton } from "@/components/admin/delete-post-button";
+import { StatusToggle } from "@/components/admin/status-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -80,7 +81,8 @@ export default async function AdminBlogsPage() {
                                     </p>
                                 </div>
 
-                                <div className="flex items-center gap-1 shrink-0">
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <StatusToggle id={p.id} title={p.title} status={p.status} />
                                     <Link
                                         href={`/blogs/${p.slug}`}
                                         target="_blank"
