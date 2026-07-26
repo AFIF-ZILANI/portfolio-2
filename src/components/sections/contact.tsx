@@ -319,7 +319,7 @@ export function Contact({ heading }: { heading: string }) {
                                 <div className="mt-1">
                                     <div className="text-primary">{PROMPT_TEXT[step]}</div>
                                     {/* Invisible input captures keys; visible span + cursor render text */}
-                                    <div className="relative flex items-center mt-[2px]">
+                                    <div className="relative flex items-center mt-0.5">
                                         <span className="text-muted-foreground select-none">
                                             &gt;&nbsp;
                                         </span>

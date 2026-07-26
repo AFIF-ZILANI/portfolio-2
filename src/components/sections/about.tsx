@@ -191,7 +191,7 @@ export function About({ data }: { data: SiteData }) {
                             {/* Terminal bio */}
                             <div className="bg-background border border-border rounded-sm overflow-hidden flex flex-col">
                                 <TerminalTitleBar label="bash — afif@dev" />
-                                <div className="p-4 space-y-1.5 min-h-[320px]">
+                                <div className="p-4 space-y-1.5 min-h-80">
                                     {bioLines.map((line, i) => (
                                         <TerminalLine
                                             key={i}
