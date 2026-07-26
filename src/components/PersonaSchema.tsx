@@ -99,6 +99,27 @@ export default function PersonSchema() {
         },
     };
 
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
+            />
+        </>
+    );
+}
+
+/**
+ * ProfilePage describes the homepage specifically, so it is NOT part of
+ * PersonSchema (which renders from the root layout). Otherwise every route —
+ * including each blog post — would claim to be Afif's profile page, contradicting
+ * the post's own BlogPosting schema. Rendered by src/app/page.tsx only.
+ */
+export function ProfilePageSchema() {
     const webpage = {
         "@context": "https://schema.org",
         "@type": "ProfilePage",
@@ -124,19 +145,9 @@ export default function PersonSchema() {
     };
 
     return (
-        <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }}
-            />
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
-            />
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(webpage) }}
-            />
-        </>
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(webpage) }}
+        />
     );
 }

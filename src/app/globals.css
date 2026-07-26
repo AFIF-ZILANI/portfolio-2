@@ -277,3 +277,48 @@
     inset: -1px;
   }
 }
+
+/* Syntax highlighting for blog code blocks (rehype-highlight emits .hljs-* classes).
+   ponytail: ~15 lines tuned to the terminal palette instead of importing a full
+   highlight.js theme stylesheet. */
+.hljs-comment,
+.hljs-quote {
+    color: hsl(var(--muted-foreground));
+    font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-type {
+    color: hsl(142 71% 55%);
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition {
+    color: hsl(45 90% 62%);
+}
+.hljs-number,
+.hljs-built_in,
+.hljs-symbol {
+    color: hsl(190 80% 60%);
+}
+.hljs-title,
+.hljs-name,
+.hljs-section,
+.hljs-attr {
+    color: hsl(210 80% 68%);
+}
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute {
+    color: hsl(0 0% 88%);
+}
+.hljs-deletion {
+    color: hsl(0 70% 62%);
+}
+.hljs-emphasis {
+    font-style: italic;
+}
+.hljs-strong {
+    font-weight: 700;
+}

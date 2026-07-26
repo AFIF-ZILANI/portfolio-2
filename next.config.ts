@@ -13,7 +13,16 @@ const nextConfig: NextConfig = {
                 protocol: "https",
                 hostname: "picsum.photos",
             },
+            {
+                // Blog cover and OG images uploaded from the admin panel.
+                protocol: "https",
+                hostname: "res.cloudinary.com",
+            },
         ],
+    },
+    experimental: {
+        // Cover screenshots blow past the 1MB Server Action default.
+        serverActions: { bodySizeLimit: "8mb" },
     },
 };
 

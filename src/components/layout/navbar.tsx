@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Moon, Sun, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -9,6 +11,11 @@ export function Navbar() {
     const { theme, setTheme } = useTheme();
     const pathname = usePathname();
     const router = useRouter();
+
+    // `theme` is undefined during SSR, so the server renders one icon and the client
+    // renders the other — a hydration mismatch. Hold the icon back until mounted.
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
 
     const scrollTo = (id: string) => {
         if (pathname !== "/") {
@@ -56,16 +63,16 @@ export function Navbar() {
                     >
                         /experience
                     </button>
-                    {/* <Link
-                        href="/events"
+                    <Link
+                        href="/blogs"
                         className={
-                            pathname === "/events"
+                            pathname.startsWith("/blogs")
                                 ? "text-primary"
                                 : "text-muted-foreground hover:text-primary transition-colors"
                         }
                     >
-                        /events
-                    </Link> */}
+                        /blogs
+                    </Link>
                     <button
                         onClick={() => scrollTo("contact")}
                         className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
@@ -81,18 +88,9 @@ export function Navbar() {
                         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                         className="text-muted-foreground hover:text-primary"
                     >
-                        {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+                        {mounted && (theme === "dark" ? <Sun size={20} /> : <Moon size={20} />)}
                     </Button>
 
-                    {/* <Link href="/dashboard">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-muted-foreground hover:text-primary"
-                        >
-                            <Settings size={20} />
-                        </Button>
-                    </Link> */}
                 </div>
             </div>
         </nav>

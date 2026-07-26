@@ -6,6 +6,7 @@ import { Projects } from "@/components/sections/projects";
 import { Experience } from "@/components/sections/experience";
 // import { Events } from "@/components/sections/events";
 import { Contact } from "@/components/sections/contact";
+import { ProfilePageSchema } from "@/components/PersonaSchema";
 import { useEffect } from "react";
 
 export default function Home() {
@@ -28,6 +29,7 @@ export default function Home() {
             <Experience />
             {/* <Events /> */}
             <Contact />
+            <ProfilePageSchema />
         </main>
     );
 }
