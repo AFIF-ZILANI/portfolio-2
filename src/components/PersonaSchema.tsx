@@ -128,7 +128,8 @@ export function ProfilePageSchema() {
         url: SITE_URL,
         name: "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD",
         isPartOf: { "@id": `${SITE_URL}/#website` },
-        about: { "@id": `${SITE_URL}/#person` },
+        // Google requires mainEntity (not about) for the ProfilePage rich result.
+        mainEntity: { "@id": `${SITE_URL}/#person` },
         primaryImageOfPage: { "@id": `${SITE_URL}/#image` },
         description:
             "Official portfolio page of Kazi Afif Zilani (AFIF ZILANI), full-stack developer and co-founder of ZeroD, from Naogaon, Bangladesh.",
