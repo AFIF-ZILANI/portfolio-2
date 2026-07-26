@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import PersonSchema from "@/components/PersonaSchema";
+import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 const TITLE = "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD";
 const DESCRIPTION =
@@ -122,17 +123,19 @@ export default function RootLayout({
             <body
                 className={`antialiased overflow-x-hidden font-mono selection:bg-primary/30 min-h-screen bg-background text-foreground`}
             >
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="dark"
-                    enableSystem={false}
-                    disableTransitionOnChange
-                >
-                    <Navbar />
-                    <PersonSchema />
-                    <main>{children}</main>
-                    <Footer />
-                </ThemeProvider>
+                <ClerkProvider>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="dark"
+                        enableSystem={false}
+                        disableTransitionOnChange
+                    >
+                        <Navbar />
+                        <PersonSchema />
+                        <main>{children}</main>
+                        <Footer />
+                    </ThemeProvider>
+                </ClerkProvider>
             </body>
         </html>
     );
