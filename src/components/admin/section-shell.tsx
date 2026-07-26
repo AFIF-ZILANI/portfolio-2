@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { resetSiteSection, saveSiteSection } from "@/app/(clerk)/admin/site-actions";
 import type { SiteData } from "@/lib/site-data";
+import { runAction } from "@/components/admin/run-action";
 
 /**
  * Header + save/reset buttons shared by every site-content editor page.
@@ -42,7 +43,7 @@ export function SectionShell({
 
     function save() {
         startTransition(async () => {
-            const res = await saveSiteSection(buildPatch());
+            const res = await runAction(() => saveSiteSection(buildPatch()));
             if (!res.ok) {
                 toast.error(res.error);
                 return;
@@ -55,7 +56,7 @@ export function SectionShell({
 
     function reset() {
         startTransition(async () => {
-            const res = await resetSiteSection(resetKeys);
+            const res = await runAction(() => resetSiteSection(resetKeys));
             if (!res.ok) {
                 toast.error(res.error);
                 return;

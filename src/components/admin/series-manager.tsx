@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { deleteSeries, upsertSeries } from "@/app/(clerk)/admin/actions";
+import { runAction } from "@/components/admin/run-action";
 
 export type SeriesRow = {
     id: string;
@@ -27,7 +28,7 @@ export function SeriesManager({ rows }: { rows: SeriesRow[] }) {
 
     function save(id?: string) {
         startTransition(async () => {
-            const res = await upsertSeries({ id, ...draft });
+            const res = await runAction(() => upsertSeries({ id, ...draft }));
             if (!res.ok) {
                 toast.error(res.error);
                 return;

@@ -4,6 +4,7 @@ import { UserButton } from "@clerk/nextjs";
 import { Terminal } from "lucide-react";
 import { isAdmin } from "@/lib/admin";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
     title: "Admin",
@@ -36,6 +37,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 </aside>
                 <main className="min-w-0 flex-1">{children}</main>
             </div>
+
+            {/* Every toast in the admin panel goes through here. Without it, all
+                success and error feedback is silently discarded — which is exactly
+                how a rejected save looked like "nothing happened". */}
+            <Toaster />
         </div>
     );
 }

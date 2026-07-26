@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { uploadImage } from "@/app/(clerk)/admin/actions";
+import { runAction } from "@/components/admin/run-action";
 
 type Props = {
     label: string;
@@ -27,7 +28,7 @@ export function ImageField({ label, hint, value, onChange }: Props) {
         const body = new FormData();
         body.append("file", file);
         startTransition(async () => {
-            const res = await uploadImage(body);
+            const res = await runAction(() => uploadImage(body));
             if (!res.ok) {
                 toast.error(res.error);
                 return;

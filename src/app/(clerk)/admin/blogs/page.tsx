@@ -3,8 +3,7 @@ import { Eye, Pencil, Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DeleteButton } from "@/components/admin/delete-button";
-import { deletePost } from "../actions";
+import { DeletePostButton } from "@/components/admin/delete-post-button";
 
 export const dynamic = "force-dynamic";
 
@@ -97,13 +96,7 @@ export default async function AdminBlogsPage() {
                                     >
                                         <Pencil size={16} />
                                     </Link>
-                                    <DeleteButton
-                                        name={p.title}
-                                        onDelete={async () => {
-                                            "use server";
-                                            await deletePost(p.id);
-                                        }}
-                                    />
+                                    <DeletePostButton id={p.id} title={p.title} />
                                 </div>
                             </div>
                         );

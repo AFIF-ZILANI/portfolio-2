@@ -42,6 +42,19 @@ const trim = (v: string | null) => {
     return t ? t : null;
 };
 
+/**
+ * Prisma signals a duplicate unique column with code P2002. Matching on the
+ * message text instead would break silently whenever Prisma rewords it — and a
+ * missed match here throws, which the UI shows as nothing happening at all.
+ */
+function isUniqueViolation(e: unknown): boolean {
+    return (
+        typeof e === "object" &&
+        e !== null &&
+        ("code" in e ? (e as { code?: string }).code === "P2002" : false)
+    );
+}
+
 export async function savePost(input: PostInput): Promise<SaveResult> {
     await requireAdmin();
 
@@ -92,14 +105,20 @@ export async function savePost(input: PostInput): Promise<SaveResult> {
 
     try {
         if (input.id) {
-            const previous = await prisma.post.update({ where: { id: input.id }, data });
-            // The slug may have changed — bust the old URL too, or it serves stale forever.
-            revalidateBlog(previous.slug);
+            // Read the old slug BEFORE updating: prisma.update() returns the NEW row,
+            // so reading it afterwards would give us the new slug and leave the old
+            // URL serving stale content forever.
+            const before = await prisma.post.findUnique({
+                where: { id: input.id },
+                select: { slug: true },
+            });
+            await prisma.post.update({ where: { id: input.id }, data });
+            if (before && before.slug !== slug) revalidateBlog(before.slug);
         } else {
             await prisma.post.create({ data });
         }
     } catch (e) {
-        if (e instanceof Error && e.message.includes("Unique constraint")) {
+        if (isUniqueViolation(e)) {
             return { ok: false, error: `The slug "${slug}" is already taken.` };
         }
         throw e;
@@ -137,7 +156,7 @@ export async function upsertSeries(input: {
         revalidateBlog();
         return { ok: true, id: series.id, title: series.title };
     } catch (e) {
-        if (e instanceof Error && e.message.includes("Unique constraint")) {
+        if (isUniqueViolation(e)) {
             return { ok: false, error: `The series slug "${slug}" is already taken.` };
         }
         throw e;

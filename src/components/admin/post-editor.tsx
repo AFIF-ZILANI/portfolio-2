@@ -20,6 +20,7 @@ import { Markdown } from "@/components/blog/markdown";
 import { ImageField } from "@/components/admin/image-field";
 import { savePost, upsertSeries, type PostInput } from "@/app/(clerk)/admin/actions";
 import { readingMinutes, slugify } from "@/lib/blog-utils";
+import { runAction } from "@/components/admin/run-action";
 
 export type SeriesOption = { id: string; title: string };
 
@@ -33,6 +34,14 @@ function toLocalInput(date: Date | null): string {
 }
 
 const labelClass = "font-mono text-xs uppercase tracking-wider text-muted-foreground";
+
+/** Red asterisk marking a field the server will reject if left blank. */
+const Req = () => <span className="text-destructive ml-1">*</span>;
+
+function FieldError({ message }: { message?: string }) {
+    if (!message) return null;
+    return <p className="text-xs text-destructive font-mono">{message}</p>;
+}
 
 export function PostEditor({
     post,
@@ -65,6 +74,7 @@ export function PostEditor({
 
     const [seriesList, setSeriesList] = useState(series);
     const [newSeries, setNewSeries] = useState("");
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     const effectiveSlug = slugTouched ? slugify(slug) : slugify(title);
     const minutes = useMemo(() => readingMinutes(content), [content]);
@@ -75,7 +85,7 @@ export function PostEditor({
         const name = newSeries.trim();
         if (!name) return;
         startTransition(async () => {
-            const res = await upsertSeries({ title: name });
+            const res = await runAction(() => upsertSeries({ title: name }));
             if (!res.ok) {
                 toast.error(res.error);
                 return;
@@ -87,27 +97,52 @@ export function PostEditor({
         });
     }
 
+    /**
+     * Check required fields here as well as on the server, so the message lands
+     * next to the offending field instead of only in a toast.
+     */
+    function validate(): Record<string, string> {
+        const next: Record<string, string> = {};
+        if (!title.trim()) next.title = "Required.";
+        if (!effectiveSlug) next.slug = "Could not build a slug — add letters or numbers.";
+        if (!excerpt.trim()) next.excerpt = "Required — it's the card blurb and meta description.";
+        if (!content.trim()) next.content = "Required — write something.";
+        return next;
+    }
+
     function submit() {
+        const found = validate();
+        setErrors(found);
+        if (Object.keys(found).length > 0) {
+            toast.error(`Can't save — ${Object.keys(found).length} field(s) need attention.`);
+            return;
+        }
+
         startTransition(async () => {
-            const res = await savePost({
-                id: post?.id,
-                title,
-                slug: effectiveSlug,
-                excerpt,
-                content,
-                coverImage,
-                coverAlt: coverAlt || null,
-                ogImage,
-                tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
-                status,
-                publishedAt: publishedAt ? new Date(publishedAt).toISOString() : null,
-                seoTitle: seoTitle || null,
-                seoDescription: seoDescription || null,
-                canonicalUrl: canonicalUrl || null,
-                noindex,
-                seriesId: seriesId || null,
-                seriesOrder: seriesOrder ? Number(seriesOrder) : null,
-            });
+            const res = await runAction(() =>
+                savePost({
+                    id: post?.id,
+                    title,
+                    slug: effectiveSlug,
+                    excerpt,
+                    content,
+                    coverImage,
+                    coverAlt: coverAlt || null,
+                    ogImage,
+                    tags: tags
+                        .split(",")
+                        .map((t) => t.trim())
+                        .filter(Boolean),
+                    status,
+                    publishedAt: publishedAt ? new Date(publishedAt).toISOString() : null,
+                    seoTitle: seoTitle || null,
+                    seoDescription: seoDescription || null,
+                    canonicalUrl: canonicalUrl || null,
+                    noindex,
+                    seriesId: seriesId || null,
+                    seriesOrder: seriesOrder ? Number(seriesOrder) : null,
+                })
+            );
 
             if (!res.ok) {
                 toast.error(res.error);
@@ -141,13 +176,18 @@ export function PostEditor({
                 {/* ---- main column ---- */}
                 <div className="space-y-4 min-w-0">
                     <div className="space-y-2">
-                        <Label className={labelClass}>Title</Label>
+                        <Label className={labelClass}>
+                            Title
+                            <Req />
+                        </Label>
                         <Input
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="How I shipped a blog in one afternoon"
-                            className="text-lg"
+                            aria-invalid={Boolean(errors.title)}
+                            className={`text-lg ${errors.title ? "border-destructive" : ""}`}
                         />
+                        <FieldError message={errors.title} />
                     </div>
 
                     <div className="space-y-2">
@@ -163,12 +203,14 @@ export function PostEditor({
                         <p className="text-xs text-muted-foreground font-mono">
                             /blogs/{effectiveSlug || "…"}
                         </p>
+                        <FieldError message={errors.slug} />
                     </div>
 
                     <div className="space-y-2">
                         <Label className={labelClass}>
-                            Excerpt{" "}
-                            <span className="normal-case tracking-normal">
+                            Excerpt
+                            <Req />
+                            <span className="normal-case tracking-normal ml-1">
                                 (card blurb + meta description fallback)
                             </span>
                         </Label>
@@ -176,11 +218,20 @@ export function PostEditor({
                             value={excerpt}
                             onChange={(e) => setExcerpt(e.target.value)}
                             rows={2}
+                            aria-invalid={Boolean(errors.excerpt)}
+                            className={errors.excerpt ? "border-destructive" : ""}
                         />
+                        <FieldError message={errors.excerpt} />
                     </div>
 
-                    <div className="border border-border">
-                        <div className="flex border-b border-border">
+                    <div
+                        className={`border ${errors.content ? "border-destructive" : "border-border"}`}
+                    >
+                        <div className="flex border-b border-border items-center">
+                            <span className={`${labelClass} pl-3 pr-1`}>
+                                Body
+                                <Req />
+                            </span>
                             {(["write", "preview"] as const).map((t) => (
                                 <button
                                     key={t}
@@ -217,6 +268,7 @@ export function PostEditor({
                             </div>
                         )}
                     </div>
+                    <FieldError message={errors.content} />
                 </div>
 
                 {/* ---- sidebar ---- */}
