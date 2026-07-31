@@ -91,7 +91,7 @@ export function About({ data }: { data: SiteData }) {
         lines.push({ prompt: "afif@dev:~$", cmd: "", delay: lastDelay, cursor: true });
 
         return lines;
-    }, []);
+    }, [data.bio, data.name, data.title]);
 
     const startAnimation = () => {
         if (hasStarted) return;
