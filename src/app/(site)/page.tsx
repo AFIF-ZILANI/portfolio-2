@@ -9,6 +9,8 @@ import { Contact } from "@/components/sections/contact";
 import { ProfilePageSchema } from "@/components/PersonaSchema";
 import { ScrollToHash } from "@/components/layout/scroll-to-hash";
 import { LatestPosts } from "@/components/sections/latest-posts";
+import { LatestEvents } from "@/components/sections/latest-events";
+import { getPublishedEvents } from "@/lib/events";
 
 // A server component now: content comes from the database and is edited at
 // /admin/site/*. Saving there calls revalidatePath("/"), so this window is only
@@ -16,7 +18,11 @@ import { LatestPosts } from "@/components/sections/latest-posts";
 export const revalidate = 60;
 
 export default async function Home() {
-    const [data, posts] = await Promise.all([getSiteData(), getPublishedPosts()]);
+    const [data, posts, events] = await Promise.all([
+        getSiteData(),
+        getPublishedPosts(),
+        getPublishedEvents(3),
+    ]);
 
     return (
         <main className="flex flex-col">
@@ -27,6 +33,7 @@ export default async function Home() {
             <Projects projects={data.projects} />
             <Experience experiences={data.experiences} />
             <LatestPosts posts={posts.slice(0, 3)} />
+            <LatestEvents events={events} />
             <Contact heading={data.contact.heading} />
             <ProfilePageSchema />
         </main>

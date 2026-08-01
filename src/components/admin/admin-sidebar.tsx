@@ -14,6 +14,7 @@ import {
     Share2,
     User,
     Wrench,
+    CalendarDays,
 } from "lucide-react";
 
 const GROUPS = [
@@ -22,6 +23,7 @@ const GROUPS = [
         items: [
             { href: "/admin/blogs", label: "Posts", icon: FileText },
             { href: "/admin/series", label: "Series", icon: Layers },
+            { href: "/admin/events", label: "Events", icon: CalendarDays },
             { href: "/admin/media", label: "Media", icon: ImageIcon },
         ],
     },

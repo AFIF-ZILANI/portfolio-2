@@ -49,6 +49,7 @@ export function Navbar() {
     };
 
     const onBlog = pathname.startsWith("/blogs");
+    const onEvents = pathname.startsWith("/events");
 
     return (
         <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -82,6 +83,16 @@ export function Navbar() {
                         }
                     >
                         /blogs
+                    </Link>
+                    <Link
+                        href="/events"
+                        className={
+                            onEvents
+                                ? "text-primary"
+                                : "text-muted-foreground hover:text-primary transition-colors"
+                        }
+                    >
+                        /events
                     </Link>
                 </div>
 
@@ -135,6 +146,15 @@ export function Navbar() {
                                     }`}
                                 >
                                     /blogs
+                                </Link>
+                                <Link
+                                    href="/events"
+                                    onClick={() => setMenuOpen(false)}
+                                    className={`py-3 border-b border-border transition-colors ${
+                                        onEvents ? "text-primary" : "text-muted-foreground hover:text-primary"
+                                    }`}
+                                >
+                                    /events
                                 </Link>
                             </div>
                         </SheetContent>

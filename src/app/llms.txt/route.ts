@@ -1,4 +1,6 @@
 import { getPublishedPosts } from "@/lib/blog";
+import { getPublishedEvents } from "@/lib/events";
+import { formatEventDates, formatLocation } from "@/lib/events-utils";
 import { getSiteData } from "@/lib/site-content";
 import { SITE_URL } from "@/lib/site";
 
@@ -15,7 +17,11 @@ export const revalidate = 3600;
  * Generated from live data so it can't drift from the site.
  */
 export async function GET() {
-    const [site, posts] = await Promise.all([getSiteData(), getPublishedPosts()]);
+    const [site, posts, events] = await Promise.all([
+        getSiteData(),
+        getPublishedPosts(),
+        getPublishedEvents(),
+    ]);
 
     const lines = [
         `# ${site.name} (Kazi Afif Zilani)`,
@@ -36,6 +42,7 @@ export async function GET() {
         "",
         `- [Portfolio homepage](${SITE_URL}/): profile, skills, projects, experience, contact`,
         `- [Blog](${SITE_URL}/blogs): writing on web development and software engineering`,
+        `- [Events](${SITE_URL}/events): first-hand write-ups of events, meetups and workshops attended`,
         "",
         "## Projects",
         "",
@@ -71,6 +78,22 @@ export async function GET() {
                               p.publishedAt ? ` — ${p.publishedAt.toISOString().slice(0, 10)}` : ""
                           }: ${p.excerpt}`
                   )
+                  .join("\n"),
+        "",
+        "## Events attended",
+        "",
+        events.length === 0
+            ? "_No events published yet._"
+            : events
+                  .map((e) => {
+                      const where = formatLocation(e);
+                      return `- [${e.title}](${SITE_URL}/events/${e.slug}) — ${formatEventDates(
+                          e.startDate,
+                          e.endDate
+                      )}${where ? `, ${where}` : ""}${e.organizer ? `, organised by ${e.organizer}` : ""}${
+                          e.role ? ` (${e.role})` : ""
+                      }: ${e.excerpt}`;
+                  })
                   .join("\n"),
         "",
         "## Elsewhere",
