@@ -331,3 +331,29 @@ html {
 .hljs-strong {
     font-weight: 700;
 }
+
+/* ── Quality floor ────────────────────────────────────────────────────────
+   Two things the site was missing rather than two things it chose. */
+
+/* Every section animates in on scroll via framer-motion, and the contact
+   terminal has a running spinner. Someone who asked their OS for less motion was
+   getting all of it. This kills the distance and duration without removing the
+   elements themselves, so nothing disappears — it just arrives already there. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Keyboard focus was invisible outside the Radix components that ship with their
+   own ring, so tabbing through the nav, the section links, and the contact
+   terminal left no indication of where you were. */
+:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+}

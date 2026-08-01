@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { SectionHeading } from "@/components/layout/section-heading";
 import type { Experience as ExperienceItem } from "@/lib/site-data";
 
 export function Experience({ experiences }: { experiences: ExperienceItem[] }) {
@@ -14,9 +15,7 @@ export function Experience({ experiences }: { experiences: ExperienceItem[] }) {
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h2 className="text-3xl font-bold mb-12 flex items-center gap-2">
-                        <span className="text-primary">04.</span> Experience
-                    </h2>
+                    <SectionHeading path="~/experience.log" title="Experience" />
 
                     <div className="space-y-12 border-l border-border/50 ml-4 pl-8 relative">
                         {experiences.map((exp, i) => (

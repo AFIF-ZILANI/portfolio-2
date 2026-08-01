@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { SectionHeading } from "@/components/layout/section-heading";
 import Image from "next/image";
 
 import type { ResolvedSiteData } from "@/lib/site-data";
@@ -111,9 +112,7 @@ export function About({ data }: { data: ResolvedSiteData }) {
                     transition={{ duration: 0.5 }}
                     onViewportEnter={startAnimation}
                 >
-                    <h2 className="text-3xl font-bold mb-10 flex items-center gap-2">
-                        <span className="text-primary">01.</span> About
-                    </h2>
+                    <SectionHeading path="~/about.md" title="About" />
 
                     <div className="grid md:grid-cols-2 gap-8 items-start">
                         {/* ── Left: Photo + Stats ─────────────────────────── */}

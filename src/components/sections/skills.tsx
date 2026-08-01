@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { SectionHeading } from "@/components/layout/section-heading";
 import type { Skill } from "@/lib/site-data";
 import { SkillIcon } from "@/lib/icons";
 
@@ -29,9 +30,7 @@ export function Skills({ skills }: { skills: Skill[] }) {
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h2 className="text-3xl font-bold mb-12 flex items-center gap-2">
-                        <span className="text-primary">02.</span> Skills
-                    </h2>
+                    <SectionHeading path="~/skills.json" title="Skills" />
 
                     <div className="grid md:grid-cols-3 gap-8">
                         {categories.map((cat) => {

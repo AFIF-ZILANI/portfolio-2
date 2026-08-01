@@ -66,7 +66,7 @@ export default async function EventsPage() {
 
                 {events.length === 0 ? (
                     <p className="text-muted-foreground font-mono text-sm border border-dashed border-border p-12 text-center">
-                        Nothing published yet.
+                        No write-ups yet. The next one goes up after the next event.
                     </p>
                 ) : (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
