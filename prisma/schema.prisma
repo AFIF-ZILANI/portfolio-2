@@ -24,18 +24,39 @@ model SiteContent {
   updatedAt DateTime @updatedAt
 }
 
-/// One row per image uploaded through the admin panel.
+/// The one image table. Every image the site renders is a row here — blog covers,
+/// event photos, the hero and about portraits, project screenshots. Other models
+/// refer to it by id rather than storing URLs, so a single image can't describe
+/// itself two different ways in two different places.
 ///
 /// Deliberately has NO "used" flag: a boolean set at publish time goes stale the
 /// moment an image is swapped, and it can't tell that an unpublished draft still
 /// needs its cover. Instead cleanup derives what's referenced by scanning the
 /// actual content (see src/lib/uploads.ts), which is always the truth.
-model Upload {
-  id        String   @id @default(cuid())
-  publicId  String   @unique // Cloudinary public_id — required to destroy it
-  url       String   @unique // secure_url, i.e. what gets stored in content
-  bytes     Int      @default(0)
+model Image {
+  id      String  @id @default(cuid())
+  url     String  @unique // secure_url, i.e. what gets rendered
+  alt     String  @default("") // the whole of image SEO; enforced non-empty for events
+  caption String?
+
+  /// From Cloudinary's upload response, so they cost nothing to store. Having them
+  /// lets next/image reserve space, which is what stops a gallery shifting layout
+  /// as it loads.
+  width  Int @default(0)
+  height Int @default(0)
+  bytes  Int @default(0)
+
+  /// Nullable on purpose. One image table means this also holds assets Cloudinary
+  /// does not own — /afifzilani-profile.webp, the Unsplash project covers. A null
+  /// publicId means "not ours to destroy", and cleanup skips those rows rather
+  /// than failing on them.
+  publicId String? @unique
+
   createdAt DateTime @default(now())
+
+  coverFor       Post[]   @relation("PostCover")
+  ogFor          Post[]   @relation("PostOg")
+  seriesCoverFor Series[] @relation("SeriesCover")
 
   @@index([createdAt])
 }
@@ -52,9 +73,11 @@ model Post {
   excerpt String // card blurb + meta description fallback
   content String // markdown source
 
-  coverImage String? // Cloudinary URL
-  coverAlt   String?
-  ogImage    String? // Cloudinary URL, admin-supplied
+  // Images live in the Image table; alt text travels with the image, not the post.
+  coverImage   Image?  @relation("PostCover", fields: [coverImageId], references: [id], onDelete: SetNull)
+  coverImageId String?
+  ogImage      Image?  @relation("PostOg", fields: [ogImageId], references: [id], onDelete: SetNull)
+  ogImageId    String?
 
   tags   String[]
   status PostStatus @default(DRAFT)
@@ -82,13 +105,73 @@ model Post {
   @@index([seriesId, seriesOrder])
 }
 
+/// A retrospective write-up of something attended: a meetup, a conference, a
+/// workshop, any activity worth a photo and a paragraph.
+///
+/// Retrospective only, by design — startDate is always in the past. Announcing
+/// upcoming events means remembering to come back and update them, and a stale
+/// "upcoming" entry reads worse than no entry at all.
+model Event {
+  id      String @id @default(cuid())
+  slug    String @unique
+  title   String
+  excerpt String // card blurb + meta description fallback
+  content String // markdown source, same renderer as posts
+
+  /// Ordered Image ids. [0] is the cover. 1..10, enforced in saveEvent.
+  ///
+  /// An array rather than a join table because a gallery is inherently ordered and
+  /// nothing queries an individual event photo — the same reasoning SiteContent
+  /// uses for its Json column. The usual objection (ids dangling after a delete)
+  /// does not apply: cleanupUnusedImages only deletes images that are unreferenced
+  /// AND past the grace window, and collectReferencedUrls resolves these ids. If a
+  /// force-delete path is ever added, this must become a join table.
+  imageIds String[]
+
+  startDate DateTime // when it actually happened
+  endDate   DateTime?
+
+  // Feeds Place + PostalAddress + GeoCoordinates in the Event JSON-LD.
+  venueName     String?
+  streetAddress String?
+  city          String?
+  region        String?
+  country       String  @default("BD")
+  latitude      Float?
+  longitude     Float?
+
+  organizer String? // named org — an entity a model can resolve and cite
+  role      String? // "Attendee", "Speaker", "Volunteer", ...
+  tags      String[]
+
+  status PostStatus @default(DRAFT)
+
+  // Same rule as Post: live only when PUBLISHED and publishedAt <= now(), so a
+  // future publishedAt is a scheduled event and no cron is needed.
+  publishedAt DateTime?
+
+  seoTitle       String?
+  seoDescription String?
+  canonicalUrl   String?
+  noindex        Boolean @default(false)
+
+  views     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, publishedAt])
+}
+
 model Series {
   id          String   @id @default(cuid())
   slug        String   @unique
   title       String
   description String?
-  coverImage  String?
-  posts       Post[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  coverImage   Image?  @relation("SeriesCover", fields: [coverImageId], references: [id], onDelete: SetNull)
+  coverImageId String?
+
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

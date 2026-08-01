@@ -23,10 +23,12 @@ import { runAction } from "@/components/admin/run-action";
 export type MediaItem = {
     id: string;
     url: string;
-    publicId: string;
+    publicId: string | null;
     bytes: number;
     createdAt: Date;
+    alt: string;
     inUse: boolean;
+    managed: boolean;
     protectedByGrace: boolean;
 };
 
@@ -150,8 +152,8 @@ export function MediaManager({ items, graceHours }: { items: MediaItem[]; graceH
                                           ? "new, kept"
                                           : "unused"}
                                 </span>
-                                <p className="text-muted-foreground truncate" title={item.publicId}>
-                                    {item.publicId}
+                                <p className="text-muted-foreground truncate" title={item.publicId ?? "not managed by Cloudinary"}>
+                                    {item.publicId ?? "static / external"}
                                 </p>
                                 <p className="text-muted-foreground">{kb(item.bytes)}</p>
                             </figcaption>

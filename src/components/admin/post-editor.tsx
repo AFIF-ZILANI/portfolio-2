@@ -19,6 +19,7 @@ import {
 import { Markdown } from "@/components/blog/markdown";
 import { ImageField } from "@/components/admin/image-field";
 import { savePost, upsertSeries, type PostInput } from "@/app/(clerk)/admin/actions";
+import type { ImageRef } from "@/lib/image-utils";
 import { readingMinutes, slugify } from "@/lib/blog-utils";
 import { runAction } from "@/components/admin/run-action";
 
@@ -47,7 +48,17 @@ export function PostEditor({
     post,
     series,
 }: {
-    post?: PostInput & { id: string; publishedAtDate: Date | null };
+    /**
+     * Images arrive resolved so the editor can show them; only their ids are sent
+     * back. Alt text is not here at all — it belongs to the image row, and
+     * ImageField saves it directly.
+     */
+    post?: Omit<PostInput, "coverImageId" | "ogImageId"> & {
+        id: string;
+        publishedAtDate: Date | null;
+        coverImage: ImageRef | null;
+        ogImage: ImageRef | null;
+    };
     series: SeriesOption[];
 }) {
     const router = useRouter();
@@ -59,9 +70,8 @@ export function PostEditor({
     const [slugTouched, setSlugTouched] = useState(Boolean(post?.slug));
     const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
     const [content, setContent] = useState(post?.content ?? "");
-    const [coverImage, setCoverImage] = useState<string | null>(post?.coverImage ?? null);
-    const [coverAlt, setCoverAlt] = useState(post?.coverAlt ?? "");
-    const [ogImage, setOgImage] = useState<string | null>(post?.ogImage ?? null);
+    const [coverImage, setCoverImage] = useState<ImageRef | null>(post?.coverImage ?? null);
+    const [ogImage, setOgImage] = useState<ImageRef | null>(post?.ogImage ?? null);
     const [tags, setTags] = useState((post?.tags ?? []).join(", "));
     const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">(post?.status ?? "DRAFT");
     // New posts default to right now, so publishing is one click. Editing keeps
@@ -133,9 +143,8 @@ export function PostEditor({
                     slug: effectiveSlug,
                     excerpt,
                     content,
-                    coverImage,
-                    coverAlt: coverAlt || null,
-                    ogImage: ogSameAsCover ? null : ogImage,
+                    coverImageId: coverImage?.id ?? null,
+                    ogImageId: ogSameAsCover ? null : (ogImage?.id ?? null),
                     tags: tags
                         .split(",")
                         .map((t) => t.trim())
@@ -392,15 +401,6 @@ export function PostEditor({
                             value={coverImage}
                             onChange={setCoverImage}
                         />
-                        <div className="space-y-2">
-                            <Label className={labelClass}>Cover alt text</Label>
-                            <Input
-                                value={coverAlt}
-                                onChange={(e) => setCoverAlt(e.target.value)}
-                                placeholder="Describe the image"
-                                className="text-xs"
-                            />
-                        </div>
                         <div className="pt-2 border-t border-border space-y-3">
                             <div className="flex items-center justify-between gap-3">
                                 <Label className={labelClass}>Use cover as OG image</Label>

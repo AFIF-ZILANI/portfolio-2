@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
 import Image from "next/image";
-import type { Project } from "@/lib/site-data";
+import type { ResolvedProject } from "@/lib/site-data";
 
-export function Projects({ projects }: { projects: Project[] }) {
+export function Projects({ projects }: { projects: ResolvedProject[] }) {
     const featured = projects.filter((p) => p.featured);
 
     return (
@@ -38,8 +38,8 @@ export function Projects({ projects }: { projects: Project[] }) {
                                     {project.coverImage ? (
                                         <div className="relative w-full aspect-video">
                                             <Image
-                                                src={project.coverImage}
-                                                alt={`${project.title} — project by Afif Zilani`}
+                                                src={project.coverImage.url}
+                                                alt={project.coverImage.alt || `${project.title} — project by Afif Zilani`}
                                                 fill
                                                 className="object-cover border border-border group-hover:border-primary/50 transition-colors"
                                             />

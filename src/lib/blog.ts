@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
+import { IMAGE_SELECT } from "@/lib/image-utils";
 
 // Server-side convenience: the pure helpers live in blog-utils so that client
 // components can import them without pulling Prisma into the browser bundle.
@@ -24,8 +25,7 @@ const cardSelect = {
     slug: true,
     title: true,
     excerpt: true,
-    coverImage: true,
-    coverAlt: true,
+    coverImage: { select: IMAGE_SELECT },
     tags: true,
     publishedAt: true,
     readingMinutes: true,
@@ -47,7 +47,11 @@ export function getPublishedPosts() {
 export function getPostBySlug(slug: string) {
     return prisma.post.findFirst({
         where: { slug, ...publishedWhere() },
-        include: { series: true },
+        include: {
+            series: true,
+            coverImage: { select: IMAGE_SELECT },
+            ogImage: { select: IMAGE_SELECT },
+        },
     });
 }
 

@@ -8,12 +8,12 @@ import { Switch } from "@/components/ui/switch";
 import { SectionShell } from "@/components/admin/section-shell";
 import { ListEditor } from "@/components/admin/list-editor";
 import { ImageField } from "@/components/admin/image-field";
-import type { Project, SiteData } from "@/lib/site-data";
+import type { ResolvedProject, ResolvedSiteData } from "@/lib/site-data";
 
 const labelClass = "font-mono text-xs uppercase tracking-wider text-muted-foreground";
 
-export function ProjectsEditor({ data }: { data: SiteData }) {
-    const [projects, setProjects] = useState<Project[]>(data.projects);
+export function ProjectsEditor({ data }: { data: ResolvedSiteData }) {
+    const [projects, setProjects] = useState<ResolvedProject[]>(data.projects);
     const featuredCount = projects.filter((p) => p.featured).length;
 
     return (
@@ -21,7 +21,12 @@ export function ProjectsEditor({ data }: { data: SiteData }) {
             title="projects"
             description="Only projects marked featured appear on the homepage."
             resetKeys={["projects"]}
-            buildPatch={() => ({ projects })}
+            buildPatch={() => ({
+                projects: projects.map(({ coverImage, ...p }) => ({
+                    ...p,
+                    coverImageId: coverImage?.id ?? "",
+                })),
+            })}
         >
             <p className="font-mono text-xs text-muted-foreground border border-border p-3">
                 {featuredCount} of {projects.length} featured — shown on the homepage
@@ -39,7 +44,7 @@ export function ProjectsEditor({ data }: { data: SiteData }) {
                     tech: [],
                     github: "",
                     live: "",
-                    coverImage: "",
+                    coverImage: null,
                     featured: true,
                 })}
                 renderRow={(project, update) => (
@@ -112,8 +117,8 @@ export function ProjectsEditor({ data }: { data: SiteData }) {
 
                         <ImageField
                             label="Cover image"
-                            value={project.coverImage || null}
-                            onChange={(coverImage) => update({ coverImage: coverImage ?? "" })}
+                            value={project.coverImage}
+                            onChange={(coverImage) => update({ coverImage })}
                         />
                     </div>
                 )}

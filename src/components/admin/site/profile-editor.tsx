@@ -6,25 +6,26 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SectionShell } from "@/components/admin/section-shell";
 import { ImageField } from "@/components/admin/image-field";
-import type { SiteData } from "@/lib/site-data";
+import type { ImageRef } from "@/lib/image-utils";
+import type { ResolvedSiteData } from "@/lib/site-data";
 
 const labelClass = "font-mono text-xs uppercase tracking-wider text-muted-foreground";
 
-export function ProfileEditor({ data }: { data: SiteData }) {
+export function ProfileEditor({ data }: { data: ResolvedSiteData }) {
     const [name, setName] = useState(data.name);
     const [title, setTitle] = useState(data.title);
     const [tagline, setTagline] = useState(data.tagline);
     // The bio renders as separate lines in the About terminal, so it's edited as
     // one textarea and split on newlines.
     const [bio, setBio] = useState(data.bio.join("\n"));
-    const [heroImage, setHeroImage] = useState<string | null>(data.heroImage);
-    const [aboutImage, setAboutImage] = useState<string | null>(data.aboutImage);
+    const [heroImage, setHeroImage] = useState<ImageRef | null>(data.heroImage);
+    const [aboutImage, setAboutImage] = useState<ImageRef | null>(data.aboutImage);
 
     return (
         <SectionShell
             title="profile"
             description="Name, headline, bio, and the two portrait images."
-            resetKeys={["name", "title", "tagline", "bio", "heroImage", "aboutImage"]}
+            resetKeys={["name", "title", "tagline", "bio", "heroImageId", "aboutImageId"]}
             buildPatch={() => ({
                 name,
                 title,
@@ -33,8 +34,8 @@ export function ProfileEditor({ data }: { data: SiteData }) {
                     .split("\n")
                     .map((l) => l.trim())
                     .filter(Boolean),
-                heroImage: heroImage ?? data.heroImage,
-                aboutImage: aboutImage ?? data.aboutImage,
+                heroImageId: heroImage?.id ?? "",
+                aboutImageId: aboutImage?.id ?? "",
             })}
         >
             <section className="border border-border p-4 space-y-4">

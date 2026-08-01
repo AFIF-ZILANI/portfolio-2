@@ -30,7 +30,7 @@ export async function GET() {
                 p.publishedAt ? `      <pubDate>${p.publishedAt.toUTCString()}</pubDate>` : "",
                 ...p.tags.map((t) => `      <category>${esc(t)}</category>`),
                 p.coverImage
-                    ? `      <enclosure url="${esc(p.coverImage)}" type="image/*" length="0" />`
+                    ? `      <enclosure url="${esc(p.coverImage.url)}" type="image/*" length="0" />`
                     : "",
                 "    </item>",
             ]

@@ -15,7 +15,7 @@ mock.module("next/cache", () => ({
 }));
 
 const { saveSiteSection, resetSiteSection } = await import("./site-actions");
-const { getSiteData } = await import("@/lib/site-content");
+const { getStoredSiteData } = await import("@/lib/site-content");
 const { DEFAULT_SITE_DATA } = await import("@/lib/site-data");
 const { prisma } = await import("@/lib/prisma");
 
@@ -39,19 +39,25 @@ afterAll(async () => {
 
 describe("saveSiteSection", () => {
     test("patches one section and leaves the others alone", async () => {
+        // Compared against what was actually stored, not against the defaults: the
+        // row holds real image ids once anything has been uploaded, so "equals
+        // DEFAULT_SITE_DATA" would only ever hold on a pristine database.
+        const before = await getStoredSiteData();
+
         await saveSiteSection({ name: "PATCHED NAME" });
-        const after = await getSiteData();
+        const after = await getStoredSiteData();
+
         expect(after.name).toBe("PATCHED NAME");
         // The read-merge-write must not blank sections this editor didn't send.
-        expect(after.projects).toEqual(DEFAULT_SITE_DATA.projects);
-        expect(after.skills).toEqual(DEFAULT_SITE_DATA.skills);
-        expect(after.socialLinks).toEqual(DEFAULT_SITE_DATA.socialLinks);
+        expect(after.projects).toEqual(before.projects);
+        expect(after.skills).toEqual(before.skills);
+        expect(after.socialLinks).toEqual(before.socialLinks);
     });
 
     test("two sequential patches to different sections both persist", async () => {
         await saveSiteSection({ tagline: "First patch." });
         await saveSiteSection({ stats: [{ key: "k", value: "1", label: "one" }] });
-        const after = await getSiteData();
+        const after = await getStoredSiteData();
         expect(after.tagline).toBe("First patch.");
         expect(after.stats).toEqual([{ key: "k", value: "1", label: "one" }]);
         expect(after.name).toBe("PATCHED NAME");
@@ -102,7 +108,7 @@ describe("saveSiteSection", () => {
                     tech: [],
                     github: "",
                     live: "",
-                    coverImage: "",
+                    coverImageId: "",
                     featured: true,
                 },
             ],
@@ -115,7 +121,7 @@ describe("resetSiteSection", () => {
     test("restores only the named keys", async () => {
         await saveSiteSection({ name: "TEMP", tagline: "Temp tagline." });
         await resetSiteSection(["name"]);
-        const after = await getSiteData();
+        const after = await getStoredSiteData();
         expect(after.name).toBe(DEFAULT_SITE_DATA.name);
         expect(after.tagline).toBe("Temp tagline.");
     });

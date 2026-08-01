@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { readingMinutes, slugify } from "@/lib/blog";
 import { cleanupOrphans, recordUpload } from "@/lib/uploads";
+import { IMAGE_SELECT, type ImageRef } from "@/lib/image-utils";
 
 export type PostInput = {
     id?: string;
@@ -12,9 +13,8 @@ export type PostInput = {
     slug: string;
     excerpt: string;
     content: string;
-    coverImage: string | null;
-    coverAlt: string | null;
-    ogImage: string | null;
+    coverImageId: string | null;
+    ogImageId: string | null;
     tags: string[];
     status: "DRAFT" | "PUBLISHED";
     publishedAt: string | null;
@@ -29,7 +29,7 @@ export type PostInput = {
 type Failure = { ok: false; error: string };
 export type SaveResult = { ok: true; slug: string } | Failure;
 export type SeriesResult = { ok: true; id: string; title: string } | Failure;
-export type UploadResult = { ok: true; url: string } | Failure;
+export type UploadResult = { ok: true; image: ImageRef } | Failure;
 
 /** Repopulate every cached surface a post can appear on. */
 function revalidateBlog(slug?: string) {
@@ -89,9 +89,8 @@ export async function savePost(input: PostInput): Promise<SaveResult> {
         title,
         excerpt,
         content,
-        coverImage: trim(input.coverImage),
-        coverAlt: trim(input.coverAlt),
-        ogImage: trim(input.ogImage),
+        coverImageId: trim(input.coverImageId),
+        ogImageId: trim(input.ogImageId),
         tags: input.tags.map((t) => t.trim()).filter(Boolean),
         status: input.status,
         publishedAt,
@@ -252,13 +251,73 @@ export async function uploadImage(formData: FormData): Promise<UploadResult> {
         secure_url?: string;
         public_id?: string;
         bytes?: number;
+        width?: number;
+        height?: number;
     };
     if (!json.secure_url) return { ok: false, error: "Cloudinary returned no URL." };
 
-    // Track it so an image that's uploaded and then abandoned can be cleaned up.
-    if (json.public_id) {
-        await recordUpload(json.public_id, json.secure_url, json.bytes ?? 0);
+    // Dimensions come back in the same response, so storing them is free — and it
+    // is what lets next/image reserve space instead of shifting the layout.
+    const image = await recordUpload({
+        publicId: json.public_id ?? null,
+        url: json.secure_url,
+        bytes: json.bytes ?? 0,
+        width: json.width ?? 0,
+        height: json.height ?? 0,
+    });
+
+    return { ok: true, image };
+}
+
+/**
+ * Register an image the admin pasted a URL for.
+ *
+ * It still gets a row, because a URL with no row has no alt text and no way to be
+ * referenced by id — which would put it outside the one image table entirely.
+ * publicId stays null: Cloudinary does not own it, so cleanup must not destroy it.
+ */
+export async function attachImageByUrl(url: string): Promise<UploadResult> {
+    await requireAdmin();
+
+    const trimmed = url.trim();
+    if (!trimmed) return { ok: false, error: "No URL provided." };
+    if (!/^(https?:\/\/|\/)/.test(trimmed)) {
+        return { ok: false, error: "That is not a valid image URL or site-relative path." };
     }
 
-    return { ok: true, url: json.secure_url };
+    const existing = await prisma.image.findUnique({
+        where: { url: trimmed },
+        select: IMAGE_SELECT,
+    });
+    if (existing) return { ok: true, image: existing };
+
+    const image = await prisma.image.create({
+        data: { url: trimmed, publicId: null },
+        select: IMAGE_SELECT,
+    });
+    return { ok: true, image };
+}
+
+/**
+ * Update the alt text and caption on an image row.
+ *
+ * Separate from whatever form the image was picked in: alt belongs to the image,
+ * not to the post or event that happens to be using it, so it saves on its own.
+ */
+export async function saveImageMeta(
+    id: string,
+    alt: string,
+    caption?: string | null
+): Promise<{ ok: true } | Failure> {
+    await requireAdmin();
+    if (!id) return { ok: false, error: "No image selected." };
+
+    await prisma.image.update({
+        where: { id },
+        data: { alt: alt.trim(), ...(caption === undefined ? {} : { caption: trim(caption) }) },
+    });
+
+    // Alt is rendered on the public pages, so the cached copies are now stale.
+    revalidatePath("/", "layout");
+    return { ok: true };
 }

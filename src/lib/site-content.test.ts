@@ -32,7 +32,7 @@ describe("mergeSiteData", () => {
 
     test("a blank string falls back rather than rendering an empty heading", () => {
         expect(mergeSiteData({ name: "   " }).name).toBe(DEFAULT_SITE_DATA.name);
-        expect(mergeSiteData({ heroImage: "" }).heroImage).toBe(DEFAULT_SITE_DATA.heroImage);
+        expect(mergeSiteData({ heroImageId: "" }).heroImageId).toBe(DEFAULT_SITE_DATA.heroImageId);
     });
 
     test("a blank contact email is preserved — it means 'use CONTACT_EMAIL'", () => {

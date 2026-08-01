@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const posts = await prisma.post.findMany({
         where: { ...publishedWhere(), noindex: false },
         orderBy: { publishedAt: "desc" },
-        select: { slug: true, updatedAt: true, coverImage: true },
+        select: { slug: true, updatedAt: true, coverImage: { select: { url: true } } },
     });
 
     return [
@@ -33,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             lastModified: p.updatedAt,
             changeFrequency: "monthly" as const,
             priority: 0.8,
-            ...(p.coverImage ? { images: [p.coverImage] } : {}),
+            ...(p.coverImage ? { images: [p.coverImage.url] } : {}),
         })),
     ];
 }

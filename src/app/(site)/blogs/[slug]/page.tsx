@@ -33,7 +33,7 @@ export async function generateMetadata({
 
     const title = post.seoTitle ?? post.title;
     const description = post.seoDescription ?? post.excerpt;
-    const image = post.ogImage ?? post.coverImage ?? undefined;
+    const image = post.ogImage ?? post.coverImage;
 
     return {
         title,
@@ -50,13 +50,13 @@ export async function generateMetadata({
             modifiedTime: post.updatedAt.toISOString(),
             authors: ["Afif Zilani"],
             tags: post.tags,
-            images: image ? [{ url: image, alt: post.coverAlt ?? post.title }] : undefined,
+            images: image ? [{ url: image.url, alt: image.alt || post.title }] : undefined,
         },
         twitter: {
             card: image ? "summary_large_image" : "summary",
             title,
             description,
-            images: image ? [image] : undefined,
+            images: image ? [image.url] : undefined,
         },
     };
 }
@@ -95,8 +95,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             ? {
                   image: {
                       "@type": "ImageObject",
-                      url: post.coverImage,
-                      caption: post.coverAlt || post.title,
+                      url: post.coverImage.url,
+                      caption: post.coverImage.alt || post.title,
+                      ...(post.coverImage.width > 0
+                          ? { width: post.coverImage.width, height: post.coverImage.height }
+                          : {}),
                   },
               }
             : {}),
@@ -164,8 +167,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                     {post.coverImage && (
                         <div className="relative w-full aspect-video border border-border">
                             <Image
-                                src={post.coverImage}
-                                alt={post.coverAlt || post.title}
+                                src={post.coverImage.url}
+                                alt={post.coverImage.alt || post.title}
                                 fill
                                 priority
                                 sizes="(max-width: 768px) 100vw, 768px"
