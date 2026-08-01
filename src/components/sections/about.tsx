@@ -2,9 +2,10 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { SectionHeading } from "@/components/layout/section-heading";
 import Image from "next/image";
 
-import type { SiteData } from "@/lib/site-data";
+import type { ResolvedSiteData } from "@/lib/site-data";
 
 function TerminalTitleBar({ label }: { label: string }) {
     return (
@@ -50,7 +51,7 @@ function TerminalLine({
     return <div className={`font-mono text-sm pl-4 ${line.color}`}>{line.output}</div>;
 }
 
-export function About({ data }: { data: SiteData }) {
+export function About({ data }: { data: ResolvedSiteData }) {
     const [visibleLines, setVisibleLines] = useState<number[]>([]);
     const [hasStarted, setHasStarted] = useState(false);
 
@@ -111,9 +112,7 @@ export function About({ data }: { data: SiteData }) {
                     transition={{ duration: 0.5 }}
                     onViewportEnter={startAnimation}
                 >
-                    <h2 className="text-3xl font-bold mb-10 flex items-center gap-2">
-                        <span className="text-primary">01.</span> About
-                    </h2>
+                    <SectionHeading path="~/about.md" title="About" />
 
                     <div className="grid md:grid-cols-2 gap-8 items-start">
                         {/* ── Left: Photo + Stats ─────────────────────────── */}
@@ -129,8 +128,8 @@ export function About({ data }: { data: SiteData }) {
                                 <TerminalTitleBar label="afif_zilani.webp — Preview" />
                                 <div className="relative w-full aspect-5/4 overflow-hidden">
                                     <Image
-                                        src={data.aboutImage}
-                                        alt="Kazi Afif Zilani (AFIF ZILANI) — Entrepreneur and Full-Stack Developer from Naogaon, Bangladesh"
+                                        src={data.aboutImage.url}
+                                        alt={data.aboutImage.alt}
                                         fill
                                         sizes="(max-width: 768px) 100vw, 480px"
                                         className="object-cover object-bottom grayscale group-hover:grayscale-0 transition-all duration-700"

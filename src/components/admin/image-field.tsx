@@ -7,20 +7,29 @@ import { ImageUp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { uploadImage } from "@/app/(clerk)/admin/actions";
+import { uploadImage, attachImageByUrl, saveImageMeta } from "@/app/(clerk)/admin/actions";
 import { runAction } from "@/components/admin/run-action";
+import type { ImageRef } from "@/lib/image-utils";
 
 type Props = {
     label: string;
     hint?: string;
-    value: string | null;
-    onChange: (url: string | null) => void;
+    value: ImageRef | null;
+    onChange: (image: ImageRef | null) => void;
 };
 
-/** Upload to Cloudinary, or paste a URL directly. Used for both cover and OG images. */
+/**
+ * Pick one image: upload to Cloudinary, or paste a URL.
+ *
+ * Carries the alt field with it. Alt lives on the image row, so writing it here
+ * means every place that image appears describes it the same way — and it is
+ * captured at the moment of choosing, which is the only time anyone remembers
+ * what the picture actually shows.
+ */
 export function ImageField({ label, hint, value, onChange }: Props) {
     const [pending, startTransition] = useTransition();
     const [dirty, setDirty] = useState(false);
+    const [urlDraft, setUrlDraft] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
     function handleFile(file: File | undefined) {
@@ -33,9 +42,37 @@ export function ImageField({ label, hint, value, onChange }: Props) {
                 toast.error(res.error);
                 return;
             }
-            onChange(res.url ?? null);
+            onChange(res.image ?? null);
             setDirty((d) => !d);
             toast.success(`${label} uploaded`);
+        });
+    }
+
+    function handleUrl(url: string) {
+        const trimmed = url.trim();
+        if (!trimmed) return;
+        startTransition(async () => {
+            const res = await runAction(() => attachImageByUrl(trimmed));
+            if (!res.ok) {
+                toast.error(res.error);
+                return;
+            }
+            onChange(res.image ?? null);
+            setUrlDraft("");
+        });
+    }
+
+    /**
+     * Alt is saved straight to the image row rather than held until the parent
+     * form is submitted — the row already exists by this point, and a half-typed
+     * alt lost to a navigation is how images end up undescribed.
+     */
+    function handleAlt(alt: string) {
+        if (!value) return;
+        onChange({ ...value, alt });
+        if (!value.id) return; // a static fallback has no row to update
+        startTransition(async () => {
+            await runAction(() => saveImageMeta(value.id, alt));
         });
     }
 
@@ -49,13 +86,13 @@ export function ImageField({ label, hint, value, onChange }: Props) {
             {value ? (
                 <div className="relative aspect-video w-full border border-border">
                     <Image
-                        key={`${value}-${dirty}`}
-                        src={value}
+                        key={`${value.url}-${dirty}`}
+                        src={value.url}
                         alt=""
                         fill
                         className="object-cover"
                         sizes="320px"
-                        unoptimized={!value.startsWith("http")}
+                        unoptimized={!value.url.startsWith("http")}
                     />
                     <button
                         type="button"
@@ -92,12 +129,23 @@ export function ImageField({ label, hint, value, onChange }: Props) {
                     {pending ? "uploading…" : "upload"}
                 </Button>
             </div>
-            <Input
-                value={value ?? ""}
-                onChange={(e) => onChange(e.target.value || null)}
-                placeholder="…or paste an image URL"
-                className="font-mono text-xs"
-            />
+
+            {value ? (
+                <Input
+                    value={value.alt}
+                    onChange={(e) => handleAlt(e.target.value)}
+                    placeholder="Describe this image (alt text)"
+                    className="font-mono text-xs"
+                />
+            ) : (
+                <Input
+                    value={urlDraft}
+                    onChange={(e) => setUrlDraft(e.target.value)}
+                    onBlur={(e) => handleUrl(e.target.value)}
+                    placeholder="…or paste an image URL"
+                    className="font-mono text-xs"
+                />
+            )}
         </div>
     );
 }

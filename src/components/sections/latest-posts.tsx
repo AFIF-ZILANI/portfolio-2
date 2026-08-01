@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SectionHeading } from "@/components/layout/section-heading";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import type { PostCard } from "@/lib/blog";
@@ -20,21 +21,22 @@ export function LatestPosts({ posts }: { posts: PostCard[] }) {
     return (
         <section id="writing" className="py-24">
             <div className="container mx-auto px-6 max-w-6xl">
-                <div className="flex items-end justify-between gap-4 mb-12 flex-wrap">
-                    <h2 className="text-3xl font-bold flex items-center gap-2">
-                        <span className="text-primary">05.</span> Latest Writing
-                    </h2>
-                    <Link
-                        href="/blogs"
-                        className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 group"
-                    >
-                        all posts
-                        <ArrowRight
-                            size={14}
-                            className="group-hover:translate-x-1 transition-transform"
-                        />
-                    </Link>
-                </div>
+                <SectionHeading
+                    path="~/writing/"
+                    title="Latest Writing"
+                    action={
+                        <Link
+                            href="/blogs"
+                            className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 group shrink-0"
+                        >
+                            all posts
+                            <ArrowRight
+                                size={14}
+                                className="group-hover:translate-x-1 transition-transform"
+                            />
+                        </Link>
+                    }
+                />
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {posts.map((p) => (
@@ -46,8 +48,8 @@ export function LatestPosts({ posts }: { posts: PostCard[] }) {
                                 <div className="relative w-full aspect-video bg-muted overflow-hidden">
                                     {p.coverImage ? (
                                         <Image
-                                            src={p.coverImage}
-                                            alt={p.coverAlt || p.title}
+                                            src={p.coverImage.url}
+                                            alt={p.coverImage.alt || p.title}
                                             fill
                                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                             className="object-cover"

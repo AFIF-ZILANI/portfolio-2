@@ -143,8 +143,8 @@ export function BlogIndex({ posts }: { posts: PostCard[] }) {
                                 <div className="relative w-full aspect-video bg-muted overflow-hidden">
                                     {p.coverImage ? (
                                         <Image
-                                            src={p.coverImage}
-                                            alt={p.coverAlt || p.title}
+                                            src={p.coverImage.url}
+                                            alt={p.coverImage.alt || p.title}
                                             fill
                                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                             className="object-cover"

@@ -1,5 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_SITE_DATA, type SiteData } from "@/lib/site-data";
+import {
+    DEFAULT_ABOUT_IMAGE,
+    DEFAULT_HERO_IMAGE,
+    DEFAULT_SITE_DATA,
+    type ResolvedSiteData,
+    type SiteData,
+} from "@/lib/site-data";
+import { resolveImages } from "@/lib/images";
 
 const SINGLETON_ID = "singleton";
 
@@ -25,8 +32,8 @@ export function mergeSiteData(stored: Partial<SiteData> | null | undefined): Sit
         title: pickText(stored.title, DEFAULT_SITE_DATA.title),
         tagline: pickText(stored.tagline, DEFAULT_SITE_DATA.tagline),
         bio: pickList(stored.bio, DEFAULT_SITE_DATA.bio),
-        heroImage: pickText(stored.heroImage, DEFAULT_SITE_DATA.heroImage),
-        aboutImage: pickText(stored.aboutImage, DEFAULT_SITE_DATA.aboutImage),
+        heroImageId: pickText(stored.heroImageId, DEFAULT_SITE_DATA.heroImageId),
+        aboutImageId: pickText(stored.aboutImageId, DEFAULT_SITE_DATA.aboutImageId),
         socialLinks: pickList(stored.socialLinks, DEFAULT_SITE_DATA.socialLinks),
         experiences: pickList(stored.experiences, DEFAULT_SITE_DATA.experiences),
         stats: pickList(stored.stats, DEFAULT_SITE_DATA.stats),
@@ -40,10 +47,47 @@ export function mergeSiteData(stored: Partial<SiteData> | null | undefined): Sit
     };
 }
 
-/** The live site content. Falls back to defaults on a fresh database. */
-export async function getSiteData(): Promise<SiteData> {
+/**
+ * The stored content, image fields still as ids.
+ *
+ * Callers that write use this — a read-merge-write cycle has to round-trip the ids
+ * it was given, not the resolved images they point at.
+ */
+export async function getStoredSiteData(): Promise<SiteData> {
     const row = await prisma.siteContent.findUnique({ where: { id: SINGLETON_ID } });
     return mergeSiteData(row?.data as Partial<SiteData> | undefined);
+}
+
+/**
+ * Swap image ids for the images themselves, in one query for the whole page.
+ *
+ * Hero and about fall back to the repo portraits so the page is never missing its
+ * two most prominent images — including on a fresh database. A project cover
+ * resolves to null instead, because the projects grid already renders a placeholder
+ * for that case.
+ */
+export async function resolveSiteData(data: SiteData): Promise<ResolvedSiteData> {
+    const found = await resolveImages([
+        data.heroImageId,
+        data.aboutImageId,
+        ...data.projects.map((p) => p.coverImageId),
+    ]);
+
+    const { heroImageId, aboutImageId, projects, ...rest } = data;
+    return {
+        ...rest,
+        heroImage: found.get(heroImageId) ?? DEFAULT_HERO_IMAGE,
+        aboutImage: found.get(aboutImageId) ?? DEFAULT_ABOUT_IMAGE,
+        projects: projects.map(({ coverImageId, ...project }) => ({
+            ...project,
+            coverImage: found.get(coverImageId) ?? null,
+        })),
+    };
+}
+
+/** The live site content, ready to render. Falls back to defaults on a fresh database. */
+export async function getSiteData(): Promise<ResolvedSiteData> {
+    return resolveSiteData(await getStoredSiteData());
 }
 
 /** Upsert the single row. Callers must have already checked admin access. */

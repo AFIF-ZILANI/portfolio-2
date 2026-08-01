@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { prisma } from "@/lib/prisma";
-import { getSiteData } from "@/lib/site-content";
+import { getStoredSiteData } from "@/lib/site-content";
+import { IMAGE_SELECT, type ImageRef } from "@/lib/image-utils";
 
 /**
  * How long a brand-new upload is protected regardless of whether anything
@@ -11,28 +12,38 @@ import { getSiteData } from "@/lib/site-content";
  */
 export const ORPHAN_GRACE_MS = 24 * 60 * 60 * 1000;
 
-export type UploadRow = { id: string; publicId: string; url: string; createdAt: Date };
+/** Record an upload so it can be referenced by id and cleaned up later. */
+export async function recordUpload(input: {
+    publicId: string | null;
+    url: string;
+    bytes: number;
+    width: number;
+    height: number;
+}): Promise<ImageRef> {
+    const { publicId, url, bytes, width, height } = input;
 
-/** Record an upload so cleanup can find it later. */
-export async function recordUpload(publicId: string, url: string, bytes: number) {
-    await prisma.upload.upsert({
-        where: { publicId },
-        create: { publicId, url, bytes },
-        update: { url, bytes },
+    // Keyed on url rather than publicId because publicId is nullable now: an image
+    // Cloudinary does not own still needs exactly one row.
+    return prisma.image.upsert({
+        where: { url },
+        create: { publicId, url, bytes, width, height },
+        update: { publicId, bytes, width, height },
+        select: IMAGE_SELECT,
     });
 }
 
 /**
- * Every image URL currently referenced by anything on the site.
+ * Every image id currently referenced by anything on the site.
  *
- * Includes post bodies: an image pasted into the markdown is referenced even
- * though no column points at it, and deleting those would silently break
- * published posts.
+ * Includes drafts and post bodies: an unpublished post still needs its cover, and
+ * an image pasted into markdown is referenced even though no column points at it.
  */
-export async function collectReferencedUrls(): Promise<Set<string>> {
-    const [posts, site] = await Promise.all([
-        prisma.post.findMany({ select: { coverImage: true, ogImage: true, content: true } }),
-        getSiteData(),
+export async function collectReferencedIds(): Promise<Set<string>> {
+    const [posts, events, series, site] = await Promise.all([
+        prisma.post.findMany({ select: { coverImageId: true, ogImageId: true, content: true } }),
+        prisma.event.findMany({ select: { imageIds: true, content: true } }),
+        prisma.series.findMany({ select: { coverImageId: true } }),
+        getStoredSiteData(),
     ]);
 
     const referenced = new Set<string>();
@@ -40,38 +51,40 @@ export async function collectReferencedUrls(): Promise<Set<string>> {
         if (v && v.trim()) referenced.add(v.trim());
     };
 
-    // Drafts count too — an unpublished post still needs its images.
     for (const p of posts) {
-        add(p.coverImage);
-        add(p.ogImage);
+        add(p.coverImageId);
+        add(p.ogImageId);
     }
-    add(site.heroImage);
-    add(site.aboutImage);
-    for (const project of site.projects) add(project.coverImage);
+    for (const e of events) for (const id of e.imageIds) add(id);
+    for (const s of series) add(s.coverImageId);
 
-    // Markdown bodies are free text, so scan them for each known upload URL.
-    const bodies = posts.map((p) => p.content).join("\n");
-    const uploads = await prisma.upload.findMany({ select: { url: true } });
-    for (const { url } of uploads) {
-        if (bodies.includes(url)) referenced.add(url);
+    add(site.heroImageId);
+    add(site.aboutImageId);
+    for (const project of site.projects) add(project.coverImageId);
+
+    // Markdown bodies reference images by URL, not id, so map those back to rows.
+    const bodies = [...posts.map((p) => p.content), ...events.map((e) => e.content)].join("\n");
+    if (bodies.trim()) {
+        const all = await prisma.image.findMany({ select: { id: true, url: true } });
+        for (const { id, url } of all) {
+            if (bodies.includes(url)) referenced.add(id);
+        }
     }
 
     return referenced;
 }
 
 /**
- * Uploads safe to delete: not referenced anywhere, and older than the grace window.
+ * Images safe to delete: not referenced anywhere, and older than the grace window.
  * Pure so the rule is testable without a database or Cloudinary.
  */
-export function findOrphans<T extends { url: string; createdAt: Date }>(
-    uploads: T[],
+export function findOrphans<T extends { id: string; createdAt: Date }>(
+    images: T[],
     referenced: Set<string>,
     now: number = Date.now(),
     graceMs: number = ORPHAN_GRACE_MS
 ): T[] {
-    return uploads.filter(
-        (u) => !referenced.has(u.url) && now - u.createdAt.getTime() >= graceMs
-    );
+    return images.filter((i) => !referenced.has(i.id) && now - i.createdAt.getTime() >= graceMs);
 }
 
 /**
@@ -106,7 +119,10 @@ export async function destroyCloudinaryImage(publicId: string): Promise<DestroyO
         method: "POST",
         body,
     });
-    const json = (await res.json().catch(() => ({}))) as { result?: string; error?: { message?: string } };
+    const json = (await res.json().catch(() => ({}))) as {
+        result?: string;
+        error?: { message?: string };
+    };
 
     // "not found" means it's already gone — treat that as success so the row clears.
     const ok = json.result === "ok" || json.result === "not found";
@@ -126,21 +142,27 @@ export async function destroyCloudinaryImage(publicId: string): Promise<DestroyO
 /**
  * Destroy every orphaned upload and drop its row. Rows are only removed when
  * Cloudinary confirms, so a failure leaves it to be retried next run.
+ *
+ * Only images Cloudinary owns are candidates. A null publicId means the row points
+ * at a static file or an external URL: there is nothing to destroy, and dropping
+ * the row would unpick a reference that still renders perfectly well.
  */
 export async function cleanupOrphans(): Promise<{ deleted: number; failed: DestroyOutcome[] }> {
-    const [uploads, referenced] = await Promise.all([
-        prisma.upload.findMany(),
-        collectReferencedUrls(),
+    const [images, referenced] = await Promise.all([
+        prisma.image.findMany({ where: { publicId: { not: null } } }),
+        collectReferencedIds(),
     ]);
 
-    const orphans = findOrphans(uploads, referenced);
+    const orphans = findOrphans(images, referenced);
     const failed: DestroyOutcome[] = [];
     let deleted = 0;
 
     for (const orphan of orphans) {
+        // Narrowed by the query above; this keeps TypeScript honest.
+        if (!orphan.publicId) continue;
         const outcome = await destroyCloudinaryImage(orphan.publicId);
         if (outcome.ok) {
-            await prisma.upload.delete({ where: { id: orphan.id } });
+            await prisma.image.delete({ where: { id: orphan.id } });
             deleted++;
         } else {
             failed.push(outcome);
@@ -150,22 +172,25 @@ export async function cleanupOrphans(): Promise<{ deleted: number; failed: Destr
     return { deleted, failed };
 }
 
-/** Everything the media page needs: each upload plus whether it's in use. */
+/** Everything the media page needs: each image plus whether it's in use. */
 export async function listUploadsWithUsage() {
-    const [uploads, referenced] = await Promise.all([
-        prisma.upload.findMany({ orderBy: { createdAt: "desc" } }),
-        collectReferencedUrls(),
+    const [images, referenced] = await Promise.all([
+        prisma.image.findMany({ orderBy: { createdAt: "desc" } }),
+        collectReferencedIds(),
     ]);
     const now = Date.now();
 
-    return uploads.map((u) => ({
-        id: u.id,
-        url: u.url,
-        publicId: u.publicId,
-        bytes: u.bytes,
-        createdAt: u.createdAt,
-        inUse: referenced.has(u.url),
+    return images.map((i) => ({
+        id: i.id,
+        url: i.url,
+        alt: i.alt,
+        publicId: i.publicId,
+        bytes: i.bytes,
+        createdAt: i.createdAt,
+        inUse: referenced.has(i.id),
         // Unreferenced but still inside the grace window — not deletable yet.
-        protectedByGrace: now - u.createdAt.getTime() < ORPHAN_GRACE_MS,
+        protectedByGrace: now - i.createdAt.getTime() < ORPHAN_GRACE_MS,
+        // No publicId means Cloudinary has nothing to destroy; the row is permanent.
+        managed: i.publicId !== null,
     }));
 }

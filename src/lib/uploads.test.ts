@@ -23,51 +23,49 @@ describe("signDestroy", () => {
 const NOW = new Date("2026-07-26T12:00:00Z").getTime();
 const ago = (ms: number) => new Date(NOW - ms);
 
-const upload = (url: string, age: number) => ({ url, createdAt: ago(age) });
+// Orphan detection keys on the image id now that every table refers to images by
+// id rather than storing URLs. The url is carried along only so failures name the
+// image that was wrongly kept or deleted.
+const image = (id: string, age: number) => ({ id, url: `https://cdn/${id}.png`, createdAt: ago(age) });
 
 const DAY = 24 * 60 * 60 * 1000;
 
 describe("findOrphans", () => {
     test("keeps anything referenced, however old", () => {
-        const uploads = [upload("https://cdn/a.png", 400 * DAY)];
-        expect(findOrphans(uploads, new Set(["https://cdn/a.png"]), NOW)).toEqual([]);
+        expect(findOrphans([image("a", 400 * DAY)], new Set(["a"]), NOW)).toEqual([]);
     });
 
     test("deletes unreferenced uploads past the grace window", () => {
-        const uploads = [upload("https://cdn/orphan.png", 2 * DAY)];
-        expect(findOrphans(uploads, new Set(), NOW)).toHaveLength(1);
+        expect(findOrphans([image("orphan", 2 * DAY)], new Set(), NOW)).toHaveLength(1);
     });
 
     test("spares a fresh upload so an open editor session isn't sabotaged", () => {
         // The exact case: cover uploaded, post not saved yet.
-        const uploads = [upload("https://cdn/just-now.png", 5 * 60 * 1000)];
-        expect(findOrphans(uploads, new Set(), NOW)).toEqual([]);
+        expect(findOrphans([image("just-now", 5 * 60 * 1000)], new Set(), NOW)).toEqual([]);
     });
 
     test("the grace boundary is inclusive", () => {
-        expect(findOrphans([upload("https://cdn/x.png", ORPHAN_GRACE_MS)], new Set(), NOW)).toHaveLength(1);
-        expect(
-            findOrphans([upload("https://cdn/x.png", ORPHAN_GRACE_MS - 1)], new Set(), NOW)
-        ).toEqual([]);
+        expect(findOrphans([image("x", ORPHAN_GRACE_MS)], new Set(), NOW)).toHaveLength(1);
+        expect(findOrphans([image("x", ORPHAN_GRACE_MS - 1)], new Set(), NOW)).toEqual([]);
     });
 
     test("separates referenced from unreferenced in a mixed batch", () => {
-        const uploads = [
-            upload("https://cdn/used.png", 10 * DAY),
-            upload("https://cdn/dead.png", 10 * DAY),
-            upload("https://cdn/fresh.png", 1000),
-        ];
-        const orphans = findOrphans(uploads, new Set(["https://cdn/used.png"]), NOW);
-        expect(orphans.map((o) => o.url)).toEqual(["https://cdn/dead.png"]);
+        const images = [image("used", 10 * DAY), image("dead", 10 * DAY), image("fresh", 1000)];
+        expect(findOrphans(images, new Set(["used"]), NOW).map((o) => o.id)).toEqual(["dead"]);
     });
 
     test("a replaced image becomes an orphan while its successor is kept", () => {
-        // Swapping a cover leaves the old URL referenced by nothing.
-        const uploads = [
-            upload("https://cdn/old-cover.png", 3 * DAY),
-            upload("https://cdn/new-cover.png", 3 * DAY),
-        ];
-        const orphans = findOrphans(uploads, new Set(["https://cdn/new-cover.png"]), NOW);
-        expect(orphans.map((o) => o.url)).toEqual(["https://cdn/old-cover.png"]);
+        // Swapping a cover leaves the old row referenced by nothing.
+        const images = [image("old-cover", 3 * DAY), image("new-cover", 3 * DAY)];
+        expect(findOrphans(images, new Set(["new-cover"]), NOW).map((o) => o.id)).toEqual([
+            "old-cover",
+        ]);
+    });
+
+    test("an image referenced only by an event gallery is never an orphan", () => {
+        // The regression the id-based rewrite exists to prevent: event photos are
+        // referenced through Event.imageIds, which no URL scan would ever see.
+        const images = [image("event-photo", 30 * DAY)];
+        expect(findOrphans(images, new Set(["event-photo"]), NOW)).toEqual([]);
     });
 });

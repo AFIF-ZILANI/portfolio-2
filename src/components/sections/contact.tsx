@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
+import { SectionHeading } from "@/components/layout/section-heading";
 
 type LineType =
     | "prompt"
@@ -255,10 +256,8 @@ export function Contact({ heading }: { heading: string }) {
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h2 className="text-3xl font-bold mb-2 flex items-center gap-2">
-                        <span className="text-primary">06.</span> {heading}
-                    </h2>
-                    <p className="text-muted-foreground font-mono text-sm mb-8">
+                    <SectionHeading path="~/contact --interactive" title={heading} />
+                    <p className="text-muted-foreground font-mono text-sm mb-8 -mt-8">
                         # Type directly in the terminal below.
                     </p>
 
@@ -287,7 +286,10 @@ export function Contact({ heading }: { heading: string }) {
                         {/* Body */}
                         <div
                             ref={bodyRef}
-                            className="p-5 font-mono text-sm min-h-[380px] max-h-[520px] overflow-y-auto overflow-x-hidden space-y-[3px] cursor-text"
+                            role="log"
+                            aria-live="polite"
+                            aria-label="Contact terminal output"
+                            className="p-5 font-mono text-sm min-h-[380px] max-h-[520px] overflow-y-auto overflow-x-hidden space-y-[3px] cursor-text focus-within:ring-2 focus-within:ring-primary focus-within:ring-inset"
                             onClick={() => inputRef.current?.focus()}
                         >
                             {history.map((line, i) => (
@@ -334,6 +336,7 @@ export function Contact({ heading }: { heading: string }) {
                                             onChange={(e) => setInput(e.target.value)}
                                             onKeyDown={handleKey}
                                             className="absolute inset-0 opacity-0 w-full bg-transparent outline-none border-none font-mono text-sm"
+                                            aria-label={PROMPT_TEXT[step] || "Terminal input"}
                                             autoComplete="off"
                                             autoCorrect="off"
                                             autoCapitalize="off"

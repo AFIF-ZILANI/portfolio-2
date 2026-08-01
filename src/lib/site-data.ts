@@ -7,6 +7,8 @@
  * any field a stored record is missing, so the site always renders.
  */
 
+import { staticImage, type ImageRef } from "@/lib/image-utils";
+
 export type Experience = {
     id: string;
     company: string;
@@ -61,9 +63,12 @@ export type Project = {
     tech: string[];
     github: string;
     live: string;
-    coverImage: string;
+    coverImageId: string;
     featured: boolean;
 };
+
+/** A project with its cover resolved. Null when unset or the image was deleted. */
+export type ResolvedProject = Omit<Project, "coverImageId"> & { coverImage: ImageRef | null };
 
 export type ContactInfo = {
     heading: string;
@@ -71,13 +76,14 @@ export type ContactInfo = {
     email: string;
 };
 
+/** What is stored in the SiteContent row: images are Image ids, not URLs. */
 export type SiteData = {
     name: string;
     title: string;
     tagline: string;
     bio: string[];
-    heroImage: string;
-    aboutImage: string;
+    heroImageId: string;
+    aboutImageId: string;
     socialLinks: SocialLink[];
     experiences: Experience[];
     stats: SiteStats[];
@@ -85,6 +91,31 @@ export type SiteData = {
     projects: Project[];
     contact: ContactInfo;
 };
+
+/**
+ * What the site renders: the same data with every image id resolved to a real
+ * image. This is what `getSiteData()` returns — components read `heroImage.url`
+ * and `heroImage.alt`, admin editors read `heroImage.id` to know the selection.
+ */
+export type ResolvedSiteData = Omit<SiteData, "heroImageId" | "aboutImageId" | "projects"> & {
+    heroImage: ImageRef;
+    aboutImage: ImageRef;
+    projects: ResolvedProject[];
+};
+
+/**
+ * Portraits that ship in the repo. They remain the fallback for a fresh database,
+ * carrying the alt text the components used to hardcode — so the entity-rich alt
+ * survives even before anything is uploaded.
+ */
+export const DEFAULT_HERO_IMAGE = staticImage(
+    "/afifzilani-profile.webp",
+    "Afif Zilani (Kazi Afif Zilani) — Full-Stack Developer and Co-Founder of ZeroD, Naogaon, Bangladesh"
+);
+export const DEFAULT_ABOUT_IMAGE = staticImage(
+    "/afifzilani-about.webp",
+    "Kazi Afif Zilani (AFIF ZILANI) — Entrepreneur and Full-Stack Developer from Naogaon, Bangladesh"
+);
 
 export const DEFAULT_SITE_DATA: SiteData = {
     name: "AFIF ZILANI",
@@ -99,8 +130,9 @@ export const DEFAULT_SITE_DATA: SiteData = {
         "exploring distributed systems + modern web architecture.",
         "Open to work — let's build something great.",
     ],
-    heroImage: "/afifzilani-profile.webp",
-    aboutImage: "/afifzilani-about.webp",
+    // Empty means "no stored selection", which resolves to the repo portraits above.
+    heroImageId: "",
+    aboutImageId: "",
     socialLinks: [
         { id: "1", label: "github/", href: "https://github.com/AFIF-ZILANI", icon: "github" },
         {
@@ -227,7 +259,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
             tech: ["React", "Next.js", "Tailwind CSS"],
             github: "",
             live: "https://takify.lovable.app/",
-            coverImage: "/images/takify-home-screen.png",
+            coverImageId: "",
             featured: true,
         },
         {
@@ -238,7 +270,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
             tech: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
             github: "",
             live: "https://zverts.com/",
-            coverImage: "/images/zverts-home-screen.png",
+            coverImageId: "",
             featured: true,
         },
         {
@@ -249,8 +281,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
             tech: ["Next.js", "React", "Tailwind CSS"],
             github: "",
             live: "https://zerod-foundation.lovable.app/#",
-            coverImage:
-                "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80",
+            coverImageId: "",
             featured: true,
         },
         {
@@ -261,8 +292,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
             tech: ["React", "Next.js", "TypeScript", "Dashboard UI", "Tailwind CSS"],
             github: "",
             live: "https://zerod.vercel.app",
-            coverImage:
-                "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+            coverImageId: "",
             featured: true,
         },
     ],

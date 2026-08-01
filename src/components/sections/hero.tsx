@@ -5,11 +5,11 @@ import { motion } from "framer-motion";
 import { ChevronRight, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import type { SiteData } from "@/lib/site-data";
+import type { ResolvedSiteData } from "@/lib/site-data";
 
 type Particle = { id: number; left: number; duration: number; delay: number; text: string };
 
-export function Hero({ data }: { data: SiteData }) {
+export function Hero({ data }: { data: ResolvedSiteData }) {
     const [particles, setParticles] = useState<Particle[]>([]);
 
     useEffect(() => {
@@ -148,8 +148,8 @@ export function Hero({ data }: { data: SiteData }) {
                         {/* Photo container */}
                         <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-2 border-primary bg-card">
                             <Image
-                                src={data.heroImage}
-                                alt="Afif Zilani (Kazi Afif Zilani) — Full-Stack Developer and Co-Founder of ZeroD, Naogaon, Bangladesh"
+                                src={data.heroImage.url}
+                                alt={data.heroImage.alt}
                                 fill
                                 priority
                                 sizes="(max-width: 768px) 224px, 288px"

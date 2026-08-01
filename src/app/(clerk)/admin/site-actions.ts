@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin";
-import { getSiteData, writeSiteData } from "@/lib/site-content";
+import { getStoredSiteData, writeSiteData } from "@/lib/site-content";
 import type { SiteData } from "@/lib/site-data";
 
 export type SiteSaveResult = { ok: true } | { ok: false; error: string };
@@ -16,7 +16,7 @@ export type SiteSaveResult = { ok: true } | { ok: false; error: string };
 export async function saveSiteSection(patch: Partial<SiteData>): Promise<SiteSaveResult> {
     await requireAdmin();
 
-    const current = await getSiteData();
+    const current = await getStoredSiteData();
     const next: SiteData = { ...current, ...patch };
 
     // Trust boundary — these actions are public POST endpoints.
