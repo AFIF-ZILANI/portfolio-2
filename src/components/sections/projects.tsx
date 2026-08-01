@@ -6,6 +6,24 @@ import { Github, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import type { ResolvedProject } from "@/lib/site-data";
 
+/**
+ * Featured work as a two-column grid of cards.
+ *
+ * Three things the alternating full-width rows were doing wrong:
+ *
+ * Every card was labelled "Featured Project", under a heading that already says
+ * Featured Projects. A label carried by every item distinguishes none of them.
+ *
+ * Odd rows right-aligned their prose, which gives body copy a ragged left edge —
+ * the edge a reader returns to on every line.
+ *
+ * A `bg-primary/20` wash sat over each screenshot. Those screenshots are the
+ * evidence the work exists; tinting them green hid the one thing this section is
+ * for.
+ *
+ * The grid also costs one screen instead of four, and reuses the card language
+ * that posts and events already share.
+ */
 export function Projects({ projects }: { projects: ResolvedProject[] }) {
     const featured = projects.filter((p) => p.featured);
 
@@ -20,91 +38,91 @@ export function Projects({ projects }: { projects: ResolvedProject[] }) {
                 >
                     <SectionHeading path="~/projects/" title="Featured Projects" />
 
-                    <div className="space-y-24">
+                    <div className="grid md:grid-cols-2 gap-6">
                         {featured.map((project, i) => (
-                            <div
+                            <motion.article
                                 key={project.id}
-                                className={`flex flex-col md:flex-row gap-8 items-center ${i % 2 !== 0 ? "md:flex-row-reverse" : ""}`}
+                                initial={{ opacity: 0, y: 24 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: "-60px" }}
+                                transition={{ duration: 0.4, delay: Math.min(i, 3) * 0.08 }}
+                                className="group flex flex-col bg-background border border-border hover:border-primary transition-colors duration-300"
                             >
-                                <motion.div
-                                    className="w-full md:w-3/5 relative group cursor-pointer"
-                                    initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    <div className="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors z-10 duration-500" />
+                                <div className="relative w-full aspect-video bg-muted overflow-hidden border-b border-border">
                                     {project.coverImage ? (
-                                        <div className="relative w-full aspect-video">
-                                            <Image
-                                                src={project.coverImage.url}
-                                                alt={project.coverImage.alt || `${project.title} — project by Afif Zilani`}
-                                                fill
-                                                className="object-cover border border-border group-hover:border-primary/50 transition-colors"
-                                            />
-                                        </div>
+                                        <Image
+                                            src={project.coverImage.url}
+                                            alt={
+                                                project.coverImage.alt ||
+                                                `${project.title} — project by Afif Zilani`
+                                            }
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, 50vw"
+                                            className="object-cover object-top"
+                                        />
                                     ) : (
-                                        <div className="w-full aspect-video border border-border group-hover:border-primary/50 transition-colors bg-card flex items-center justify-center">
-                                            <span className="font-mono text-muted-foreground text-sm">
-                                                {project.title.toLowerCase().replace(/\s+/g, "_")}
-                                                .png
-                                            </span>
+                                        <div className="absolute inset-0 grid place-items-center font-mono text-sm text-muted-foreground">
+                                            {project.title.toLowerCase().replace(/\s+/g, "_")}.png
                                         </div>
                                     )}
-                                </motion.div>
+                                </div>
 
-                                <motion.div
-                                    className={`w-full md:w-2/5 flex flex-col ${i % 2 !== 0 ? "md:items-start md:text-left" : "md:items-end md:text-right"}`}
-                                    initial={{ opacity: 0, x: i % 2 === 0 ? 50 : -50 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: 0.2 }}
-                                >
-                                    <span className="font-mono text-primary text-sm mb-2">
-                                        Featured Project
-                                    </span>
-                                    <h3 className="text-2xl font-bold mb-4">{project.title}</h3>
+                                <div className="p-6 flex flex-col gap-4 flex-1">
+                                    <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
+                                        {project.title}
+                                    </h3>
 
-                                    <div className="bg-background border border-border p-6 mb-6 relative z-20 hover:border-primary/50 transition-colors">
-                                        <p className="text-muted-foreground text-sm leading-relaxed">
-                                            {project.description}
-                                        </p>
-                                    </div>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">
+                                        {project.description}
+                                    </p>
 
-                                    <ul
-                                        className={`flex flex-wrap gap-3 font-mono text-xs text-muted-foreground mb-6 ${i % 2 !== 0 ? "justify-start" : "justify-end"}`}
-                                    >
-                                        {project.tech.map((tech, j) => (
-                                            <li key={j} className="text-primary">
-                                                {tech}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    {project.tech.length > 0 && (
+                                        <ul className="flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-primary mt-auto">
+                                            {project.tech.map((tech) => (
+                                                <li key={tech}>{tech}</li>
+                                            ))}
+                                        </ul>
+                                    )}
 
-                                    <div className="flex gap-4">
-                                        {project.github && (
-                                            <a
-                                                href={project.github}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-muted-foreground hover:text-primary transition-colors"
-                                            >
-                                                <Github size={20} />
-                                            </a>
-                                        )}
-                                        {project.live && (
-                                            <a
-                                                href={project.live}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-muted-foreground hover:text-primary transition-colors"
-                                            >
-                                                <ExternalLink size={20} />
-                                            </a>
-                                        )}
-                                    </div>
-                                </motion.div>
-                            </div>
+                                    {(project.live || project.github) && (
+                                        <div className="flex gap-5 border-t border-border">
+                                            {/* Named rather than bare icons: the two links go to
+                                                different places, and an icon alone does not say
+                                                which. */}
+                                            {project.live && (
+                                                <a
+                                                    href={project.live}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="font-mono text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5 pt-3"
+                                                >
+                                                    <ExternalLink size={14} />
+                                                    live site
+                                                    <span className="sr-only">
+                                                        {" "}
+                                                        for {project.title}
+                                                    </span>
+                                                </a>
+                                            )}
+                                            {project.github && (
+                                                <a
+                                                    href={project.github}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="font-mono text-xs text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5 pt-3"
+                                                >
+                                                    <Github size={14} />
+                                                    source
+                                                    <span className="sr-only">
+                                                        {" "}
+                                                        for {project.title}
+                                                    </span>
+                                                </a>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </motion.article>
                         ))}
                     </div>
                 </motion.div>

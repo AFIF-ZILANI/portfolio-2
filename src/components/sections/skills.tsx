@@ -4,20 +4,28 @@ import { SectionHeading } from "@/components/layout/section-heading";
 import type { Skill } from "@/lib/site-data";
 import { SkillIcon } from "@/lib/icons";
 
-const containerVariants = {
+const rowVariants = {
     hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.07 } },
+    show: { opacity: 1, transition: { staggerChildren: 0.03 } },
 };
 
-const itemVariants = {
-    hidden: { opacity: 0, y: 16 },
-    show: {
-        opacity: 1,
-        y: 0,
-        transition: { type: "spring" as const, stiffness: 300, damping: 24 },
-    },
+const chipVariants = {
+    hidden: { opacity: 0, y: 8 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.25 } },
 };
 
+/**
+ * Skills as one row per category rather than a grid of equal columns.
+ *
+ * The three-column version sized every column to the tallest, so a category with
+ * four entries sat beside a gap the height of a category with eight. Rows size to
+ * their own content, so the layout holds however lopsided the categories are —
+ * which matters because this list is edited at /admin/site/skills and nobody is
+ * going to rebalance it by hand.
+ *
+ * Denser too: the whole stack reads in one screen instead of four, which is the
+ * actual job of this section.
+ */
 export function Skills({ skills }: { skills: Skill[] }) {
     const categories = Array.from(new Set(skills.map((s) => s.category)));
 
@@ -32,45 +40,49 @@ export function Skills({ skills }: { skills: Skill[] }) {
                 >
                     <SectionHeading path="~/skills.json" title="Skills" />
 
-                    <div className="grid md:grid-cols-3 gap-8">
+                    <dl className="divide-y divide-border border-y border-border">
                         {categories.map((cat) => {
                             const catSkills = skills.filter((s) => s.category === cat);
                             return (
-                                <div key={cat} className="flex flex-col">
-                                    <h3 className="text-xl font-mono mb-6 text-muted-foreground border-b border-border pb-2">
+                                <div
+                                    key={cat}
+                                    className="grid sm:grid-cols-[9rem_1fr] gap-x-8 gap-y-3 py-6"
+                                >
+                                    <dt className="font-mono text-xs uppercase tracking-wider text-muted-foreground pt-1.5">
                                         {cat}
-                                    </h3>
-                                    <motion.div
-                                        className="grid grid-cols-2 gap-4"
-                                        variants={containerVariants}
+                                        <span className="text-primary/60 ml-2">
+                                            {catSkills.length}
+                                        </span>
+                                    </dt>
+
+                                    <motion.dd
+                                        className="flex flex-wrap gap-2"
+                                        variants={rowVariants}
                                         initial="hidden"
                                         whileInView="show"
                                         viewport={{ once: true }}
                                     >
-                                        {catSkills.map((skill) => {
-                                            return (
-                                                <motion.div
-                                                    key={skill.id}
-                                                    variants={itemVariants}
-                                                    className="group flex flex-col items-center justify-center p-4 bg-card border border-border hover:border-primary transition-all duration-300"
-                                                >
-                                                    <SkillIcon
-                                                        name={skill.icon}
-                                                        size={30}
-                                                        className="text-muted-foreground group-hover:text-primary transition-colors mb-3"
-                                                    />
-
-                                                    <span className="text-xs font-mono font-medium text-center">
-                                                        {skill.name}
-                                                    </span>
-                                                </motion.div>
-                                            );
-                                        })}
-                                    </motion.div>
+                                        {catSkills.map((skill) => (
+                                            <motion.span
+                                                key={skill.id}
+                                                variants={chipVariants}
+                                                className="group inline-flex items-center gap-2 border border-border bg-card px-3 py-1.5 hover:border-primary transition-colors"
+                                            >
+                                                <SkillIcon
+                                                    name={skill.icon}
+                                                    size={16}
+                                                    className="text-muted-foreground group-hover:text-primary transition-colors shrink-0"
+                                                />
+                                                <span className="font-mono text-xs">
+                                                    {skill.name}
+                                                </span>
+                                            </motion.span>
+                                        ))}
+                                    </motion.dd>
                                 </div>
                             );
                         })}
-                    </div>
+                    </dl>
                 </motion.div>
             </div>
         </section>
