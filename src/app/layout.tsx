@@ -16,7 +16,7 @@ const spaceMono = Space_Mono({
 
 const TITLE = "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD";
 const DESCRIPTION =
-    "Kazi Afif Zilani (AFIF ZILANI) — Full-stack developer, entrepreneur, and co-founder of ZeroD. Building high-performance web systems and tech for real-world impact from Naogaon, Bangladesh.";
+    "Kazi Afif Zilani (AFIF ZILANI) — full-stack developer, entrepreneur, and co-founder of ZeroD. Builds high-performance web systems from Naogaon, Bangladesh.";
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
@@ -25,24 +25,6 @@ export const metadata: Metadata = {
         template: "%s | Afif Zilani",
     },
     description: DESCRIPTION,
-    keywords: [
-        "Afif Zilani",
-        "AFIF ZILANI",
-        "Kazi Afif Zilani",
-        "afif zilani",
-        "afifzilani",
-        "Afif Zilani developer",
-        "Afif Zilani Bangladesh",
-        "Afif Zilani ZeroD",
-        "Kazi Afif Zilani developer",
-        "ZeroD co-founder",
-        "ZeroD Farms",
-        "Naogaon developer",
-        "Bangladesh developer",
-        "full-stack developer Bangladesh",
-        "Next.js developer Bangladesh",
-        "React developer Bangladesh",
-    ],
     authors: [{ name: "Afif Zilani", url: SITE_URL }],
     creator: "Afif Zilani",
     publisher: "Afif Zilani",

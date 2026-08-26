@@ -1,13 +1,14 @@
 /**
  * The one canonical origin for the site.
  *
- * It was hardcoded as "https://afifzilani.com" in 23 places across layout,
- * sitemap, robots, and the JSON-LD — while the deployment actually 307-redirects
- * the apex to https://www.afifzilani.com. Canonical URLs, schema @ids, and
- * sitemap entries pointing at a redirect split ranking signals between two hosts.
+ * Every canonical URL, schema @id, and sitemap entry must point at the host that
+ * serves 200 without redirecting — otherwise ranking signals split across hosts.
+ * Live: the apex (https://afifzilani.com) serves 200 and www 307-redirects to it,
+ * so the apex is canonical and the default below matches it.
  *
- * Set NEXT_PUBLIC_SITE_URL to whichever host actually serves 200 without
- * redirecting, and every one of those places follows. No trailing slash.
+ * If the canonical host ever changes, set NEXT_PUBLIC_SITE_URL to whichever host
+ * serves 200 without redirecting and every one of those places follows. No
+ * trailing slash.
  */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://afifzilani.com").replace(
     /\/+$/,
