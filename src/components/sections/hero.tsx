@@ -87,7 +87,7 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.1 }}
                         >
-                            {data.name}
+                            {data.name}{" "}
                             <br />
                             <span className="text-muted-foreground">{data.title}</span>
                         </motion.h1>

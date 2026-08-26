@@ -70,7 +70,6 @@ export default function PersonSchema() {
             "https://orcid.org/0009-0005-0673-3154",
             "https://hashnode.com/@afifzilani",
             "https://x.com/afif_zilani",
-            "https://twitter.com/afif_zilani",
             "https://bsky.app/profile/afif-zilani.bsky.social",
             "https://www.reddit.com/user/afifzilani",
             "https://instagram.com/afif.zilani",
@@ -90,14 +89,6 @@ export default function PersonSchema() {
         url: SITE_URL,
         description: "Official portfolio and personal website of Afif Zilani (Kazi Afif Zilani) — full-stack developer and co-founder of ZeroD, based in Naogaon, Bangladesh.",
         author: { "@id": `${SITE_URL}/#person` },
-        potentialAction: {
-            "@type": "SearchAction",
-            target: {
-                "@type": "EntryPoint",
-                urlTemplate: `${SITE_URL}/?q={search_term_string}`,
-            },
-            "query-input": "required name=search_term_string",
-        },
     };
 
     return (
