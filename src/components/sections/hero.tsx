@@ -1,174 +1,89 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { ChevronRight, Terminal } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { ArrowRight, MapPin } from "lucide-react";
 import type { ResolvedSiteData } from "@/lib/site-data";
 
-type Particle = { id: number; left: number; duration: number; delay: number; text: string };
-
+/**
+ * A server component: plain anchors and CSS, no client JavaScript. The old hero
+ * shipped framer-motion, random "code particles" and a spinning ring — all
+ * decoration that delayed the LCP image and said "developer", not "farm".
+ */
 export function Hero({ data }: { data: ResolvedSiteData }) {
-    const [particles, setParticles] = useState<Particle[]>([]);
-
-    useEffect(() => {
-        setParticles(
-            Array.from({ length: 20 }, (_, id) => ({
-                id,
-                left: Math.random() * 100,
-                duration: Math.random() * 5 + 5,
-                delay: Math.random() * 5,
-                text: Math.random().toString(36).substring(2, 10),
-            }))
-        );
-    }, []);
-
-    const scrollTo = (id: string) => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
-        }
-    };
-
     return (
         <section
             id="hero"
-            className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16"
+            aria-labelledby="hero-heading"
+            className="relative overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28"
         >
-            {/* Background Grid */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+            {/* Soft field-and-sun wash; purely decorative. */}
+            <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_85%_10%,hsl(var(--highlight)/0.14),transparent_70%),radial-gradient(50%_60%_at_0%_100%,hsl(var(--primary)/0.10),transparent_70%)]"
+            />
 
-            {/* Animated Code Particles — generated after mount. Math.random() during
-                render produced different values on the server and the client, which
-                is a hydration mismatch. Purely decorative, so rendering nothing on
-                the server costs us nothing. */}
-            <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
-                {particles.map((p) => (
-                    <motion.div
-                        key={p.id}
-                        className="absolute text-primary text-xs font-mono whitespace-nowrap"
-                        initial={{ top: "-10%", left: `${p.left}%`, opacity: 0 }}
-                        animate={{
-                            top: "110%", // Animates safely from top to bottom of the container
-                            opacity: [0, 1, 0],
-                        }}
-                        transition={{
-                            duration: p.duration,
-                            repeat: Infinity,
-                            ease: "linear",
-                            delay: p.delay,
-                        }}
-                    >
-                        {p.text}
-                    </motion.div>
-                ))}
-            </div>
+            <div className="container mx-auto px-6 max-w-6xl">
+                <div className="grid md:grid-cols-[1.25fr_1fr] items-center gap-12 md:gap-16">
+                    <div>
+                        <p className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-sm text-muted-foreground">
+                            <MapPin size={14} className="text-primary" aria-hidden />
+                            Naogaon, Bangladesh
+                        </p>
 
-            <div className="container px-6 relative z-10">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-                    {/* Text Content */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="max-w-2xl"
-                    >
-                        <div className="flex items-center gap-2 text-primary mb-6">
-                            <Terminal size={20} />
-                            <span className="font-mono text-sm uppercase tracking-wider">
-                                System ready_
-                            </span>
-                        </div>
-
-                        <motion.h1
-                            className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 text-foreground"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
+                        <p className="mt-8 text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+                            {data.title}
+                        </p>
+                        <h1
+                            id="hero-heading"
+                            className="mt-3 text-5xl sm:text-6xl md:text-7xl font-semibold tracking-tight leading-[1.02]"
                         >
-                            {data.name}{" "}
-                            <br />
-                            <span className="text-muted-foreground">{data.title}</span>
-                        </motion.h1>
-
-                        <motion.p
-                            className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl leading-relaxed"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                        >
+                            {data.name}
+                        </h1>
+                        <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
                             {data.tagline}
-                        </motion.p>
+                        </p>
 
-                        <motion.div
-                            className="flex flex-col sm:flex-row gap-4"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.3 }}
-                        >
-                            <Button
-                                size="lg"
-                                className="bg-primary text-primary-foreground hover:bg-primary/90 group font-bold font-mono tracking-wide rounded-none border border-primary"
-                                onClick={() => scrollTo("projects")}
-                                data-testid="button-hero-projects"
+                        <div className="mt-10 flex flex-col sm:flex-row gap-3">
+                            <a
+                                href="#zerod-farm"
+                                className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                             >
-                                /view_projects
-                                <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="group font-mono tracking-wide rounded-none border-muted-foreground/30 hover:border-primary hover:text-primary transition-colors"
-                                onClick={() => scrollTo("contact")}
-                                data-testid="button-hero-contact"
+                                About ZeroD Farm
+                                <ArrowRight
+                                    size={18}
+                                    aria-hidden
+                                    className="transition-transform group-hover:translate-x-0.5"
+                                />
+                            </a>
+                            <a
+                                href="#contact"
+                                className="inline-flex items-center justify-center rounded-full border border-border bg-card px-6 py-3 font-medium transition-colors hover:border-primary hover:text-primary"
                             >
-                                /contact_me
-                            </Button>
-                        </motion.div>
-                    </motion.div>
+                                Get in touch
+                            </a>
+                        </div>
+                    </div>
 
-                    {/* Profile Photo */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6, delay: 0.4 }}
-                        className="relative shrink-0"
-                    >
-                        {/* Outer glow ring */}
-                        <motion.div
-                            className="absolute -inset-2 rounded-full opacity-60"
-                            style={{
-                                background:
-                                    "conic-gradient(from 0deg, hsl(142 71% 45%), transparent, hsl(142 71% 45%))",
-                            }}
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    <div className="relative mx-auto w-full max-w-sm md:max-w-none">
+                        <div
+                            aria-hidden
+                            className="absolute -inset-3 rounded-[2rem] bg-secondary rotate-2"
                         />
-                        {/* Photo container */}
-                        <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-2 border-primary bg-card">
+                        <div className="relative aspect-4/5 overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-xl">
                             <Image
                                 src={data.heroImage.url}
                                 alt={data.heroImage.alt}
                                 fill
                                 priority
-                                sizes="(max-width: 768px) 224px, 288px"
-                                className="w-full h-full object-cover object-top"
-                                data-testid="img-profile-hero"
+                                sizes="(max-width: 768px) 384px, 460px"
+                                className="object-cover object-top"
                             />
-                            {/* Green scanline overlay */}
-                            <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.08)_2px,rgba(0,0,0,0.08)_4px)] pointer-events-none" />
                         </div>
-                        {/* Terminal label below photo */}
-                        <motion.div
-                            className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-xs text-primary border border-primary/40 px-3 py-1 bg-background"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.9 }}
-                        >
-                            afif@dev:~$
-                        </motion.div>
-                    </motion.div>
+                        <div className="absolute -bottom-5 left-5 right-5 sm:left-auto sm:right-6 sm:w-auto rounded-2xl border border-border bg-card/95 backdrop-blur px-4 py-3 shadow-lg">
+                            <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                                Running
+                            </p>
+                            <p className="font-display text-lg font-semibold">ZeroD Farm</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

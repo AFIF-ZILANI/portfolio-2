@@ -43,7 +43,7 @@ export function AdminLink() {
         <Link
             href="/admin/blogs"
             title="Admin dashboard"
-            className="flex items-center gap-1.5 px-2 py-1 border border-primary/40 text-primary hover:border-primary transition-colors font-mono text-xs"
+            className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-primary/40 text-primary hover:border-primary transition-colors text-xs"
         >
             <LayoutDashboard size={14} />
             <span className="hidden sm:inline">dashboard</span>

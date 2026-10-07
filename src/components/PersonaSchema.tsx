@@ -1,4 +1,41 @@
 import { SITE_URL } from "@/lib/site";
+
+const FARM_ID = `${SITE_URL}/#zerod-farm`;
+
+/**
+ * ZeroD Farm as its own entity, so "ZeroD Farm" resolves to a thing with a
+ * founder, a place and a start date rather than a string inside a job title.
+ *
+ * ponytail: Organization rather than LocalBusiness — LocalBusiness wants a street
+ * address, phone and opening hours, and publishing half of those does more harm
+ * than good. Upgrade it once those are public.
+ */
+const farm = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": FARM_ID,
+    name: "ZeroD Farm",
+    alternateName: ["ZeroD Farms"],
+    description: "A poultry farm in Naogaon, Rajshahi Division, Bangladesh, founded in 2022.",
+    url: `${SITE_URL}/#zerod-farm`,
+    foundingDate: "2022",
+    founder: { "@id": `${SITE_URL}/#person` },
+    address: {
+        "@type": "PostalAddress",
+        addressLocality: "Naogaon",
+        addressRegion: "Rajshahi Division",
+        addressCountry: "BD",
+    },
+    areaServed: { "@type": "Country", name: "Bangladesh" },
+    knowsAbout: ["Poultry Farming"],
+    parentOrganization: {
+        "@type": "Organization",
+        "@id": "https://zerod.bd/#organization",
+        name: "ZeroD",
+        url: "https://zerod.bd",
+    },
+};
+
 export default function PersonSchema() {
     const person = {
         "@context": "https://schema.org",
@@ -22,14 +59,14 @@ export default function PersonSchema() {
             "@id": `${SITE_URL}/#image`,
             url: `${SITE_URL}/afifzilani-profile.webp`,
             contentUrl: `${SITE_URL}/afifzilani-profile.webp`,
-            caption: "Afif Zilani — Full-Stack Developer and Co-Founder of ZeroD",
-            description: "Portrait of Kazi Afif Zilani, full-stack developer and entrepreneur from Naogaon, Bangladesh",
+            caption: "Afif Zilani — Co-Founder and CEO of ZeroD Farm",
+            description: "Portrait of Kazi Afif Zilani, co-founder of ZeroD Farm, Naogaon, Bangladesh",
             width: 1535,
             height: 1536,
         },
-        jobTitle: "Full-Stack Developer & Co-Founder",
+        jobTitle: "Co-Founder & CEO, ZeroD Farm",
         description:
-            "Kazi Afif Zilani, known as Afif Zilani, is a full-stack developer, entrepreneur, and co-founder of ZeroD. He builds high-performance web systems and tech for real-world impact from Naogaon, Bangladesh.",
+            "Kazi Afif Zilani, known as Afif Zilani, is an entrepreneur from Naogaon, Bangladesh and the co-founder and CEO of ZeroD Farm, a poultry farm founded in 2022.",
         nationality: {
             "@type": "Country",
             name: "Bangladesh",
@@ -40,28 +77,14 @@ export default function PersonSchema() {
             addressRegion: "Rajshahi Division",
             addressCountry: "BD",
         },
-        worksFor: {
-            "@type": "Organization",
-            "@id": "https://zerod.bd/#organization",
-            name: "ZeroD",
-            url: "https://zerod.bd",
-            description: "ZeroD is a multi-sector technology and entrepreneurship ecosystem founded by Afif Zilani.",
-        },
+        worksFor: { "@id": FARM_ID },
         knowsAbout: [
-            "Full-Stack Web Development",
-            "React",
-            "Next.js",
-            "TypeScript",
-            "Node.js",
-            "Golang",
-            "PostgreSQL",
-            "Redis",
-            "Docker",
-            "Kubernetes",
-            "Software Architecture",
+            "Poultry Farming",
+            "Poultry Farm Management",
+            "Livestock Biosecurity",
+            "Agribusiness",
+            "Farm Operations",
             "Entrepreneurship",
-            "Sustainable Farming Technology",
-            "Artificial Intelligence",
         ],
         sameAs: [
             "https://github.com/AFIF-ZILANI",
@@ -87,7 +110,7 @@ export default function PersonSchema() {
         name: "Afif Zilani",
         alternateName: ["AFIF ZILANI", "Kazi Afif Zilani Portfolio"],
         url: SITE_URL,
-        description: "Official portfolio and personal website of Afif Zilani (Kazi Afif Zilani) — full-stack developer and co-founder of ZeroD, based in Naogaon, Bangladesh.",
+        description: "Personal website of Afif Zilani (Kazi Afif Zilani), co-founder and CEO of ZeroD Farm in Naogaon, Bangladesh.",
         author: { "@id": `${SITE_URL}/#person` },
     };
 
@@ -101,6 +124,10 @@ export default function PersonSchema() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
             />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(farm) }}
+            />
         </>
     );
 }
@@ -109,7 +136,7 @@ export default function PersonSchema() {
  * ProfilePage describes the homepage specifically, so it is NOT part of
  * PersonSchema (which renders from the root layout). Otherwise every route —
  * including each blog post — would claim to be Afif's profile page, contradicting
- * the post's own BlogPosting schema. Rendered by src/app/page.tsx only.
+ * the post's own BlogPosting schema. Rendered by src/app/(site)/page.tsx only.
  */
 export function ProfilePageSchema() {
     const webpage = {
@@ -117,13 +144,13 @@ export function ProfilePageSchema() {
         "@type": "ProfilePage",
         "@id": `${SITE_URL}/#webpage`,
         url: SITE_URL,
-        name: "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD",
+        name: "Afif Zilani — Co-Founder & CEO of ZeroD Farm, Naogaon",
         isPartOf: { "@id": `${SITE_URL}/#website` },
         // Google requires mainEntity (not about) for the ProfilePage rich result.
         mainEntity: { "@id": `${SITE_URL}/#person` },
         primaryImageOfPage: { "@id": `${SITE_URL}/#image` },
         description:
-            "Official portfolio page of Kazi Afif Zilani (AFIF ZILANI), full-stack developer and co-founder of ZeroD, from Naogaon, Bangladesh.",
+            "Profile of Kazi Afif Zilani (AFIF ZILANI), co-founder and CEO of ZeroD Farm, a poultry farm in Naogaon, Bangladesh.",
         breadcrumb: {
             "@type": "BreadcrumbList",
             itemListElement: [

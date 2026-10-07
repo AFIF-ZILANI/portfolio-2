@@ -49,8 +49,7 @@ describe("saveSiteSection", () => {
 
         expect(after.name).toBe("PATCHED NAME");
         // The read-merge-write must not blank sections this editor didn't send.
-        expect(after.projects).toEqual(before.projects);
-        expect(after.skills).toEqual(before.skills);
+        expect(after.experiences).toEqual(before.experiences);
         expect(after.socialLinks).toEqual(before.socialLinks);
     });
 
@@ -82,39 +81,11 @@ describe("saveSiteSection", () => {
         if (!res.ok) expect(res.error).toContain("broken/");
     });
 
-    test("rejects a skill with no name or category", async () => {
-        expect(
-            (await saveSiteSection({ skills: [{ id: "1", name: "", category: "X", icon: "SiGo" }] }))
-                .ok
-        ).toBe(false);
-        expect(
-            (await saveSiteSection({ skills: [{ id: "1", name: "Go", category: "", icon: "SiGo" }] }))
-                .ok
-        ).toBe(false);
-    });
-
     test("rejects a contact email that isn't an address, but allows blank", async () => {
         expect((await saveSiteSection({ contact: { heading: "H", email: "nope" } })).ok).toBe(false);
         expect((await saveSiteSection({ contact: { heading: "H", email: "" } })).ok).toBe(true);
     });
 
-    test("rejects a project with no title", async () => {
-        const res = await saveSiteSection({
-            projects: [
-                {
-                    id: "1",
-                    title: "",
-                    description: "d",
-                    tech: [],
-                    github: "",
-                    live: "",
-                    coverImageId: "",
-                    featured: true,
-                },
-            ],
-        });
-        expect(res.ok).toBe(false);
-    });
 });
 
 describe("resetSiteSection", () => {

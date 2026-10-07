@@ -60,7 +60,6 @@ export async function collectReferencedIds(): Promise<Set<string>> {
 
     add(site.heroImageId);
     add(site.aboutImageId);
-    for (const project of site.projects) add(project.coverImageId);
 
     // Markdown bodies reference images by URL, not id, so map those back to rows.
     const bodies = [...posts.map((p) => p.content), ...events.map((e) => e.content)].join("\n");

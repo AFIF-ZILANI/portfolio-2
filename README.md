@@ -1,7 +1,7 @@
-# AFIF ZILANI — Portfolio
+# Afif Zilani — Personal site
 
-> Personal portfolio of Afif Zilani — Entrepreneur, Programmer & Co-Founder of ZeroD.  
-> Built with Next.js 15, React 19, Tailwind CSS v4, GSAP, and Framer Motion.
+> Personal site of Afif Zilani, Co-Founder & CEO of ZeroD Farm, a poultry farm in Naogaon, Bangladesh.
+> Built with Next.js 15, React 19, Tailwind CSS v4, Prisma and Postgres.
 
 [![Live](https://img.shields.io/badge/Live-afifzilani.com-blue?style=flat-square)](https://afifzilani.com)
 [![Next.js](https://img.shields.io/badge/Next.js-15.3.3-black?style=flat-square&logo=next.js)](https://nextjs.org)
@@ -18,7 +18,6 @@
 | Framework | Next.js 15 (App Router, Turbopack) |
 | Language | TypeScript 5 |
 | Styling | Tailwind CSS v4 |
-| Animation | GSAP 3 + Framer Motion 12 |
 | UI Primitives | Radix UI + shadcn/ui |
 | Icons | Lucide React + React Icons |
 | Email | Nodemailer |
@@ -37,8 +36,8 @@ portfolio-2/
 │   ├── app/             # Next.js App Router (layout, pages, not-found)
 │   ├── components/      # Reusable UI components
 │   └── lib/             # Utilities, data, constants
+├── prisma/              # Schema and migrations
 ├── next.config.ts
-├── tailwind.config.ts
 ├── tsconfig.json
 └── package.json
 ```
@@ -104,10 +103,24 @@ To deploy your own fork:
 Create a `.env.local` file in the root:
 
 ```env
-# Required for the contact form (Nodemailer)
-EMAIL_USER=your@gmail.com
-EMAIL_PASS=your-app-password
+DATABASE_URL=postgresql://...
+
+# Contact form (Nodemailer). Mail is sent FROM SMTP_USER with the visitor as Reply-To.
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=your@gmail.com
+SMTP_PASS=your-app-password
+CONTACT_EMAIL=where-messages-go@example.com   # fallback if unset in /admin/site/contact
+
+# Admin (Clerk)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
+CLERK_SECRET_KEY=...
+ADMIN_EMAIL=you@example.com
 ```
+
+After deploying a change that includes a migration, run `bunx prisma migrate deploy`
+against the production database.
 
 ---
 

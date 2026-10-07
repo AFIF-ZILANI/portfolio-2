@@ -164,16 +164,16 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             <article className="container mx-auto px-6 max-w-3xl">
                 <Link
                     href="/events"
-                    className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5 mb-8 group"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5 mb-8 group"
                 >
                     <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
                     all events
                 </Link>
 
                 <header className="space-y-4 mb-8">
-                    <h1 className="text-3xl md:text-4xl font-bold leading-tight">{event.title}</h1>
+                    <h1 className="text-3xl md:text-5xl font-semibold tracking-tight leading-tight">{event.title}</h1>
 
-                    <dl className="font-mono text-xs text-muted-foreground flex flex-wrap gap-x-5 gap-y-2">
+                    <dl className="text-xs text-muted-foreground flex flex-wrap gap-x-5 gap-y-2">
                         <div className="flex items-center gap-1.5">
                             <dt className="sr-only">Date</dt>
                             <CalendarDays size={13} aria-hidden />
@@ -217,7 +217,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                             />
                         </div>
                         {cover.caption && (
-                            <figcaption className="font-mono text-xs text-muted-foreground mt-2">
+                            <figcaption className="text-xs text-muted-foreground mt-2">
                                 {cover.caption}
                             </figcaption>
                         )}
@@ -228,7 +228,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
                 {gallery.length > 0 && (
                     <section className="mt-14">
-                        <h2 className="font-mono text-sm uppercase tracking-wider text-muted-foreground mb-5">
+                        <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-5">
                             Gallery
                         </h2>
                         <div className="grid sm:grid-cols-2 gap-4">
@@ -245,7 +245,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                                         />
                                     </div>
                                     {image.caption && (
-                                        <figcaption className="font-mono text-xs text-muted-foreground mt-1.5">
+                                        <figcaption className="text-xs text-muted-foreground mt-1.5">
                                             {image.caption}
                                         </figcaption>
                                     )}
@@ -260,7 +260,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                         {event.tags.map((tag) => (
                             <li
                                 key={tag}
-                                className="font-mono text-xs border border-border px-2 py-1 text-muted-foreground"
+                                className="text-xs border border-border px-2 py-1 text-muted-foreground"
                             >
                                 {tag}
                             </li>

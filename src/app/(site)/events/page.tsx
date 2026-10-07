@@ -56,8 +56,8 @@ export default async function EventsPage() {
 
             <div className="container mx-auto px-6 max-w-6xl">
                 <header className="mb-12">
-                    <h1 className="text-3xl md:text-4xl font-bold">
-                        <span className="text-primary font-mono">~/</span>events
+                    <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
+                        Events
                     </h1>
                     <p className="text-muted-foreground mt-3 max-w-2xl">
                         Where I&apos;ve been and what I took away from it.
@@ -65,7 +65,7 @@ export default async function EventsPage() {
                 </header>
 
                 {events.length === 0 ? (
-                    <p className="text-muted-foreground font-mono text-sm border border-dashed border-border p-12 text-center">
+                    <p className="text-muted-foreground text-sm border border-dashed border-border p-12 text-center">
                         No write-ups yet. The next one goes up after the next event.
                     </p>
                 ) : (

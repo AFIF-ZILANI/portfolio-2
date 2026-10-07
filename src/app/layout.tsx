@@ -1,22 +1,26 @@
 import type { Metadata } from "next";
-import { Space_Mono } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { SITE_URL } from "@/lib/site";
 
 // Self-hosted at build time: no fonts.googleapis.com round-trip on first paint,
 // and a size-adjusted fallback so swapping in the real face doesn't shift layout.
-const spaceMono = Space_Mono({
+const fraunces = Fraunces({
     subsets: ["latin"],
-    weight: ["400", "700"],
-    style: ["normal", "italic"],
     display: "swap",
-    variable: "--font-space-mono",
+    variable: "--font-fraunces",
 });
 
-const TITLE = "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD";
+const inter = Inter({
+    subsets: ["latin"],
+    display: "swap",
+    variable: "--font-inter",
+});
+
+const TITLE = "Afif Zilani — Co-Founder & CEO of ZeroD Farm, Naogaon";
 const DESCRIPTION =
-    "Kazi Afif Zilani (AFIF ZILANI) — full-stack developer, entrepreneur, and co-founder of ZeroD. Builds high-performance web systems from Naogaon, Bangladesh.";
+    "Kazi Afif Zilani is the co-founder and CEO of ZeroD Farm, a poultry farm in Naogaon, Bangladesh. Buyers, suppliers and partners can get in touch here.";
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
@@ -51,22 +55,6 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/`,
         title: TITLE,
         description: DESCRIPTION,
-        images: [
-            {
-                url: "/afifzilani-profile.webp",
-                width: 1535,
-                height: 1536,
-                alt: "Afif Zilani — Full-Stack Developer and Co-Founder of ZeroD",
-                type: "image/webp",
-            },
-            {
-                url: "/afifzilani-about.webp",
-                width: 1254,
-                height: 1254,
-                alt: "Kazi Afif Zilani — Entrepreneur and Programmer from Naogaon, Bangladesh",
-                type: "image/webp",
-            },
-        ],
         locale: "en_US",
         siteName: "Afif Zilani",
     },
@@ -76,12 +64,6 @@ export const metadata: Metadata = {
         creator: "@afif_zilani",
         title: TITLE,
         description: DESCRIPTION,
-        images: [
-            {
-                url: "/afifzilani-profile.webp",
-                alt: "Afif Zilani — Full-Stack Developer and Co-Founder of ZeroD",
-            },
-        ],
     },
     verification: {
         google: "mf5qC5eIPTRicnBVnF9ENjPhDYSQOBsEeDrv4u6SFT8",
@@ -92,7 +74,7 @@ export const metadata: Metadata = {
         title: "Afif Zilani",
         statusBarStyle: "black-translucent",
     },
-    category: "technology",
+    category: "agriculture",
 };
 
 export default function RootLayout({
@@ -101,7 +83,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={spaceMono.variable} suppressHydrationWarning>
+        <html
+            lang="en"
+            className={`${fraunces.variable} ${inter.variable}`}
+            suppressHydrationWarning
+        >
             <head>
                 <link rel="me" href="https://github.com/AFIF-ZILANI" />
                 <link rel="me" href="https://www.linkedin.com/in/afifzilani" />
@@ -111,13 +97,11 @@ export default function RootLayout({
                 <link rel="me" href="https://facebook.com/AFIF.ZILANI00" />
                 <link rel="me" href="mailto:afifzilani4566@gmail.com" />
             </head>
-            <body
-                className={`antialiased overflow-x-hidden font-mono selection:bg-primary/30 min-h-screen bg-background text-foreground`}
-            >
+            <body className="antialiased overflow-x-hidden font-sans selection:bg-primary/20 min-h-screen bg-background text-foreground">
                 <ThemeProvider
                     attribute="class"
-                    defaultTheme="dark"
-                    enableSystem={false}
+                    defaultTheme="system"
+                    enableSystem
                     disableTransitionOnChange
                 >
                     {children}

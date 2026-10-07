@@ -15,17 +15,17 @@ export function LatestEvents({ events }: { events: EventCardData[] }) {
     if (events.length === 0) return null;
 
     return (
-        <section id="events" className="py-24">
+        <section id="events" className="py-20 md:py-28">
             <div className="container mx-auto px-6 max-w-6xl">
                 <SectionHeading
-                    path="~/events/"
-                    title="Recent Events"
+                    eyebrow="Events"
+                    title="Recent events"
                     action={
                         <Link
                             href="/events"
-                            className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 group shrink-0"
+                            className="text-sm font-medium text-primary hover:underline underline-offset-4 flex items-center gap-1.5 group shrink-0"
                         >
-                            all events
+                            All events
                             <ArrowRight
                                 size={14}
                                 className="group-hover:translate-x-1 transition-transform"

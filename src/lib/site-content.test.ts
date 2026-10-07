@@ -19,12 +19,12 @@ describe("mergeSiteData", () => {
         // an older stored record simply inherits the default for it.
         const merged = mergeSiteData({ name: "NEW NAME" });
         expect(merged.tagline).toBe(DEFAULT_SITE_DATA.tagline);
-        expect(merged.projects).toEqual(DEFAULT_SITE_DATA.projects);
-        expect(merged.skills).toEqual(DEFAULT_SITE_DATA.skills);
+        expect(merged.experiences).toEqual(DEFAULT_SITE_DATA.experiences);
+        expect(merged.stats).toEqual(DEFAULT_SITE_DATA.stats);
     });
 
     test("an empty list falls back rather than blanking a section", () => {
-        expect(mergeSiteData({ skills: [] }).skills).toEqual(DEFAULT_SITE_DATA.skills);
+        expect(mergeSiteData({ stats: [] }).stats).toEqual(DEFAULT_SITE_DATA.stats);
         expect(mergeSiteData({ socialLinks: [] }).socialLinks).toEqual(
             DEFAULT_SITE_DATA.socialLinks
         );
@@ -44,7 +44,7 @@ describe("mergeSiteData", () => {
     });
 
     test("a non-empty list replaces the default entirely", () => {
-        const skills = [{ id: "x", name: "Zig", category: "Languages", icon: "SiZig" }];
-        expect(mergeSiteData({ skills }).skills).toEqual(skills);
+        const stats = [{ key: "birds", value: "5,000", label: "birds per batch" }];
+        expect(mergeSiteData({ stats }).stats).toEqual(stats);
     });
 });

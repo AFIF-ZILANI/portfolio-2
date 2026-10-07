@@ -1,38 +1,36 @@
 import type { ReactNode } from "react";
 
 /**
- * The heading for a homepage section.
- *
- * The site's own vernacular is a shell — the admin says `$ ls posts`, the contact
- * form says `afif@dev:contact$`. This extends that to the public page: each
- * section is labelled by the path it would live at, and the extension says what
- * kind of thing it is (`.md` prose, `.json` data, `.log` history, `/` a
- * directory). That encodes something true about the content, which arbitrary
- * `01. / 02. / 03.` numbering never did — the sections are not a sequence, and
- * nothing breaks if their order changes.
- *
- * The rule runs from the path to the right edge, so the label sits *in* the
- * structure rather than floating above it.
+ * The heading for a homepage section: a short eyebrow, the h2, and an optional
+ * one-line intro. `action` sits on the right of the eyebrow row, e.g. "All posts →".
  */
 export function SectionHeading({
-    path,
+    eyebrow,
     title,
+    intro,
     action,
+    id,
 }: {
-    /** Where this section would live on disk, e.g. `~/about.md`. */
-    path: string;
+    eyebrow: string;
     title: string;
-    /** Optional trailing link, e.g. "all posts →". */
+    intro?: string;
     action?: ReactNode;
+    /** id for the h2, so the section can be aria-labelledby it. */
+    id?: string;
 }) {
     return (
-        <div className="mb-12">
-            <div className="flex items-center gap-4">
-                <span className="font-mono text-xs text-primary shrink-0">{path}</span>
-                <span aria-hidden className="h-px flex-1 bg-border" />
+        <div className="mb-10 md:mb-14 max-w-3xl">
+            <div className="flex items-center justify-between gap-4">
+                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+                    <span aria-hidden className="h-2 w-2 rounded-full bg-highlight" />
+                    {eyebrow}
+                </p>
                 {action}
             </div>
-            <h2 className="mt-4 text-3xl md:text-4xl font-bold tracking-tight">{title}</h2>
+            <h2 id={id} className="mt-4 text-3xl md:text-5xl font-semibold tracking-tight">
+                {title}
+            </h2>
+            {intro && <p className="mt-4 text-lg text-muted-foreground leading-relaxed">{intro}</p>}
         </div>
     );
 }

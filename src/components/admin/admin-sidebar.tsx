@@ -7,13 +7,11 @@ import {
     Briefcase,
     ExternalLink,
     FileText,
-    FolderGit2,
     Image as ImageIcon,
     Layers,
     Mail,
     Share2,
     User,
-    Wrench,
     CalendarDays,
 } from "lucide-react";
 
@@ -32,8 +30,6 @@ const GROUPS = [
         items: [
             { href: "/admin/site/profile", label: "Profile & bio", icon: User },
             { href: "/admin/site/social", label: "Social links", icon: Share2 },
-            { href: "/admin/site/skills", label: "Skills", icon: Wrench },
-            { href: "/admin/site/projects", label: "Projects", icon: FolderGit2 },
             { href: "/admin/site/experience", label: "Experience", icon: Briefcase },
             { href: "/admin/site/stats", label: "Stats", icon: BarChart3 },
             { href: "/admin/site/contact", label: "Contact", icon: Mail },

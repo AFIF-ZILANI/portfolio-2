@@ -66,14 +66,14 @@ export function BlogIndex({ posts }: { posts: PostCard[] }) {
                         type="search"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        placeholder="search posts…"
+                        placeholder="Search posts…"
                         aria-label="Search posts"
-                        className="pl-9 font-mono"
+                        className="pl-9"
                     />
                 </div>
 
                 {(allTags.length > 0 || allSeries.length > 0) && (
-                    <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+                    <div className="flex flex-wrap items-center gap-2 text-xs">
                         {allSeries.map(([slug, title]) => (
                             <button
                                 key={slug}
@@ -117,14 +117,14 @@ export function BlogIndex({ posts }: { posts: PostCard[] }) {
                     </div>
                 )}
 
-                <p className="font-mono text-xs text-muted-foreground" aria-live="polite">
+                <p className="text-xs text-muted-foreground" aria-live="polite">
                     {results.length} {results.length === 1 ? "post" : "posts"}
                     {filtered && ` of ${posts.length}`}
                 </p>
             </div>
 
             {results.length === 0 ? (
-                <p className="text-muted-foreground font-mono text-sm border border-dashed border-border p-16 text-center">
+                <p className="text-muted-foreground text-sm border border-dashed border-border p-16 text-center">
                     {posts.length === 0 ? "Nothing published yet." : "No posts match that search."}
                 </p>
             ) : (
@@ -150,7 +150,7 @@ export function BlogIndex({ posts }: { posts: PostCard[] }) {
                                             className="object-cover"
                                         />
                                     ) : (
-                                        <div className="absolute inset-0 grid place-items-center font-mono text-xs text-muted-foreground">
+                                        <div className="absolute inset-0 grid place-items-center text-xs text-muted-foreground">
                                             {p.slug}.md
                                         </div>
                                     )}
@@ -158,7 +158,7 @@ export function BlogIndex({ posts }: { posts: PostCard[] }) {
 
                                 <div className="p-5 space-y-3">
                                     {p.series && (
-                                        <p className="font-mono text-xs text-primary">
+                                        <p className="text-xs text-primary">
                                             {p.series.title}
                                             {p.seriesOrder ? ` · part ${p.seriesOrder}` : ""}
                                         </p>
@@ -169,11 +169,11 @@ export function BlogIndex({ posts }: { posts: PostCard[] }) {
                                     <p className="text-sm text-muted-foreground line-clamp-3">
                                         {p.excerpt}
                                     </p>
-                                    <p className="font-mono text-xs text-muted-foreground pt-1">
+                                    <p className="text-xs text-muted-foreground pt-1">
                                         {fmt(p.publishedAt)} · {p.readingMinutes} min
                                     </p>
                                     {p.tags.length > 0 && (
-                                        <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted-foreground">
+                                        <ul className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                                             {p.tags.slice(0, 4).map((t) => (
                                                 <li key={t}>#{t}</li>
                                             ))}

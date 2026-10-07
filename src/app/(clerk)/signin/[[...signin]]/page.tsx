@@ -24,7 +24,7 @@ export default function SignInPage() {
                 appearance={{
                     variables: {
                         colorBackground: "hsl(240 10% 6%)",
-                        colorPrimary: "hsl(142 71% 45%)",
+                        colorPrimary: "hsl(152 45% 26%)",
                         borderRadius: "0",
                     },
                 }}

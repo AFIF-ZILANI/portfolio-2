@@ -128,23 +128,23 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 <article className="container mx-auto px-6 max-w-3xl space-y-8">
                     <Link
                         href="/blogs"
-                        className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-primary transition-colors"
+                        className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors"
                     >
                         <ArrowLeft size={14} /> all posts
                     </Link>
 
                     <header className="space-y-4">
                         {post.series && (
-                            <p className="font-mono text-xs text-primary">
+                            <p className="text-xs text-primary">
                                 {post.series.title}
                                 {post.seriesOrder ? ` · part ${post.seriesOrder}` : ""}
                             </p>
                         )}
-                        <h1 className="text-3xl md:text-4xl font-bold leading-tight">
+                        <h1 className="text-3xl md:text-5xl font-semibold tracking-tight leading-tight">
                             {post.title}
                         </h1>
                         <p className="text-muted-foreground">{post.excerpt}</p>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                             <time dateTime={post.publishedAt?.toISOString()}>
                                 {fmt(post.publishedAt)}
                             </time>
@@ -154,7 +154,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                             <ViewCounter slug={post.slug} initial={post.views} />
                         </div>
                         {post.tags.length > 0 && (
-                            <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted-foreground">
+                            <ul className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                                 {post.tags.map((t) => (
                                     <li key={t} className="border border-border px-2 py-1">
                                         #{t}

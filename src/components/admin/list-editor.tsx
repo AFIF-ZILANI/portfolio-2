@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 /**
  * Add / remove / reorder rows of an array, with each row's fields rendered by the
- * caller. Used by social links, skills, projects, experience, and stats.
+ * caller. Used by social links, experience, and stats.
  *
  * ponytail: one small component reused five times rather than five bespoke list UIs.
  * Reordering is two buttons, not drag-and-drop — no dnd dependency for a list only

@@ -15,8 +15,8 @@ export function ProfileEditor({ data }: { data: ResolvedSiteData }) {
     const [name, setName] = useState(data.name);
     const [title, setTitle] = useState(data.title);
     const [tagline, setTagline] = useState(data.tagline);
-    // The bio renders as separate lines in the About terminal, so it's edited as
-    // one textarea and split on newlines.
+    // Each line of the bio renders as its own paragraph in the About section, so
+    // it's edited as one textarea and split on newlines.
     const [bio, setBio] = useState(data.bio.join("\n"));
     const [heroImage, setHeroImage] = useState<ImageRef | null>(data.heroImage);
     const [aboutImage, setAboutImage] = useState<ImageRef | null>(data.aboutImage);
@@ -47,7 +47,7 @@ export function ProfileEditor({ data }: { data: ResolvedSiteData }) {
                     <Label className={labelClass}>Headline</Label>
                     <Input value={title} onChange={(e) => setTitle(e.target.value)} />
                     <p className="text-xs text-muted-foreground">
-                        Shown under your name in the hero, e.g. “Full-Stack Developer.”
+                        Shown above your name in the hero, e.g. “Co-Founder & CEO, ZeroD Farm”.
                     </p>
                 </div>
                 <div className="space-y-2">
@@ -61,7 +61,7 @@ export function ProfileEditor({ data }: { data: ResolvedSiteData }) {
             </section>
 
             <section className="border border-border p-4 space-y-2">
-                <Label className={labelClass}>Bio — one line per row</Label>
+                <Label className={labelClass}>Bio — one paragraph per row</Label>
                 <Textarea
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
@@ -69,8 +69,8 @@ export function ProfileEditor({ data }: { data: ResolvedSiteData }) {
                     className="font-mono text-sm"
                 />
                 <p className="text-xs text-muted-foreground">
-                    Each line prints as its own line in the About terminal animation.
-                    Blank lines are dropped.
+                    Each row becomes its own paragraph in the About section. Blank rows
+                    are dropped.
                 </p>
             </section>
 

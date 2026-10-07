@@ -24,7 +24,7 @@ export function SeriesNav({
             className="border border-border bg-card p-6 space-y-4"
         >
             <div>
-                <p className="font-mono text-xs text-primary uppercase tracking-wider">
+                <p className="text-xs text-primary uppercase tracking-wider">
                     {index >= 0 ? `Part ${index + 1} of ${parts.length}` : "Series"}
                 </p>
                 <p className="font-bold mt-1">{seriesTitle}</p>
@@ -33,7 +33,7 @@ export function SeriesNav({
                 )}
             </div>
 
-            <ol className="space-y-1 font-mono text-sm">
+            <ol className="space-y-1 text-sm">
                 {parts.map((p, i) => {
                     const current = p.slug === currentSlug;
                     return (

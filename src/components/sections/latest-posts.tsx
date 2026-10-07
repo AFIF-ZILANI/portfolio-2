@@ -5,7 +5,13 @@ import { ArrowRight } from "lucide-react";
 import type { PostCard } from "@/lib/blog";
 
 const fmt = (d: Date | null) =>
-    d ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "";
+    d
+        ? new Date(d).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+          })
+        : "";
 
 /**
  * Latest writing on the homepage.
@@ -19,17 +25,17 @@ export function LatestPosts({ posts }: { posts: PostCard[] }) {
     if (posts.length === 0) return null;
 
     return (
-        <section id="writing" className="py-24">
+        <section id="writing" className="py-20 md:py-28">
             <div className="container mx-auto px-6 max-w-6xl">
                 <SectionHeading
-                    path="~/writing/"
-                    title="Latest Writing"
+                    eyebrow="Writing"
+                    title="Latest writing"
                     action={
                         <Link
                             href="/blogs"
-                            className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 group shrink-0"
+                            className="text-sm font-medium text-primary hover:underline underline-offset-4 flex items-center gap-1.5 group shrink-0"
                         >
-                            all posts
+                            All posts
                             <ArrowRight
                                 size={14}
                                 className="group-hover:translate-x-1 transition-transform"
@@ -43,7 +49,7 @@ export function LatestPosts({ posts }: { posts: PostCard[] }) {
                         <article key={p.id}>
                             <Link
                                 href={`/blogs/${p.slug}`}
-                                className="group flex flex-col h-full bg-card border border-border hover:border-primary transition-colors duration-300"
+                                className="group flex flex-col h-full overflow-hidden rounded-2xl bg-card border border-border hover:border-primary transition-colors duration-300"
                             >
                                 <div className="relative w-full aspect-video bg-muted overflow-hidden">
                                     {p.coverImage ? (
@@ -55,7 +61,7 @@ export function LatestPosts({ posts }: { posts: PostCard[] }) {
                                             className="object-cover"
                                         />
                                     ) : (
-                                        <div className="absolute inset-0 grid place-items-center font-mono text-xs text-muted-foreground">
+                                        <div className="absolute inset-0 grid place-items-center text-xs text-muted-foreground">
                                             {p.slug}.md
                                         </div>
                                     )}
@@ -63,7 +69,7 @@ export function LatestPosts({ posts }: { posts: PostCard[] }) {
 
                                 <div className="p-5 flex flex-col gap-3 flex-1">
                                     {p.series && (
-                                        <p className="font-mono text-xs text-primary">
+                                        <p className="text-xs text-primary">
                                             {p.series.title}
                                             {p.seriesOrder ? ` · part ${p.seriesOrder}` : ""}
                                         </p>
@@ -74,7 +80,7 @@ export function LatestPosts({ posts }: { posts: PostCard[] }) {
                                     <p className="text-sm text-muted-foreground line-clamp-3">
                                         {p.excerpt}
                                     </p>
-                                    <p className="font-mono text-xs text-muted-foreground mt-auto pt-1">
+                                    <p className="text-xs text-muted-foreground mt-auto pt-1">
                                         {fmt(p.publishedAt)} · {p.readingMinutes} min read
                                     </p>
                                 </div>

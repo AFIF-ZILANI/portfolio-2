@@ -16,8 +16,9 @@ export const config = {
         "/admin/:path*",
         "/signin/:path*",
         "/api/admin/:path*",
-        // Skip Next.js internals and all static files, unless found in search params
-        "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+        // No catch-all: the stock Clerk matcher that used to sit here ran the
+        // middleware on every public page, contradicting the comment above and
+        // adding a Clerk round-trip (and handshake redirects) to every visit.
         // Always run for Clerk's auto-proxy path
         "/__clerk/:path*",
     ],

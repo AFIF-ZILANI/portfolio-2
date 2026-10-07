@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import { getSiteData } from "@/lib/site-content";
-
-type ContactFormState = {
-    name: string;
-    email: string;
-    message: string;
-};
+import { getStoredSiteData } from "@/lib/site-content";
+import { CONTACT_TOPICS, topicLabel } from "@/lib/contact";
 
 /** Everything below is attacker-controlled and lands in an HTML email. */
 const escapeHtml = (v: string) =>
@@ -16,6 +11,13 @@ const escapeHtml = (v: string) =>
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
+
+/** Header values must be a single line. */
+const oneLine = (v: string) => v.replace(/[\r\n]+/g, " ").trim();
+
+const str = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -27,43 +29,65 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export async function POST(request: NextRequest) {
-    const data: ContactFormState = await request.json();
-    const { name, email, message } = data;
+const fail = (error: string, status = 400) => NextResponse.json({ ok: false, error }, { status });
 
-    if (!name?.trim() || !email?.includes("@") || !message?.trim()) {
-        return NextResponse.json({ status: "error", ok: false }, { status: 400 });
-    }
+export async function POST(request: NextRequest) {
+    const data = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+    if (!data) return fail("Invalid request.");
+
+    // Honeypot: a real visitor never sees this field. Pretend success so bots move on.
+    if (str(data.company, 200)) return NextResponse.json({ ok: true });
+
+    const name = oneLine(str(data.name, 100));
+    const email = oneLine(str(data.email, 200));
+    const phone = oneLine(str(data.phone, 30));
+    const message = str(data.message, 5000);
+    const topic = CONTACT_TOPICS.some((t) => t.value === data.topic) ? String(data.topic) : "other";
+
+    if (!name) return fail("Please enter your name.");
+    if (!EMAIL_RE.test(email)) return fail("Please enter a valid email address.");
+    if (message.length < 10) return fail("Please write a slightly longer message.");
 
     // Editable at /admin/site/contact; the env var stays the fallback.
-    const { contact } = await getSiteData();
+    const { contact } = await getStoredSiteData();
     const to = contact.email.trim() || process.env.CONTACT_EMAIL;
-    if (!to) return NextResponse.json({ status: "error", ok: false }, { status: 500 });
+    const from = process.env.SMTP_USER;
+    if (!to || !from) return fail("The contact form isn't configured yet.", 500);
 
-    const safeName = escapeHtml(name);
-    const safeEmail = escapeHtml(email);
-    const safeMessage = escapeHtml(message);
+    const rows: [string, string][] = [
+        ["Name", name],
+        ["Email", email],
+        ["Phone", phone || "—"],
+        ["Topic", topicLabel(topic)],
+    ];
 
     try {
         await transporter.sendMail({
-            from: `${name} <${email}>`,
+            // Sent from the site's own mailbox. Putting the visitor's address in From
+            // (as before) is spoofing: it fails SPF/DMARC and Gmail drops or spams
+            // it. Reply-To keeps "Reply" going straight to the visitor.
+            from: `"afifzilani.com" <${from}>`,
+            replyTo: { name, address: email },
             to,
-            subject: `[afif.dev] New message from ${name}`,
-            text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+            subject: `[ZeroD Farm] ${topicLabel(topic)} — ${name}`,
+            text: `${rows.map(([k, v]) => `${k}: ${v}`).join("\n")}\n\n${message}`,
             html: `
-        <div style="font-family:monospace;background:#0d0d0d;color:#e2e8f0;padding:24px;border-radius:4px;max-width:600px">
-          <div style="color:#4ade80;font-size:14px;margin-bottom:16px">afif@dev:contact$ cat message.txt</div>
-          <table style="width:100%;border-collapse:collapse;font-size:13px">
-            <tr><td style="color:#94a3b8;padding:4px 12px 4px 0;width:80px">name</td><td style="color:#e2e8f0">${safeName}</td></tr>
-            <tr><td style="color:#94a3b8;padding:4px 12px 4px 0">email</td><td><a href="mailto:${safeEmail}" style="color:#4ade80">${safeEmail}</a></td></tr>
-            <tr><td style="color:#94a3b8;padding:4px 12px 4px 0;vertical-align:top">message</td><td style="color:#e2e8f0;white-space:pre-wrap">${safeMessage}</td></tr>
+        <div style="font-family:Arial,sans-serif;color:#132119;max-width:600px">
+          <h2 style="color:#25603f;margin:0 0 16px">New message from afifzilani.com</h2>
+          <table style="border-collapse:collapse;font-size:14px">
+            ${rows
+                .map(
+                    ([k, v]) =>
+                        `<tr><td style="color:#4f5c55;padding:4px 16px 4px 0">${k}</td><td>${escapeHtml(v)}</td></tr>`
+                )
+                .join("")}
           </table>
-          <div style="margin-top:24px;font-size:11px;color:#475569">Sent via afif.dev contact terminal</div>
+          <p style="white-space:pre-wrap;font-size:15px;line-height:1.5;margin-top:20px">${escapeHtml(message)}</p>
         </div>
       `,
         });
-        return NextResponse.json({ status: "success", ok: true }, { status: 200 });
+        return NextResponse.json({ ok: true });
     } catch {
-        return NextResponse.json({ status: "error", ok: false }, { status: 500 });
+        return fail("Your message couldn't be sent. Please email me directly instead.", 500);
     }
 }

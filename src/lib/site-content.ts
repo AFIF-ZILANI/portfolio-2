@@ -37,8 +37,6 @@ export function mergeSiteData(stored: Partial<SiteData> | null | undefined): Sit
         socialLinks: pickList(stored.socialLinks, DEFAULT_SITE_DATA.socialLinks),
         experiences: pickList(stored.experiences, DEFAULT_SITE_DATA.experiences),
         stats: pickList(stored.stats, DEFAULT_SITE_DATA.stats),
-        skills: pickList(stored.skills, DEFAULT_SITE_DATA.skills),
-        projects: pickList(stored.projects, DEFAULT_SITE_DATA.projects),
         contact: {
             heading: pickText(stored.contact?.heading, DEFAULT_SITE_DATA.contact.heading),
             // Blank is meaningful here: it means "use the CONTACT_EMAIL env var".
@@ -62,26 +60,16 @@ export async function getStoredSiteData(): Promise<SiteData> {
  * Swap image ids for the images themselves, in one query for the whole page.
  *
  * Hero and about fall back to the repo portraits so the page is never missing its
- * two most prominent images — including on a fresh database. A project cover
- * resolves to null instead, because the projects grid already renders a placeholder
- * for that case.
+ * two most prominent images — including on a fresh database.
  */
 export async function resolveSiteData(data: SiteData): Promise<ResolvedSiteData> {
-    const found = await resolveImages([
-        data.heroImageId,
-        data.aboutImageId,
-        ...data.projects.map((p) => p.coverImageId),
-    ]);
+    const found = await resolveImages([data.heroImageId, data.aboutImageId]);
 
-    const { heroImageId, aboutImageId, projects, ...rest } = data;
+    const { heroImageId, aboutImageId, ...rest } = data;
     return {
         ...rest,
         heroImage: found.get(heroImageId) ?? DEFAULT_HERO_IMAGE,
         aboutImage: found.get(aboutImageId) ?? DEFAULT_ABOUT_IMAGE,
-        projects: projects.map(({ coverImageId, ...project }) => ({
-            ...project,
-            coverImage: found.get(coverImageId) ?? null,
-        })),
     };
 }
 

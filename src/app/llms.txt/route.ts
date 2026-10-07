@@ -26,45 +26,31 @@ export async function GET() {
     const lines = [
         `# ${site.name} (Kazi Afif Zilani)`,
         "",
-        `> ${site.title} ${site.tagline}`,
+        `> ${site.title.replace(/\.$/, "")}. ${site.tagline}`,
         "",
         "## About",
         "",
         `- **Full name:** Kazi Afif Zilani`,
         `- **Also written as:** Afif Zilani, AFIF ZILANI, afif zilani, afifzilani`,
-        `- **Role:** Full-Stack Developer; Co-Founder of ZeroD`,
+        `- **Role:** Co-Founder & CEO of ZeroD Farm`,
+        `- **Business:** ZeroD Farm — a poultry farm in Naogaon, Rajshahi Division, Bangladesh, founded in 2022`,
         `- **Based in:** Naogaon, Bangladesh`,
+        `- **Focus:** ZeroD Farm only. Not seeking employment or freelance work.`,
         `- **Canonical site:** ${SITE_URL}`,
         "",
-        ...site.bio.map((line) => `${line}`),
-        "",
+        ...site.bio.flatMap((paragraph) => [paragraph, ""]),
         "## Key pages",
         "",
-        `- [Portfolio homepage](${SITE_URL}/): profile, skills, projects, experience, contact`,
-        `- [Blog](${SITE_URL}/blogs): writing on web development and software engineering`,
+        `- [Homepage](${SITE_URL}/): about, ZeroD Farm, contact`,
+        `- [ZeroD Farm](${SITE_URL}/#zerod-farm): what the farm does and who it works with`,
+        `- [Contact](${SITE_URL}/#contact): buyers, suppliers and partners`,
+        `- [Blog](${SITE_URL}/blogs): writing`,
         `- [Events](${SITE_URL}/events): first-hand write-ups of events, meetups and workshops attended`,
-        "",
-        "## Projects",
-        "",
-        ...site.projects
-            .filter((p) => p.featured)
-            .map(
-                (p) =>
-                    `- **${p.title}**${p.live ? ` (${p.live})` : ""}: ${p.description} Built with ${p.tech.join(", ")}.`
-            ),
         "",
         "## Experience",
         "",
-        ...site.experiences.map((e) => `- **${e.role}**, ${e.company} (${e.period}): ${e.description}`),
-        "",
-        "## Skills",
-        "",
-        ...[...new Set(site.skills.map((s) => s.category))].map(
-            (cat) =>
-                `- **${cat}:** ${site.skills
-                    .filter((s) => s.category === cat)
-                    .map((s) => s.name)
-                    .join(", ")}`
+        ...site.experiences.map(
+            (e) => `- **${e.role}**, ${e.company} (${e.period}): ${e.description}`
         ),
         "",
         "## Articles",

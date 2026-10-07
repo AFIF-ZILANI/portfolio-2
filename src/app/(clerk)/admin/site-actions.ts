@@ -26,15 +26,6 @@ export async function saveSiteSection(patch: Partial<SiteData>): Promise<SiteSav
     for (const link of next.socialLinks) {
         if (!link.href.trim()) return { ok: false, error: `Social link "${link.label}" has no URL.` };
     }
-    for (const project of next.projects) {
-        if (!project.title.trim()) return { ok: false, error: "Every project needs a title." };
-    }
-    for (const skill of next.skills) {
-        if (!skill.name.trim()) return { ok: false, error: "Every skill needs a name." };
-        if (!skill.category.trim()) {
-            return { ok: false, error: `Skill "${skill.name}" needs a category.` };
-        }
-    }
     if (next.contact.email.trim() && !next.contact.email.includes("@")) {
         return { ok: false, error: "Contact email is not a valid address." };
     }

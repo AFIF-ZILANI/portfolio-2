@@ -18,7 +18,7 @@ export function EventCard({ event, priority = false }: { event: EventCardData; p
         <article>
             <Link
                 href={`/events/${event.slug}`}
-                className="group flex flex-col h-full bg-card border border-border hover:border-primary transition-colors duration-300"
+                className="group flex flex-col h-full overflow-hidden rounded-2xl bg-card border border-border hover:border-primary transition-colors duration-300"
             >
                 <div className="relative w-full aspect-video bg-muted overflow-hidden">
                     {event.cover ? (
@@ -31,14 +31,14 @@ export function EventCard({ event, priority = false }: { event: EventCardData; p
                             className="object-cover"
                         />
                     ) : (
-                        <div className="absolute inset-0 grid place-items-center font-mono text-xs text-muted-foreground">
+                        <div className="absolute inset-0 grid place-items-center text-xs text-muted-foreground">
                             {event.slug}
                         </div>
                     )}
                 </div>
 
                 <div className="p-5 flex flex-col gap-3 flex-1">
-                    <p className="font-mono text-xs text-primary">
+                    <p className="text-xs text-primary">
                         {formatEventDates(event.startDate, event.endDate)}
                         {event.role ? ` · ${event.role}` : ""}
                     </p>
@@ -50,7 +50,7 @@ export function EventCard({ event, priority = false }: { event: EventCardData; p
                     <p className="text-sm text-muted-foreground line-clamp-3">{event.excerpt}</p>
 
                     {where && (
-                        <p className="font-mono text-xs text-muted-foreground mt-auto pt-1 flex items-center gap-1.5">
+                        <p className="text-xs text-muted-foreground mt-auto pt-1 flex items-center gap-1.5">
                             <MapPin size={12} className="shrink-0" />
                             <span className="truncate">{where}</span>
                         </p>
