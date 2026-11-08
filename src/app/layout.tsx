@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Mono } from "next/font/google";
+import { Geist, Instrument_Serif, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { SITE_URL } from "@/lib/site";
@@ -14,9 +14,20 @@ const spaceMono = Space_Mono({
     variable: "--font-space-mono",
 });
 
-const TITLE = "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD";
+// The public site reads in Geist with Instrument Serif for display; Space Mono stays
+// for labels and for the admin, which keeps its terminal look.
+const geist = Geist({ subsets: ["latin"], display: "swap", variable: "--font-geist" });
+const instrumentSerif = Instrument_Serif({
+    subsets: ["latin"],
+    weight: "400",
+    style: ["normal", "italic"],
+    display: "swap",
+    variable: "--font-instrument-serif",
+});
+
+const TITLE = "Afif Zilani — Entrepreneur, General Manager of ZeroD Farms & Programmer";
 const DESCRIPTION =
-    "Kazi Afif Zilani (AFIF ZILANI) — full-stack developer, entrepreneur, and co-founder of ZeroD. Builds high-performance web systems from Naogaon, Bangladesh.";
+    "Kazi Afif Zilani (AFIF ZILANI) — business owner from Naogaon, Bangladesh. General Manager of ZeroD Farms, Co-Founder of ZeroD Umb and ZeroD Agency, and a programmer.";
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
@@ -56,7 +67,7 @@ export const metadata: Metadata = {
                 url: "/afifzilani-profile.webp",
                 width: 1535,
                 height: 1536,
-                alt: "Afif Zilani — Full-Stack Developer and Co-Founder of ZeroD",
+                alt: "Afif Zilani — Entrepreneur and Co-Founder of ZeroD",
                 type: "image/webp",
             },
             {
@@ -79,7 +90,7 @@ export const metadata: Metadata = {
         images: [
             {
                 url: "/afifzilani-profile.webp",
-                alt: "Afif Zilani — Full-Stack Developer and Co-Founder of ZeroD",
+                alt: "Afif Zilani — Entrepreneur and Co-Founder of ZeroD",
             },
         ],
     },
@@ -101,7 +112,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={spaceMono.variable} suppressHydrationWarning>
+        <html lang="en" className={`${spaceMono.variable} ${geist.variable} ${instrumentSerif.variable}`} suppressHydrationWarning>
             <head>
                 <link rel="me" href="https://github.com/AFIF-ZILANI" />
                 <link rel="me" href="https://www.linkedin.com/in/afifzilani" />

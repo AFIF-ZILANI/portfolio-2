@@ -1,233 +1,146 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
-import { SectionHeading } from "@/components/layout/section-heading";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-
+import {
+    animate,
+    motion,
+    useInView,
+    useReducedMotion,
+    useScroll,
+    useTransform,
+} from "framer-motion";
+import { SectionHeading } from "@/components/layout/section-heading";
+import { SocialIconGlyph } from "@/lib/icons";
 import type { ResolvedSiteData } from "@/lib/site-data";
 
-function TerminalTitleBar({ label }: { label: string }) {
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+export function About({ data }: { data: ResolvedSiteData }) {
+    const photo = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({ target: photo, offset: ["start end", "end start"] });
+    const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+
+    // Older records store the bio as short wrapped lines (it was a terminal);
+    // newer ones as paragraphs. Join short lines so both read as prose.
+    const paragraphs = data.bio.every((l) => l.length < 70) ? [data.bio.join(" ")] : data.bio;
+
     return (
-        <div className="flex items-center gap-1.5 bg-card border-b border-border px-3 py-2 shrink-0">
-            <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-            <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
-            <span className="w-3 h-3 rounded-full bg-[#28c840]" />
-            <span className="ml-2 font-mono text-xs text-muted-foreground">{label}</span>
-        </div>
+        <section id="about" className="py-24 md:py-32 border-t border-border">
+            <div className="container mx-auto px-6 max-w-6xl">
+                <SectionHeading
+                    eyebrow="About"
+                    title="Building businesses, and the systems that run them."
+                />
+
+                <div className="grid md:grid-cols-[0.9fr_1.1fr] gap-12 md:gap-16 items-start">
+                    <div
+                        ref={photo}
+                        className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
+                    >
+                        <motion.div className="absolute inset-[-10%]" style={{ y }}>
+                            <Image
+                                src={data.aboutImage.url}
+                                alt={data.aboutImage.alt}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 480px"
+                                className="object-cover"
+                                data-testid="img-profile-about"
+                            />
+                        </motion.div>
+                    </div>
+
+                    <div>
+                        <div className="space-y-5 text-lg leading-relaxed text-muted-foreground">
+                            {paragraphs.map((p, i) => (
+                                <motion.p
+                                    key={i}
+                                    className={
+                                        i === 0
+                                            ? "text-foreground text-xl md:text-2xl leading-snug"
+                                            : ""
+                                    }
+                                    initial={{ opacity: 0, y: 16 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-60px" }}
+                                    transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
+                                >
+                                    {p}
+                                </motion.p>
+                            ))}
+                        </div>
+
+                        <dl className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border">
+                            {data.stats.map((s) => (
+                                // dt must come first in a dl; flex-col-reverse puts the figure on top
+                                <div
+                                    key={s.key}
+                                    className="flex flex-col-reverse bg-background p-5 md:p-6"
+                                >
+                                    <dt className="mt-1 text-sm text-muted-foreground">
+                                        {s.label}
+                                    </dt>
+                                    <dd className="font-serif text-4xl md:text-5xl tracking-tight">
+                                        <CountUp value={s.value} />
+                                    </dd>
+                                </div>
+                            ))}
+                        </dl>
+
+                        <ul className="mt-10 flex flex-wrap gap-2">
+                            {data.socialLinks.map((link) => (
+                                <li key={link.id}>
+                                    <a
+                                        href={link.href}
+                                        target={
+                                            link.href.startsWith("mailto:") ? undefined : "_blank"
+                                        }
+                                        rel={
+                                            link.href.startsWith("mailto:")
+                                                ? undefined
+                                                : "noopener noreferrer"
+                                        }
+                                        className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
+                                        data-testid={`link-about-${link.label.replace("/", "")}`}
+                                    >
+                                        <SocialIconGlyph name={link.icon} size={13} />
+                                        {link.label.replace(/\/$/, "")}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
     );
 }
 
-function TerminalLine({
-    line,
-    visible,
-}: {
-    line: {
-        prompt?: string;
-        cmd?: string;
-        output?: string;
-        color?: string;
-        delay: number;
-        cursor?: boolean;
-    };
-    visible: boolean;
-}) {
-    if (!visible) return null;
-    if (line.prompt) {
-        return (
-            <div className="flex items-center gap-2 font-mono text-sm">
-                <span className="text-primary">{line.prompt}</span>
-                <span className="text-foreground">{line.cmd}</span>
-                {line.cursor && (
-                    <motion.span
-                        className="inline-block w-2 h-4 bg-primary"
-                        animate={{ opacity: [1, 0] }}
-                        transition={{ duration: 0.8, repeat: Infinity }}
-                    />
-                )}
-            </div>
-        );
-    }
-    return <div className={`font-mono text-sm pl-4 ${line.color}`}>{line.output}</div>;
-}
+/**
+ * Counts the leading number of a stat ("10k", "5+", "40+") up from zero the first
+ * time it is seen, keeping whatever follows the digits. Non-numeric values render
+ * as they are.
+ */
+function CountUp({ value }: { value: string }) {
+    const ref = useRef<HTMLSpanElement>(null);
+    const seen = useInView(ref, { once: true, margin: "-40px" });
+    const reduce = useReducedMotion();
+    const m = value.match(/^(\d+(?:\.\d+)?)(.*)$/);
+    const target = m ? Number(m[1]) : 0;
+    const [n, setN] = useState(m && !reduce ? 0 : target);
 
-export function About({ data }: { data: ResolvedSiteData }) {
-    const [visibleLines, setVisibleLines] = useState<number[]>([]);
-    const [hasStarted, setHasStarted] = useState(false);
+    useEffect(() => {
+        if (!m || !seen || reduce) return;
+        const c = animate(0, target, { duration: 1.4, ease: EASE, onUpdate: (v) => setN(v) });
+        return () => c.stop();
+    }, [seen, target, reduce]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    type TerminalLineData =
-        | {
-              prompt: string;
-              cmd: string;
-              delay: number;
-              cursor?: boolean;
-              output?: undefined;
-              color?: undefined;
-          }
-        | {
-              output: string;
-              color: string;
-              delay: number;
-              prompt?: undefined;
-              cmd?: undefined;
-              cursor?: undefined;
-          };
-
-    const bioLines = useMemo((): TerminalLineData[] => {
-        const lines: TerminalLineData[] = [
-            { prompt: "afif@dev:~$", cmd: "whoami", delay: 0 },
-            {
-                output: `${data.name} — ${data.title.replace(".", "")}`,
-                color: "text-primary",
-                delay: 300,
-            },
-            { prompt: "afif@dev:~$", cmd: "cat bio.txt", delay: 700 },
-        ];
-
-        data.bio.forEach((line, i) => {
-            lines.push({ output: line, color: "text-muted-foreground", delay: 1000 + i * 150 });
-        });
-
-        const lastDelay = 1000 + data.bio.length * 150 + 300;
-        lines.push({ prompt: "afif@dev:~$", cmd: "", delay: lastDelay, cursor: true });
-
-        return lines;
-    }, [data.bio, data.name, data.title]);
-
-    const startAnimation = () => {
-        if (hasStarted) return;
-        setHasStarted(true);
-        bioLines.forEach((line, i) => {
-            setTimeout(() => setVisibleLines((prev) => [...prev, i]), line.delay);
-        });
-    };
-
+    if (!m) return <span>{value}</span>;
+    const decimals = m[1].includes(".") ? 1 : 0;
     return (
-        <section id="about" className="py-24 bg-card/30 border-y border-border">
-            <div className="container mx-auto px-6 max-w-6xl">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.5 }}
-                    onViewportEnter={startAnimation}
-                >
-                    <SectionHeading path="~/about.md" title="About" />
-
-                    <div className="grid md:grid-cols-2 gap-8 items-start">
-                        {/* ── Left: Photo + Stats ─────────────────────────── */}
-                        <motion.div
-                            className="flex flex-col gap-6"
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            {/* Photo wrapped in terminal chrome */}
-                            <div className="relative group border border-border rounded-sm overflow-hidden">
-                                <TerminalTitleBar label="afif_zilani.webp — Preview" />
-                                <div className="relative w-full aspect-5/4 overflow-hidden">
-                                    <Image
-                                        src={data.aboutImage.url}
-                                        alt={data.aboutImage.alt}
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, 480px"
-                                        className="object-cover object-bottom grayscale group-hover:grayscale-0 transition-all duration-700"
-                                        data-testid="img-profile-about"
-                                    />
-                                    {/* Subtle scanlines */}
-                                    <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_3px,rgba(0,0,0,0.04)_3px,rgba(0,0,0,0.04)_4px)] pointer-events-none" />
-                                    {/* Bottom label */}
-                                    <div className="absolute bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border px-3 py-1.5 font-mono text-xs flex justify-between items-center">
-                                        <span className="text-primary">
-                                            {data.name.toLowerCase().replace(" ", "_")}.webp
-                                        </span>
-                                        <span className="text-muted-foreground">1024×1024</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Stats: env-var syntax */}
-                            <div className="bg-background border border-border rounded-sm font-mono text-sm p-4 space-y-2">
-                                <div className="text-muted-foreground text-xs mb-3 border-b border-border pb-2">
-                                    # environment variables
-                                </div>
-                                {data.stats.map((s, i) => (
-                                    <motion.div
-                                        key={s.key}
-                                        className="flex items-center gap-2 flex-wrap"
-                                        initial={{ opacity: 0, x: -10 }}
-                                        whileInView={{ opacity: 1, x: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ duration: 0.3, delay: i * 0.1 }}
-                                    >
-                                        <span className="text-blue-600 dark:text-blue-400">
-                                            export
-                                        </span>
-                                        <span className="text-amber-600 dark:text-yellow-300 uppercase">
-                                            {s.key}
-                                        </span>
-                                        <span className="text-muted-foreground">=</span>
-                                        <span className="text-primary font-bold">
-                                            &quot;{s.value}&quot;
-                                        </span>
-                                        <span className="text-muted-foreground text-xs">
-                                            {s.label}
-                                        </span>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </motion.div>
-
-                        {/* ── Right: Terminal bio + links ─────────────────── */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                            className="flex flex-col gap-4"
-                        >
-                            {/* Terminal bio */}
-                            <div className="bg-background border border-border rounded-sm overflow-hidden flex flex-col">
-                                <TerminalTitleBar label="bash — afif@dev" />
-                                <div className="p-4 space-y-1.5 min-h-80">
-                                    {bioLines.map((line, i) => (
-                                        <TerminalLine
-                                            key={i}
-                                            line={line}
-                                            visible={visibleLines.includes(i)}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Links: ls -la style */}
-                            <div className="bg-background border border-border rounded-sm p-4 font-mono text-sm">
-                                <div className="text-muted-foreground text-xs mb-3 border-b border-border pb-2">
-                                    afif@dev:~$ ls -la ./links
-                                </div>
-                                <div className="grid grid-cols-2 gap-y-2 gap-x-4">
-                                    {data.socialLinks.map((link) => (
-                                        <a
-                                            key={link.id}
-                                            href={link.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 dark:text-blue-400 hover:underline transition-all flex items-center gap-1.5"
-                                            data-testid={`link-about-${link.label.replace("/", "")}`}
-                                        >
-                                            <span className="text-muted-foreground text-xs select-none">
-                                                drwxr
-                                            </span>
-                                            <span>{link.label}</span>
-                                        </a>
-                                    ))}
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
-                </motion.div>
-            </div>
-        </section>
+        <span ref={ref} className="tabular-nums">
+            {n.toFixed(decimals)}
+            <span className="text-primary">{m[2]}</span>
+        </span>
     );
 }

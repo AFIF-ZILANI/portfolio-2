@@ -31,6 +31,7 @@ export function ExperienceEditor({ data }: { data: SiteData }) {
                     role: "",
                     period: "",
                     description: "",
+                    url: "",
                 })}
                 renderRow={(item, update) => (
                     <div className="space-y-3">
@@ -40,7 +41,7 @@ export function ExperienceEditor({ data }: { data: SiteData }) {
                                 <Input
                                     value={item.role}
                                     onChange={(e) => update({ role: e.target.value })}
-                                    placeholder="Co-Founder & Full-Stack Developer"
+                                    placeholder="General Manager"
                                 />
                             </div>
                             <div className="space-y-1.5">
@@ -48,18 +49,30 @@ export function ExperienceEditor({ data }: { data: SiteData }) {
                                 <Input
                                     value={item.company}
                                     onChange={(e) => update({ company: e.target.value })}
-                                    placeholder="ZeroD Agencies"
+                                    placeholder="ZeroD Farms"
                                 />
                             </div>
                         </div>
-                        <div className="space-y-1.5">
-                            <Label className={labelClass}>Period</Label>
-                            <Input
-                                value={item.period}
-                                onChange={(e) => update({ period: e.target.value })}
-                                placeholder="2022 — Present"
-                                className="font-mono text-sm"
-                            />
+                        <div className="grid sm:grid-cols-2 gap-3">
+                            <div className="space-y-1.5">
+                                <Label className={labelClass}>Period</Label>
+                                <Input
+                                    value={item.period}
+                                    onChange={(e) => update({ period: e.target.value })}
+                                    placeholder="2022 — Present"
+                                    className="font-mono text-sm"
+                                />
+                            </div>
+                            <div className="space-y-1.5">
+                                <Label className={labelClass}>Website</Label>
+                                <Input
+                                    type="url"
+                                    value={item.url ?? ""}
+                                    onChange={(e) => update({ url: e.target.value })}
+                                    placeholder="https://farms.zerod.bd"
+                                    className="font-mono text-sm"
+                                />
+                            </div>
                         </div>
                         <div className="space-y-1.5">
                             <Label className={labelClass}>Description</Label>

@@ -21,24 +21,22 @@ export function SeriesNav({
     return (
         <nav
             aria-label={`${seriesTitle} series navigation`}
-            className="border border-border bg-card p-6 space-y-4"
+            className="rounded-3xl border border-border bg-card p-6 md:p-8 space-y-4"
         >
             <div>
                 <p className="font-mono text-xs text-primary uppercase tracking-wider">
                     {index >= 0 ? `Part ${index + 1} of ${parts.length}` : "Series"}
                 </p>
-                <p className="font-bold mt-1">{seriesTitle}</p>
-                {description && (
-                    <p className="text-sm text-muted-foreground mt-1">{description}</p>
-                )}
+                <p className="font-serif text-2xl mt-1">{seriesTitle}</p>
+                {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
             </div>
 
-            <ol className="space-y-1 font-mono text-sm">
+            <ol className="space-y-2 text-sm">
                 {parts.map((p, i) => {
                     const current = p.slug === currentSlug;
                     return (
                         <li key={p.slug} className="flex gap-3">
-                            <span className="text-muted-foreground shrink-0">
+                            <span className="font-mono text-muted-foreground shrink-0">
                                 {String(i + 1).padStart(2, "0")}.
                             </span>
                             {current ? (

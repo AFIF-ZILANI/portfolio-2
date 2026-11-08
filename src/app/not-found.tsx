@@ -7,9 +7,9 @@ const ROUTES = [
     { path: "/", label: "home/" },
     { path: "/#about", label: "about/" },
     { path: "/#contact", label: "contact/" },
-    { path: "/#projects", label: "projects/" },
+    { path: "/#ventures", label: "ventures/" },
     { path: "/#skills", label: "skills/" },
-    { path: "/#experience", label: "experience/" },
+    { path: "/blogs", label: "blogs/" },
 ];
 
 // Embed path into the line string so the renderer can extract it without fragile regex

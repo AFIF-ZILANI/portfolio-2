@@ -2,26 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, Moon, Sun, Terminal } from "lucide-react";
+import { Menu, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { AdminLink } from "@/components/layout/admin-link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 
 /** Single source for the nav items, so desktop and mobile can't drift apart. */
 const SECTIONS = [
-    { id: "about", label: "/about" },
-    { id: "skills", label: "/skills" },
-    { id: "projects", label: "/projects" },
-    { id: "experience", label: "/experience" },
-    { id: "contact", label: "/contact" },
+    { id: "ventures", label: "Ventures" },
+    { id: "about", label: "About" },
+    { id: "skills", label: "Skills" },
+    { id: "contact", label: "Contact" },
 ] as const;
 
 export function Navbar() {
@@ -52,24 +45,23 @@ export function Navbar() {
     const onEvents = pathname.startsWith("/events");
 
     return (
-        <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
+        <nav className="fixed top-0 w-full z-50 bg-background/70 backdrop-blur-xl border-b border-border/60">
             <div className="container mx-auto px-6 h-16 flex items-center justify-between">
                 <button
                     type="button"
                     aria-label="Back to top"
-                    className="flex items-center gap-2 text-primary font-mono font-bold text-xl cursor-pointer"
+                    className="font-serif text-2xl tracking-tight cursor-pointer"
                     onClick={() => (pathname === "/" ? scrollTo("hero") : router.push("/"))}
                 >
-                    <Terminal size={24} />
-                    <span>afif@dev</span>
+                    Afif <span className="italic text-primary">Zilani</span>
                 </button>
 
-                <div className="hidden md:flex items-center gap-8 font-mono text-sm">
+                <div className="hidden md:flex items-center gap-8 text-sm">
                     {SECTIONS.map((s) => (
                         <button
                             key={s.id}
                             onClick={() => scrollTo(s.id)}
-                            className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                            className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         >
                             {s.label}
                         </button>
@@ -78,21 +70,21 @@ export function Navbar() {
                         href="/blogs"
                         className={
                             onBlog
-                                ? "text-primary"
-                                : "text-muted-foreground hover:text-primary transition-colors"
+                                ? "text-foreground"
+                                : "text-muted-foreground hover:text-foreground transition-colors"
                         }
                     >
-                        /blogs
+                        Journal
                     </Link>
                     <Link
                         href="/events"
                         className={
                             onEvents
-                                ? "text-primary"
-                                : "text-muted-foreground hover:text-primary transition-colors"
+                                ? "text-foreground"
+                                : "text-muted-foreground hover:text-foreground transition-colors"
                         }
                     >
-                        /events
+                        Events
                     </Link>
                 </div>
 
@@ -121,11 +113,10 @@ export function Navbar() {
                                 <Menu size={22} />
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-64 font-mono">
+                        <SheetContent side="right" className="w-64">
                             <SheetHeader>
-                                <SheetTitle className="flex items-center gap-2 text-primary">
-                                    <Terminal size={18} />
-                                    afif@dev
+                                <SheetTitle className="font-serif text-2xl font-normal">
+                                    Afif <span className="italic text-primary">Zilani</span>
                                 </SheetTitle>
                             </SheetHeader>
                             <div className="flex flex-col px-4 pb-6">
@@ -142,19 +133,23 @@ export function Navbar() {
                                     href="/blogs"
                                     onClick={() => setMenuOpen(false)}
                                     className={`py-3 border-b border-border transition-colors ${
-                                        onBlog ? "text-primary" : "text-muted-foreground hover:text-primary"
+                                        onBlog
+                                            ? "text-primary"
+                                            : "text-muted-foreground hover:text-primary"
                                     }`}
                                 >
-                                    /blogs
+                                    Journal
                                 </Link>
                                 <Link
                                     href="/events"
                                     onClick={() => setMenuOpen(false)}
                                     className={`py-3 border-b border-border transition-colors ${
-                                        onEvents ? "text-primary" : "text-muted-foreground hover:text-primary"
+                                        onEvents
+                                            ? "text-primary"
+                                            : "text-muted-foreground hover:text-primary"
                                     }`}
                                 >
-                                    /events
+                                    Events
                                 </Link>
                             </div>
                         </SheetContent>

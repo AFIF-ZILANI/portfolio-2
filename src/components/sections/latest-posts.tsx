@@ -1,86 +1,47 @@
 import Link from "next/link";
-import { SectionHeading } from "@/components/layout/section-heading";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import type { PostCard } from "@/lib/blog";
-
-const fmt = (d: Date | null) =>
-    d ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "";
+import { SectionHeading } from "@/components/layout/section-heading";
+import { PostCard } from "@/components/blog/post-card";
+import type { PostCard as PostCardData } from "@/lib/blog";
 
 /**
- * Latest writing on the homepage.
- *
- * A server component on purpose — it's static markup, so it adds no JavaScript to
- * the homepage bundle, unlike the other sections which are all client components
- * for their animations.
+ * Latest writing on the homepage: the newest post wide, the next two beside each
+ * other. Static markup apart from the heading's reveal.
  */
-export function LatestPosts({ posts }: { posts: PostCard[] }) {
+export function LatestPosts({ posts }: { posts: PostCardData[] }) {
     // Nothing published yet: render nothing rather than an empty shell.
     if (posts.length === 0) return null;
+    const [lead, ...rest] = posts;
 
     return (
-        <section id="writing" className="py-24">
+        <section id="writing" className="py-24 md:py-32 border-t border-border">
             <div className="container mx-auto px-6 max-w-6xl">
                 <SectionHeading
-                    path="~/writing/"
-                    title="Latest Writing"
+                    eyebrow="Journal"
+                    title="Notes from the farm and the keyboard."
                     action={
                         <Link
                             href="/blogs"
-                            className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 group shrink-0"
+                            className="group flex shrink-0 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary"
                         >
-                            all posts
+                            All posts
                             <ArrowRight
                                 size={14}
-                                className="group-hover:translate-x-1 transition-transform"
+                                className="transition-transform group-hover:translate-x-1"
                             />
                         </Link>
                     }
                 />
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {posts.map((p) => (
-                        <article key={p.id}>
-                            <Link
-                                href={`/blogs/${p.slug}`}
-                                className="group flex flex-col h-full bg-card border border-border hover:border-primary transition-colors duration-300"
-                            >
-                                <div className="relative w-full aspect-video bg-muted overflow-hidden">
-                                    {p.coverImage ? (
-                                        <Image
-                                            src={p.coverImage.url}
-                                            alt={p.coverImage.alt || p.title}
-                                            fill
-                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                            className="object-cover"
-                                        />
-                                    ) : (
-                                        <div className="absolute inset-0 grid place-items-center font-mono text-xs text-muted-foreground">
-                                            {p.slug}.md
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="p-5 flex flex-col gap-3 flex-1">
-                                    {p.series && (
-                                        <p className="font-mono text-xs text-primary">
-                                            {p.series.title}
-                                            {p.seriesOrder ? ` · part ${p.seriesOrder}` : ""}
-                                        </p>
-                                    )}
-                                    <h3 className="font-bold leading-snug group-hover:text-primary transition-colors">
-                                        {p.title}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground line-clamp-3">
-                                        {p.excerpt}
-                                    </p>
-                                    <p className="font-mono text-xs text-muted-foreground mt-auto pt-1">
-                                        {fmt(p.publishedAt)} · {p.readingMinutes} min read
-                                    </p>
-                                </div>
-                            </Link>
-                        </article>
-                    ))}
+                <div className="grid gap-4">
+                    <PostCard post={lead} featured />
+                    {rest.length > 0 && (
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            {rest.map((p) => (
+                                <PostCard key={p.id} post={p} />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </section>

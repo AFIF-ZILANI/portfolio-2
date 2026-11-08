@@ -8,11 +8,10 @@ import { prisma } from "@/lib/prisma";
 import { Markdown } from "@/components/blog/markdown";
 import { SeriesNav } from "@/components/blog/series-nav";
 import { ViewCounter } from "@/components/blog/view-counter";
+import { ReadingProgress } from "@/components/blog/reading-progress";
 import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 60;
-
-
 
 export async function generateStaticParams() {
     const posts = await prisma.post.findMany({
@@ -124,27 +123,34 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
     return (
         <>
+            <ReadingProgress />
             <main className="pt-32 pb-24">
-                <article className="container mx-auto px-6 max-w-3xl space-y-8">
+                <article className="container mx-auto px-6 max-w-3xl space-y-10">
                     <Link
                         href="/blogs"
-                        className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-primary transition-colors"
+                        className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                        <ArrowLeft size={14} /> all posts
+                        <ArrowLeft
+                            size={14}
+                            className="transition-transform group-hover:-translate-x-1"
+                        />{" "}
+                        Journal
                     </Link>
 
-                    <header className="space-y-4">
+                    <header className="space-y-6">
                         {post.series && (
-                            <p className="font-mono text-xs text-primary">
+                            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
                                 {post.series.title}
                                 {post.seriesOrder ? ` · part ${post.seriesOrder}` : ""}
                             </p>
                         )}
-                        <h1 className="text-3xl md:text-4xl font-bold leading-tight">
+                        <h1 className="font-serif text-4xl md:text-6xl leading-[1.02] tracking-tight">
                             {post.title}
                         </h1>
-                        <p className="text-muted-foreground">{post.excerpt}</p>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
+                        <p className="text-xl leading-relaxed text-muted-foreground">
+                            {post.excerpt}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-y border-border py-4 font-mono text-xs text-muted-foreground">
                             <time dateTime={post.publishedAt?.toISOString()}>
                                 {fmt(post.publishedAt)}
                             </time>
@@ -154,10 +160,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                             <ViewCounter slug={post.slug} initial={post.views} />
                         </div>
                         {post.tags.length > 0 && (
-                            <ul className="flex flex-wrap gap-2 font-mono text-xs text-muted-foreground">
+                            <ul className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                                 {post.tags.map((t) => (
-                                    <li key={t} className="border border-border px-2 py-1">
-                                        #{t}
+                                    <li key={t} className="rounded-full bg-muted px-3 py-1">
+                                        {t}
                                     </li>
                                 ))}
                             </ul>
@@ -165,7 +171,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                     </header>
 
                     {post.coverImage && (
-                        <div className="relative w-full aspect-video border border-border">
+                        <div className="relative w-full aspect-video overflow-hidden rounded-3xl border border-border">
                             <Image
                                 src={post.coverImage.url}
                                 alt={post.coverImage.alt || post.title}

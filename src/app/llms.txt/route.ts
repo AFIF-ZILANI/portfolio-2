@@ -26,13 +26,13 @@ export async function GET() {
     const lines = [
         `# ${site.name} (Kazi Afif Zilani)`,
         "",
-        `> ${site.title} ${site.tagline}`,
+        `> ${site.title.split(" · ").join(", ")}. ${site.tagline}`,
         "",
         "## About",
         "",
         `- **Full name:** Kazi Afif Zilani`,
         `- **Also written as:** Afif Zilani, AFIF ZILANI, afif zilani, afifzilani`,
-        `- **Role:** Full-Stack Developer; Co-Founder of ZeroD`,
+        `- **Role:** Entrepreneur; General Manager of ZeroD Farms; Co-Founder of ZeroD Umb and ZeroD Agency; programmer`,
         `- **Based in:** Naogaon, Bangladesh`,
         `- **Canonical site:** ${SITE_URL}`,
         "",
@@ -40,22 +40,15 @@ export async function GET() {
         "",
         "## Key pages",
         "",
-        `- [Portfolio homepage](${SITE_URL}/): profile, skills, projects, experience, contact`,
+        `- [Portfolio homepage](${SITE_URL}/): profile, ventures, skills, writing, contact`,
         `- [Blog](${SITE_URL}/blogs): writing on web development and software engineering`,
         `- [Events](${SITE_URL}/events): first-hand write-ups of events, meetups and workshops attended`,
         "",
-        "## Projects",
+        "## Ventures",
         "",
-        ...site.projects
-            .filter((p) => p.featured)
-            .map(
-                (p) =>
-                    `- **${p.title}**${p.live ? ` (${p.live})` : ""}: ${p.description} Built with ${p.tech.join(", ")}.`
-            ),
-        "",
-        "## Experience",
-        "",
-        ...site.experiences.map((e) => `- **${e.role}**, ${e.company} (${e.period}): ${e.description}`),
+        ...site.experiences.map(
+            (e) => `- **${e.role}**, ${e.company}${e.url ? ` (${e.url})` : ""} (${e.period}): ${e.description}`
+        ),
         "",
         "## Skills",
         "",

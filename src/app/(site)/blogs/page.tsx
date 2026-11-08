@@ -6,19 +6,17 @@ import { SITE_URL } from "@/lib/site";
 // Short window so scheduled posts appear without a deploy.
 export const revalidate = 60;
 
-
-
 export const metadata: Metadata = {
     title: "Blog",
     description:
-        "Writing by Afif Zilani on web development, Next.js, TypeScript, and building software.",
+        "Writing by Afif Zilani on running a business, poultry farming, web development, and building software.",
     alternates: { canonical: "/blogs" },
     openGraph: {
         type: "website",
         url: `${SITE_URL}/blogs`,
         title: "Blog | Afif Zilani",
         description:
-            "Writing by Afif Zilani on web development, Next.js, TypeScript, and building software.",
+            "Writing by Afif Zilani on running a business, poultry farming, web development, and building software.",
     },
 };
 
@@ -42,14 +40,20 @@ export default async function BlogsPage() {
 
     return (
         <>
-            <main className="pt-32 pb-24">
+            <main className="pt-36 pb-24">
                 <div className="container mx-auto px-6 max-w-6xl space-y-12">
-                    <header className="space-y-4">
-                        <h1 className="text-3xl md:text-4xl font-bold">
-                            Blog
+                    <header className="space-y-5 border-b border-border pb-12">
+                        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
+                            Journal
+                        </p>
+                        <h1 className="font-serif text-5xl md:text-7xl leading-[0.95] tracking-tight">
+                            Notes from the farm
+                            <br />
+                            <span className="italic text-muted-foreground">and the keyboard.</span>
                         </h1>
-                        <p className="text-muted-foreground max-w-2xl">
-                            Notes on what I build and what breaks along the way.
+                        <p className="text-lg text-muted-foreground max-w-2xl">
+                            What I learn running ZeroD Farms, building software at ZeroD Agency, and
+                            growing a group of companies from Naogaon.
                         </p>
                     </header>
 
