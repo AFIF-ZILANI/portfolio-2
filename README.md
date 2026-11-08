@@ -53,7 +53,7 @@ Requires [Bun](https://bun.sh) 1.x (Node 20+ also works for running the app) and
 git clone https://github.com/AFIF-ZILANI/portfolio-2.git
 cd portfolio-2
 bun install            # also runs `prisma generate`
-# create .env with the variables in the table below, then:
+cp .env.example .env   # then fill it in (variables explained below)
 bunx prisma migrate deploy
 bun dev                # http://localhost:3000
 ```
