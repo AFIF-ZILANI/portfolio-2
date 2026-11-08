@@ -1,0 +1,123 @@
+/* The tile is the ground and owns the crop: stages are transparent and their
+   pictures run off the bottom edge. */
+.vs-slot {
+  width: 100%;
+}
+
+.vs .ss-stage {
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Farms: one window, full slot width, bleeding off the bottom */
+.vs-farm .vs-farm-win {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 340px;
+  box-shadow: var(--ss-shadow-hero);
+}
+
+.vs-farm .vs-farm-body {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 28px;
+  padding: 22px 24px 0;
+}
+
+.vs-farm .vs-farm-body[data-narrow] {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.vs-farm .vs-farm-head {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+
+.vs-farm .vs-label {
+  color: var(--ss-text);
+  font-size: 12px;
+}
+
+.vs-farm .vs-total {
+  color: var(--ss-text-strong);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.vs-farm .vs-farm-badge {
+  margin-top: 10px;
+}
+
+.vs-farm .vs-farm-body[data-narrow] .vs-farm-head {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.vs-farm .vs-farm-body[data-narrow] .vs-label {
+  grid-column: 1 / -1;
+}
+
+.vs-farm .vs-farm-body[data-narrow] .vs-farm-badge {
+  margin: 0 0 6px;
+}
+
+.vs-farm .vs-farm-rows {
+  display: grid;
+  gap: 14px;
+}
+
+.vs-farm .vs-shed-name {
+  color: var(--ss-text);
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+
+.vs-farm .vs-shed[data-live] .vs-shed-name {
+  color: var(--ss-text-strong);
+}
+
+.vs-farm .vs-count {
+  color: var(--ss-text-strong);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Agency: one card on the copy gutter, bleeding off the bottom */
+.vs-ship .vs-ship-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: min(100%, 320px);
+  display: grid;
+  gap: 14px;
+  padding-bottom: 28px;
+}
+
+.vs-ship .vs-ship-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ss-line);
+}
+
+.vs-ship .vs-ship-title {
+  color: var(--ss-text-strong);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.vs-ship .vs-step-name {
+  color: var(--ss-text);
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+
+.vs-ship .vs-step[data-on] .vs-step-name {
+  color: var(--ss-text-strong);
+}
