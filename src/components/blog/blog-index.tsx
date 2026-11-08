@@ -118,7 +118,7 @@ export function BlogIndex({ posts }: { posts: PostCardData[] }) {
 
             {results.length === 0 ? (
                 <div className="rounded-3xl border border-dashed border-border p-16 text-center">
-                    <p className="font-serif text-3xl italic">
+                    <p className="text-3xl font-extrabold tracking-[-0.03em]">
                         {posts.length === 0
                             ? "The first entry is on its way."
                             : "Nothing matches that."}

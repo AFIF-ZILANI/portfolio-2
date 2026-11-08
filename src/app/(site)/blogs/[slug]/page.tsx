@@ -139,12 +139,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
                     <header className="space-y-6">
                         {post.series && (
-                            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
+                            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-ink">
                                 {post.series.title}
                                 {post.seriesOrder ? ` · part ${post.seriesOrder}` : ""}
                             </p>
                         )}
-                        <h1 className="font-serif text-4xl md:text-6xl leading-[1.02] tracking-tight">
+                        <h1 className="font-extrabold text-4xl md:text-6xl leading-[1.04] tracking-[-0.04em]">
                             {post.title}
                         </h1>
                         <p className="text-xl leading-relaxed text-muted-foreground">

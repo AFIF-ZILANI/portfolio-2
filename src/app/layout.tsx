@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Instrument_Serif, Space_Mono } from "next/font/google";
+import { Manrope, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { PORTRAIT, SITE_URL } from "@/lib/site";
+import { ABOUT_PORTRAIT, PORTRAIT, SITE_URL } from "@/lib/site";
 
 // Self-hosted at build time: no fonts.googleapis.com round-trip on first paint,
 // and a size-adjusted fallback so swapping in the real face doesn't shift layout.
@@ -14,16 +14,8 @@ const spaceMono = Space_Mono({
     variable: "--font-space-mono",
 });
 
-// The public site reads in Geist with Instrument Serif for display; Space Mono stays
-// for labels and for the admin, which keeps its terminal look.
-const geist = Geist({ subsets: ["latin"], display: "swap", variable: "--font-geist" });
-const instrumentSerif = Instrument_Serif({
-    subsets: ["latin"],
-    weight: "400",
-    style: ["normal", "italic"],
-    display: "swap",
-    variable: "--font-instrument-serif",
-});
+// The public site reads in Manrope; Space Mono stays for the admin's terminal look.
+const manrope = Manrope({ subsets: ["latin"], display: "swap", variable: "--font-manrope" });
 
 const TITLE = "Afif Zilani — Entrepreneur, General Manager of ZeroD Farms & Programmer";
 const DESCRIPTION =
@@ -71,9 +63,9 @@ export const metadata: Metadata = {
                 type: "image/webp",
             },
             {
-                url: "/afifzilani-about.webp",
-                width: 1254,
-                height: 1254,
+                url: ABOUT_PORTRAIT.url,
+                width: ABOUT_PORTRAIT.width,
+                height: ABOUT_PORTRAIT.height,
                 alt: "Kazi Afif Zilani — Entrepreneur and Programmer from Naogaon, Bangladesh",
                 type: "image/webp",
             },
@@ -112,7 +104,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`${spaceMono.variable} ${geist.variable} ${instrumentSerif.variable}`} suppressHydrationWarning>
+        <html lang="en" className={`${spaceMono.variable} ${manrope.variable}`} suppressHydrationWarning>
             <head>
                 <link rel="me" href="https://github.com/AFIF-ZILANI" />
                 <link rel="me" href="https://www.linkedin.com/in/afifzilani" />
@@ -127,7 +119,7 @@ export default function RootLayout({
             >
                 <ThemeProvider
                     attribute="class"
-                    defaultTheme="dark"
+                    defaultTheme="light"
                     enableSystem={false}
                     disableTransitionOnChange
                 >

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 
 /**
- * The heading for a public section: a small eyebrow, then a serif title whose
+ * The heading for a public section: a small gold eyebrow, then a bold title whose
  * words rise into place the first time it scrolls into view.
  *
  * The hairline runs from the eyebrow to the right edge so the label sits in the
@@ -24,7 +24,7 @@ export function SectionHeading({
     return (
         <div className="mb-12 md:mb-16">
             <div className="flex items-center gap-4">
-                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary shrink-0">
+                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-ink shrink-0">
                     {eyebrow}
                 </span>
                 <motion.span
@@ -37,7 +37,7 @@ export function SectionHeading({
                 />
                 {action}
             </div>
-            <h2 className="mt-5 font-serif text-4xl md:text-6xl leading-[1.05] tracking-tight">
+            <h2 className="mt-5 font-bold text-4xl md:text-[3.5rem] leading-[1.08] tracking-[-0.03em] text-foreground">
                 {words.map((w, i) => (
                     <span key={i} className="inline-block overflow-hidden pb-1 -mb-1 align-bottom">
                         <motion.span
@@ -45,7 +45,11 @@ export function SectionHeading({
                             initial={{ y: "105%" }}
                             whileInView={{ y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.7, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                            transition={{
+                                duration: 0.7,
+                                delay: i * 0.06,
+                                ease: [0.22, 1, 0.36, 1],
+                            }}
                         >
                             {w}
                             {i < words.length - 1 ? " " : ""}

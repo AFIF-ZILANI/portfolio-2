@@ -73,6 +73,10 @@ html {
   --color-sidebar-accent-border: var(--sidebar-accent-border);
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
+  --color-gold: hsl(var(--gold));
+  --color-gold-ink: hsl(var(--gold-ink));
+  --color-gold-soft: hsl(var(--gold-soft));
+
   --font-sans: var(--app-font-sans);
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
@@ -134,8 +138,12 @@ html {
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
 
-  --app-font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --app-font-serif: var(--font-instrument-serif), Georgia, serif;
+  --gold: 44 66% 50%;
+  --gold-ink: 42 78% 32%;
+  --gold-soft: 45 70% 88%;
+
+  --app-font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --app-font-serif: Georgia, serif;
   --app-font-mono: var(--font-space-mono), 'Space Mono', monospace;
   --radius: 0rem; 
 
@@ -218,6 +226,68 @@ html {
   --shadow-lg: 0px 2px 0px 0px hsl(142 71% 45% / 0.1), 0px 4px 6px -1px hsl(142 71% 45% / 0.1);
   --shadow-xl: 0px 2px 0px 0px hsl(142 71% 45% / 0.1), 0px 8px 10px -1px hsl(142 71% 45% / 0.1);
   --shadow-2xl: 0px 2px 0px 0px hsl(142 71% 45% / 0.1);
+}
+
+/* ── Public site: navy & gold ───────────────────────────────────────────
+   Scoped to pages that render the public layout (it marks itself with
+   .site-root), so the admin keeps its green terminal look on the same tokens.
+   Specificity (0,1,1)/(0,2,1) beats :root and .dark above. */
+html:has(.site-root) {
+  --background: 48 24% 96%;
+  --foreground: 223 39% 9%;
+  --card: 0 0% 100%;
+  --card-foreground: 223 39% 9%;
+  --card-border: 46 19% 86%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 223 39% 9%;
+  --popover-border: 46 19% 86%;
+  --border: 46 19% 86%;
+  --input: 46 19% 86%;
+  --primary: 221 51% 16%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 47 22% 92%;
+  --secondary-foreground: 223 39% 9%;
+  --muted: 47 22% 92%;
+  --muted-foreground: 224 11% 47%;
+  --accent: 222 39% 94%;
+  --accent-foreground: 223 39% 9%;
+  --ring: 44 66% 50%;
+  --gold: 44 66% 50%;
+  --gold-ink: 42 78% 32%;
+  --gold-soft: 45 70% 88%;
+  --app-font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --app-font-serif: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --app-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius: 1rem;
+}
+html.dark:has(.site-root) {
+  --background: 223 47% 7%;
+  --foreground: 47 27% 94%;
+  --card: 226 48% 13%;
+  --card-foreground: 47 27% 94%;
+  --card-border: 224 39% 23%;
+  --popover: 226 48% 13%;
+  --popover-foreground: 47 27% 94%;
+  --popover-border: 224 39% 23%;
+  --border: 224 39% 23%;
+  --input: 224 39% 23%;
+  --primary: 44 66% 50%;
+  --primary-foreground: 223 39% 9%;
+  --secondary: 225 44% 17%;
+  --secondary-foreground: 47 27% 94%;
+  --muted: 225 44% 17%;
+  --muted-foreground: 223 14% 60%;
+  --accent: 225 44% 17%;
+  --accent-foreground: 47 27% 94%;
+  --ring: 44 66% 50%;
+  --gold-ink: 44 70% 62%;
+  --gold-soft: 45 40% 12%;
+}
+html:has(.site-root) body {
+  background-image: none;
+}
+html:has(.site-root) :focus-visible {
+  outline-color: hsl(var(--gold));
 }
 
 @layer base {
@@ -328,6 +398,12 @@ html {
 .hljs-template-variable,
 .hljs-attribute {
     color: hsl(0 0% 88%);
+}
+html:has(.site-root) .hljs-keyword,
+html:has(.site-root) .hljs-selector-tag,
+html:has(.site-root) .hljs-literal,
+html:has(.site-root) .hljs-type {
+    color: hsl(var(--gold-ink));
 }
 .hljs-deletion {
     color: hsl(0 70% 62%);

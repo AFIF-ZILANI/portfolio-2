@@ -50,14 +50,14 @@ function VentureCard({ venture: v, index }: { venture: Experience; index: number
     const host = v.url ? v.url.replace(/^https?:\/\//, "").replace(/\/$/, "") : "";
     const body = (
         <>
-            <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 <span>0{index + 1}</span>
                 <span>{v.period}</span>
             </div>
-            <h3 className="mt-8 font-serif text-3xl md:text-4xl leading-none tracking-tight">
+            <h3 className="mt-8 text-3xl font-bold leading-[1.05] tracking-[-0.03em]">
                 {v.company}
             </h3>
-            <p className="mt-3 text-sm font-medium text-primary">{v.role}</p>
+            <p className="mt-3 text-sm font-semibold text-gold-ink">{v.role}</p>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{v.description}</p>
             {host && (
                 <span className="mt-auto pt-8">
@@ -73,7 +73,7 @@ function VentureCard({ venture: v, index }: { venture: Experience; index: number
     );
 
     const cls =
-        "group relative flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-card p-6 md:p-7 transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5";
+        "group relative flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-card p-6 md:p-7 transition-all duration-500 hover:-translate-y-1 hover:border-gold/60 hover:shadow-[0_10px_30px_-12px_rgb(20_33_61/0.18)]";
 
     return v.url ? (
         <a href={v.url} target="_blank" rel="noopener" className={cls}>

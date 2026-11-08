@@ -28,7 +28,7 @@ export function PostCard({
     return (
         <Link
             href={`/blogs/${p.slug}`}
-            className={`group relative flex h-full overflow-hidden rounded-3xl border border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 ${
+            className={`group relative flex h-full overflow-hidden rounded-3xl border border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-gold/60 hover:shadow-[0_10px_30px_-12px_rgb(20_33_61/0.18)] ${
                 featured ? "flex-col md:flex-row" : "flex-col"
             }`}
         >
@@ -53,8 +53,8 @@ export function PostCard({
                     />
                 ) : (
                     // No cover: the post's first tag, set large, on a soft green field
-                    <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-primary/15 via-transparent to-primary/5">
-                        <span className="font-serif italic text-4xl text-foreground/70">
+                    <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-primary/10 via-transparent to-gold/15">
+                        <span className="text-3xl font-extrabold tracking-[-0.03em] text-foreground/70">
                             {p.series?.title ?? p.tags[0] ?? "Journal"}
                         </span>
                     </div>
@@ -64,7 +64,7 @@ export function PostCard({
             <div
                 className={`flex flex-1 flex-col gap-3 p-6 ${featured ? "md:p-10 md:justify-center" : ""}`}
             >
-                <p className="flex flex-wrap items-center gap-x-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                <p className="flex flex-wrap items-center gap-x-2 text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
                     <time
                         dateTime={p.publishedAt ? new Date(p.publishedAt).toISOString() : undefined}
                     >
@@ -75,7 +75,7 @@ export function PostCard({
                     {p.series && (
                         <>
                             <span aria-hidden>·</span>
-                            <span className="text-primary normal-case tracking-normal">
+                            <span className="text-gold-ink normal-case tracking-normal">
                                 {p.series.title}
                                 {p.seriesOrder ? `, part ${p.seriesOrder}` : ""}
                             </span>
@@ -83,7 +83,7 @@ export function PostCard({
                     )}
                 </p>
                 <H
-                    className={`font-serif leading-[1.1] tracking-tight transition-colors group-hover:text-primary ${
+                    className={`font-bold leading-[1.15] tracking-[-0.025em] transition-colors group-hover:text-primary ${
                         featured ? "text-3xl md:text-5xl" : "text-2xl"
                     }`}
                 >

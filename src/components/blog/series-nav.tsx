@@ -24,10 +24,10 @@ export function SeriesNav({
             className="rounded-3xl border border-border bg-card p-6 md:p-8 space-y-4"
         >
             <div>
-                <p className="font-mono text-xs text-primary uppercase tracking-wider">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-ink">
                     {index >= 0 ? `Part ${index + 1} of ${parts.length}` : "Series"}
                 </p>
-                <p className="font-serif text-2xl mt-1">{seriesTitle}</p>
+                <p className="text-2xl font-bold tracking-[-0.025em] mt-1">{seriesTitle}</p>
                 {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
             </div>
 

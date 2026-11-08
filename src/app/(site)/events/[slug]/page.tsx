@@ -166,7 +166,10 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     href="/events"
                     className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5 mb-8 group"
                 >
-                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                    <ArrowLeft
+                        size={14}
+                        className="group-hover:-translate-x-1 transition-transform"
+                    />
                     all events
                 </Link>
 
@@ -198,7 +201,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                         {event.role && (
                             <div className="flex items-center gap-1.5">
                                 <dt className="sr-only">Role</dt>
-                                <dd className="text-primary">{event.role}</dd>
+                                <dd className="text-gold-ink">{event.role}</dd>
                             </div>
                         )}
                     </dl>

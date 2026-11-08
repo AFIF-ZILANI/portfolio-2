@@ -50,10 +50,14 @@ export function Navbar() {
                 <button
                     type="button"
                     aria-label="Back to top"
-                    className="font-serif text-2xl tracking-tight cursor-pointer"
+                    className="text-xl font-extrabold tracking-[-0.03em] cursor-pointer"
                     onClick={() => (pathname === "/" ? scrollTo("hero") : router.push("/"))}
                 >
-                    Afif <span className="italic text-primary">Zilani</span>
+                    Afif Zilani
+                    <span
+                        aria-hidden
+                        className="ml-0.5 inline-block h-1.5 w-1.5 rounded-full bg-gold align-baseline"
+                    />
                 </button>
 
                 <div className="hidden md:flex items-center gap-8 text-sm">
@@ -115,8 +119,12 @@ export function Navbar() {
                         </SheetTrigger>
                         <SheetContent side="right" className="w-64">
                             <SheetHeader>
-                                <SheetTitle className="font-serif text-2xl font-normal">
-                                    Afif <span className="italic text-primary">Zilani</span>
+                                <SheetTitle className="text-xl font-extrabold tracking-[-0.03em]">
+                                    Afif Zilani
+                                    <span
+                                        aria-hidden
+                                        className="ml-0.5 inline-block h-1.5 w-1.5 rounded-full bg-gold align-baseline"
+                                    />
                                 </SheetTitle>
                             </SheetHeader>
                             <div className="flex flex-col px-4 pb-6">

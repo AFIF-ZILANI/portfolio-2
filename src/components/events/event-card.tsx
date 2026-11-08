@@ -11,14 +11,20 @@ import { formatEventDates, formatLocation } from "@/lib/events-utils";
  * `priority` is for the first card above the fold, which is the LCP element on
  * /events. Everything else stays lazy.
  */
-export function EventCard({ event, priority = false }: { event: EventCardData; priority?: boolean }) {
+export function EventCard({
+    event,
+    priority = false,
+}: {
+    event: EventCardData;
+    priority?: boolean;
+}) {
     const where = formatLocation(event);
 
     return (
         <article>
             <Link
                 href={`/events/${event.slug}`}
-                className="group flex flex-col h-full bg-card border border-border hover:border-primary transition-colors duration-300"
+                className="group flex flex-col h-full overflow-hidden rounded-3xl bg-card border border-border transition-all duration-500 hover:-translate-y-1 hover:border-gold/60"
             >
                 <div className="relative w-full aspect-video bg-muted overflow-hidden">
                     {event.cover ? (
@@ -38,12 +44,12 @@ export function EventCard({ event, priority = false }: { event: EventCardData; p
                 </div>
 
                 <div className="p-5 flex flex-col gap-3 flex-1">
-                    <p className="font-mono text-xs text-primary">
+                    <p className="text-xs font-semibold text-gold-ink">
                         {formatEventDates(event.startDate, event.endDate)}
                         {event.role ? ` · ${event.role}` : ""}
                     </p>
 
-                    <h3 className="font-bold leading-snug group-hover:text-primary transition-colors">
+                    <h3 className="text-xl font-bold leading-snug tracking-[-0.02em] group-hover:text-primary transition-colors">
                         {event.title}
                     </h3>
 
