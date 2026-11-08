@@ -17,3 +17,15 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://afifzilani
 
 /** Absolute URL for a site-relative path. */
 export const abs = (path: string) => `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+
+/**
+ * The portrait, hosted on Cloudinary (uploaded through /admin/media), not /public.
+ * The hero renders whatever is selected at /admin/site/profile; this is the
+ * fallback for that, and the fixed image for metadata, schema, sitemap and icon,
+ * which don't read the database.
+ */
+const PORTRAIT_PATH = "v1794125968/joehmler3jqra7elnyon.webp";
+const CLOUDINARY = "https://res.cloudinary.com/dqsgrsfq8/image/upload";
+export const PORTRAIT = { url: `${CLOUDINARY}/${PORTRAIT_PATH}`, width: 1122, height: 1402 };
+/** Square face crop for the app icon. */
+export const PORTRAIT_SQUARE = `${CLOUDINARY}/c_fill,g_face,w_512,h_512/${PORTRAIT_PATH}`;

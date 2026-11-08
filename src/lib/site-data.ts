@@ -8,6 +8,7 @@
  */
 
 import { staticImage, type ImageRef } from "@/lib/image-utils";
+import { PORTRAIT } from "@/lib/site";
 
 export type Experience = {
     id: string;
@@ -111,7 +112,7 @@ export type ResolvedSiteData = Omit<SiteData, "heroImageId" | "aboutImageId" | "
  * survives even before anything is uploaded.
  */
 export const DEFAULT_HERO_IMAGE = staticImage(
-    "/afifzilani-profile.webp",
+    PORTRAIT.url,
     "Afif Zilani (Kazi Afif Zilani) — entrepreneur, General Manager of ZeroD Farms and Co-Founder of ZeroD, Naogaon, Bangladesh"
 );
 export const DEFAULT_ABOUT_IMAGE = staticImage(

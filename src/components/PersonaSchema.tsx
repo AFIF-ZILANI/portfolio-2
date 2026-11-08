@@ -1,4 +1,4 @@
-import { SITE_URL } from "@/lib/site";
+import { PORTRAIT, SITE_URL } from "@/lib/site";
 export default function PersonSchema() {
     const person = {
         "@context": "https://schema.org",
@@ -20,12 +20,12 @@ export default function PersonSchema() {
         image: {
             "@type": "ImageObject",
             "@id": `${SITE_URL}/#image`,
-            url: `${SITE_URL}/afifzilani-profile.webp`,
-            contentUrl: `${SITE_URL}/afifzilani-profile.webp`,
+            url: PORTRAIT.url,
+            contentUrl: PORTRAIT.url,
             caption: "Afif Zilani — Entrepreneur, General Manager of ZeroD Farms and Co-Founder of ZeroD",
             description: "Portrait of Kazi Afif Zilani, business owner and programmer from Naogaon, Bangladesh",
-            width: 1535,
-            height: 1536,
+            width: PORTRAIT.width,
+            height: PORTRAIT.height,
         },
         jobTitle: ["Entrepreneur", "General Manager, ZeroD Farms", "Co-Founder, ZeroD Umb", "Programmer"],
         description:
