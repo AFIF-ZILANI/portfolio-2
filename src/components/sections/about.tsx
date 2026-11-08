@@ -58,7 +58,7 @@ export function About({ data }: { data: ResolvedSiteData }) {
                 </div>
 
                 <motion.p
-                    className="mt-8 max-w-4xl text-3xl font-bold leading-[1.2] tracking-[-0.03em] text-balance text-foreground md:text-[2.75rem]"
+                    className="mt-8 max-w-3xl text-3xl font-bold leading-[1.2] tracking-[-0.03em] text-balance text-foreground md:text-[2.75rem]"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-60px" }}

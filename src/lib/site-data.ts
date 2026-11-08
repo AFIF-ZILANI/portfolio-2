@@ -127,7 +127,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
     tagline:
         "I run a poultry farm, build software for Bangladeshi businesses, and grow ZeroD, the group that holds them both. Based in Naogaon, Bangladesh.",
     bio: [
-        "I'm Kazi Afif Zilani, a business owner from Naogaon, Bangladesh. I co-founded ZeroD, a small group of companies that put good systems to work on real problems.",
+        "I build businesses in Naogaon, and the software that runs them.",
         "As General Manager of ZeroD Farms I run a family poultry operation in Mahadebpur: five sheds, a 10,000-bird capacity, and every batch tracked from chick to sale.",
         "I'm also a programmer. Through ZeroD Agency I design and build websites and web apps for local businesses, from the database to the last pixel.",
     ],
