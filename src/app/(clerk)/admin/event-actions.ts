@@ -32,6 +32,8 @@ export type EventInput = {
     seoDescription: string | null;
     canonicalUrl: string | null;
     noindex: boolean;
+    /** Lead the homepage Events section. */
+    pinned: boolean;
 };
 
 type Failure = { ok: false; error: string };
@@ -158,6 +160,7 @@ export async function saveEvent(input: EventInput): Promise<EventSaveResult> {
         seoDescription: trim(input.seoDescription),
         canonicalUrl: trim(input.canonicalUrl),
         noindex: input.noindex,
+        pinned: input.pinned,
     };
 
     try {

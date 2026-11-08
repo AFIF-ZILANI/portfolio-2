@@ -84,6 +84,7 @@ export function EventEditor({
     const [seoDescription, setSeoDescription] = useState(event?.seoDescription ?? "");
     const [canonicalUrl, setCanonicalUrl] = useState(event?.canonicalUrl ?? "");
     const [noindex, setNoindex] = useState(event?.noindex ?? false);
+    const [pinned, setPinned] = useState(event?.pinned ?? false);
 
     const galleryProblem = validateGallery(images);
     const scheduled = status === "PUBLISHED" && publishedAt && new Date(publishedAt) > new Date();
@@ -119,6 +120,7 @@ export function EventEditor({
                     seoDescription: seoDescription || null,
                     canonicalUrl: canonicalUrl || null,
                     noindex,
+                    pinned,
                 })
             );
 
@@ -400,6 +402,10 @@ export function EventEditor({
                             placeholder="Canonical URL (if published elsewhere first)"
                             className="font-mono text-xs"
                         />
+                        <div className="flex items-center justify-between gap-3">
+                            <Label className={labelClass}>Pin to homepage</Label>
+                            <Switch checked={pinned} onCheckedChange={setPinned} />
+                        </div>
                         <div className="flex items-center justify-between gap-3">
                             <Label className={labelClass}>Hide from search</Label>
                             <Switch checked={noindex} onCheckedChange={setNoindex} />

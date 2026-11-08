@@ -144,6 +144,10 @@ model Event {
   role      String? // "Attendee", "Speaker", "Volunteer", ...
   tags      String[]
 
+  /// Shown in the homepage Events section, newest first. Unpinning just drops
+  /// it back to the /events archive.
+  pinned Boolean @default(false)
+
   status PostStatus @default(DRAFT)
 
   // Same rule as Post: live only when PUBLISHED and publishedAt <= now(), so a
@@ -160,6 +164,7 @@ model Event {
   updatedAt DateTime @updatedAt
 
   @@index([status, publishedAt])
+  @@index([pinned, startDate])
 }
 
 model Series {

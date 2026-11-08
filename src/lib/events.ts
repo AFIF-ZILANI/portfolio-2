@@ -42,6 +42,7 @@ const cardSelect = {
     tags: true,
     publishedAt: true,
     views: true,
+    pinned: true,
 } satisfies Prisma.EventSelect;
 
 type EventRow = Prisma.EventGetPayload<{ select: typeof cardSelect }>;
@@ -70,6 +71,25 @@ export async function getPublishedEvents(take?: number): Promise<EventCard[]> {
         ...event,
         cover: byId.get(imageIds[0]) ?? null,
     }));
+}
+
+/**
+ * The homepage Events section: pinned events, newest first. Until anything is
+ * pinned it shows the newest events instead, so the section never disappears
+ * just because nobody has pinned one yet.
+ */
+export async function getPinnedEvents(take = 4): Promise<EventCard[]> {
+    const events = await prisma.event.findMany({
+        where: { ...publishedEventWhere(), pinned: true },
+        orderBy: { startDate: "desc" },
+        select: cardSelect,
+        take,
+    });
+    if (events.length === 0) return getPublishedEvents(take);
+
+    const covers = await resolveGallery(events.map((e) => e.imageIds[0]).filter(Boolean));
+    const byId = new Map(covers.map((image) => [image.id, image]));
+    return events.map(({ imageIds, ...event }) => ({ ...event, cover: byId.get(imageIds[0]) ?? null }));
 }
 
 /** One published event with its full gallery, in order. */

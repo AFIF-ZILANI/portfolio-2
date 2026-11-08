@@ -44,6 +44,7 @@ export default async function EditEventPage({ params }: { params: Promise<{ id: 
                 seoDescription: event.seoDescription,
                 canonicalUrl: event.canonicalUrl,
                 noindex: event.noindex,
+                pinned: event.pinned,
             }}
         />
     );

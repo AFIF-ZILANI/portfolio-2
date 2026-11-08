@@ -8,8 +8,8 @@ import { Contact } from "@/components/sections/contact";
 import { ProfilePageSchema } from "@/components/PersonaSchema";
 import { ScrollToHash } from "@/components/layout/scroll-to-hash";
 import { LatestPosts } from "@/components/sections/latest-posts";
-import { LatestEvents } from "@/components/sections/latest-events";
-import { getPublishedEvents } from "@/lib/events";
+import { PinnedEvents } from "@/components/sections/pinned-events";
+import { getPinnedEvents } from "@/lib/events";
 
 // A server component now: content comes from the database and is edited at
 // /admin/site/*. Saving there calls revalidatePath("/"), so this window is only
@@ -20,7 +20,7 @@ export default async function Home() {
     const [data, posts, events] = await Promise.all([
         getSiteData(),
         getPublishedPosts(),
-        getPublishedEvents(3),
+        getPinnedEvents(4),
     ]);
 
     return (
@@ -30,8 +30,8 @@ export default async function Home() {
             <Ventures experiences={data.experiences} />
             <About data={data} />
             <Skills skills={data.skills} />
+            <PinnedEvents events={events} />
             <LatestPosts posts={posts.slice(0, 3)} />
-            <LatestEvents events={events} />
             <Contact heading={data.contact.heading} />
             <ProfilePageSchema />
         </main>
