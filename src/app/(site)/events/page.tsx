@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getPublishedEvents } from "@/lib/events";
-import { EventCard } from "@/components/events/event-card";
+import { EventsArchive } from "@/components/events/events-archive";
 import { SITE_URL, abs } from "@/lib/site";
 
 export const revalidate = 60;
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 
 export default async function EventsPage() {
     const events = await getPublishedEvents();
+    const places = new Set(events.map((e) => e.city?.trim().toLowerCase()).filter(Boolean)).size;
 
     // A CollectionPage listing real, dated, located items is what lets an assistant
     // answer "which events has he been to" without crawling every detail page.
@@ -55,29 +56,41 @@ export default async function EventsPage() {
             />
 
             <div className="container mx-auto px-6 max-w-6xl">
-                <header className="mb-12 space-y-5 border-b border-border pb-12">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-ink">
-                        Events
-                    </p>
-                    <h1 className="text-5xl md:text-7xl font-extrabold leading-[0.98] tracking-[-0.045em]">
-                        Where I&apos;ve shown up.
-                    </h1>
-                    <p className="text-lg text-muted-foreground max-w-2xl">
-                        Where I&apos;ve been and what I took away from it.
-                    </p>
+                <header className="mb-14 grid gap-8 border-b border-border pb-12 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+                    <div className="space-y-5">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-ink">
+                            Events
+                        </p>
+                        <h1 className="text-5xl font-extrabold leading-[0.98] tracking-[-0.045em] md:text-7xl">
+                            Where I&apos;ve shown up.
+                        </h1>
+                        <p className="max-w-2xl text-lg text-muted-foreground">
+                            Meetups, summits and workshops, and what I took away from each.
+                        </p>
+                    </div>
+                    {events.length > 0 && (
+                        <dl className="flex gap-10">
+                            <div className="flex flex-col-reverse">
+                                <dt className="text-sm text-muted-foreground">events</dt>
+                                <dd className="text-4xl font-extrabold tracking-[-0.04em] tabular-nums">
+                                    {events.length}
+                                </dd>
+                            </div>
+                            {places > 0 && (
+                                <div className="flex flex-col-reverse">
+                                    <dt className="text-sm text-muted-foreground">
+                                        {places === 1 ? "city" : "cities"}
+                                    </dt>
+                                    <dd className="text-4xl font-extrabold tracking-[-0.04em] tabular-nums">
+                                        {places}
+                                    </dd>
+                                </div>
+                            )}
+                        </dl>
+                    )}
                 </header>
 
-                {events.length === 0 ? (
-                    <p className="text-muted-foreground rounded-3xl border border-dashed border-border p-12 text-center">
-                        No write-ups yet. The next one goes up after the next event.
-                    </p>
-                ) : (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {events.map((event, i) => (
-                            <EventCard key={event.id} event={event} priority={i === 0} />
-                        ))}
-                    </div>
-                )}
+                <EventsArchive events={events} />
             </div>
         </main>
     );
