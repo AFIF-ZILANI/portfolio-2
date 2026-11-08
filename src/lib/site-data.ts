@@ -221,7 +221,7 @@ export const DEFAULT_SITE_DATA: SiteData = {
     ],
     stats: [
         { key: "ventures", value: "3", label: "companies" },
-        { key: "capacity", value: "10k", label: "bird capacity" },
+        { key: "farming", value: "2022", label: "farming since" },
         { key: "experience", value: "5+", label: "years building" },
         { key: "delivery", value: "7", label: "day site delivery" },
     ],

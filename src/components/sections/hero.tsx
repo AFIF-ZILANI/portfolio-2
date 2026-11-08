@@ -235,26 +235,55 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                 </div>
             </div>
 
-            {/* Stats strip: the figures that back the roles, counted up once */}
+            {/* Stats strip: an open ruled row, no boxes. Each column's gold segment
+                draws across its top rule in turn as the figures count up. */}
             {data.stats.length > 0 && (
-                <motion.div
-                    className="container mx-auto px-6 max-w-6xl mt-20"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.2, duration: 0.7, ease: EASE }}
-                >
-                    <dl className="grid grid-cols-2 md:grid-cols-4 gap-px overflow-hidden rounded-3xl border border-border bg-border">
-                        {data.stats.map((st) => (
-                            // dt must come first in a dl; flex-col-reverse puts the figure on top
-                            <div key={st.key} className="flex flex-col-reverse bg-card px-6 py-5">
-                                <dt className="text-sm text-muted-foreground">{st.label}</dt>
-                                <dd className="text-3xl md:text-4xl font-extrabold tracking-[-0.04em] text-foreground">
-                                    <CountUp value={st.value} />
-                                </dd>
+                <div className="container mx-auto px-6 max-w-6xl mt-20">
+                    <dl className="grid grid-cols-2 border-t border-border md:grid-cols-4">
+                        {data.stats.map((st, n) => (
+                            // Rules sit between columns: after the first on phones' two
+                            // columns, after every column but the first at md
+                            <div
+                                key={st.key}
+                                className={`${n % 2 === 1 ? "border-l border-border" : ""} ${
+                                    n === 2 ? "md:border-l md:border-border" : ""
+                                } ${n >= 2 ? "max-md:mt-6 max-md:border-t max-md:border-border" : ""}`}
+                            >
+                                {/* dt first in a dl; flex-col-reverse puts the figure on top */}
+                                <motion.div
+                                    className={`relative flex flex-col-reverse gap-1 pt-6 pb-2 ${
+                                        n % 2 === 1 ? "pl-6" : n === 2 ? "md:pl-6" : ""
+                                    }`}
+                                    initial={{ opacity: 0, y: 12 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 1.2 + n * 0.1, duration: 0.6, ease: EASE }}
+                                >
+                                    <motion.span
+                                        aria-hidden
+                                        className={`absolute top-[-1px] h-0.5 w-12 origin-left bg-gold ${
+                                            n % 2 === 1
+                                                ? "left-6"
+                                                : n === 2
+                                                  ? "left-0 md:left-6"
+                                                  : "left-0"
+                                        }`}
+                                        initial={{ scaleX: 0 }}
+                                        animate={{ scaleX: 1 }}
+                                        transition={{
+                                            delay: 1.5 + n * 0.15,
+                                            duration: 0.6,
+                                            ease: EASE,
+                                        }}
+                                    />
+                                    <dt className="text-sm text-muted-foreground">{st.label}</dt>
+                                    <dd className="whitespace-nowrap text-4xl font-extrabold tracking-[-0.045em] text-foreground md:text-5xl">
+                                        <CountUp value={st.value} />
+                                    </dd>
+                                </motion.div>
                             </div>
                         ))}
                     </dl>
-                </motion.div>
+                </div>
             )}
         </section>
     );

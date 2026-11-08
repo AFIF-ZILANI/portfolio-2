@@ -17,13 +17,15 @@ export function CountUp({ value }: { value: string }) {
     const m = value.match(/^(\d[\d,]*(?:\.\d+)?)(.*)$/);
     const grouped = Boolean(m?.[1].includes(","));
     const target = m ? Number(m[1].replace(/,/g, "")) : 0;
-    const [n, setN] = useState(m && !reduce ? 0 : target);
+    // A year ("2022") is a date, not a quantity: counting it up from zero reads wrong
+    const isYear = !grouped && /^(19|20)\d\d$/.test(m?.[1] ?? "");
+    const [n, setN] = useState(m && !reduce && !isYear ? 0 : target);
 
     useEffect(() => {
-        if (!m || !seen || reduce) return;
+        if (!m || !seen || reduce || isYear) return;
         const c = animate(0, target, { duration: 1.4, ease: EASE, onUpdate: (v) => setN(v) });
         return () => c.stop();
-    }, [seen, target, reduce]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [seen, target, reduce, isYear]); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (!m) return <span>{value}</span>;
     const decimals = m[1].includes(".") ? 1 : 0;
