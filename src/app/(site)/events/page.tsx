@@ -48,24 +48,27 @@ export default async function EventsPage() {
     };
 
     return (
-        <main className="pt-32 pb-24">
+        <main className="pt-36 pb-24">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
             />
 
             <div className="container mx-auto px-6 max-w-6xl">
-                <header className="mb-12">
-                    <h1 className="text-3xl md:text-4xl font-bold">
-                        <span className="text-primary font-mono">~/</span>events
+                <header className="mb-12 space-y-5 border-b border-border pb-12">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-ink">
+                        Events
+                    </p>
+                    <h1 className="text-5xl md:text-7xl font-extrabold leading-[0.98] tracking-[-0.045em]">
+                        Where I&apos;ve shown up.
                     </h1>
-                    <p className="text-muted-foreground mt-3 max-w-2xl">
+                    <p className="text-lg text-muted-foreground max-w-2xl">
                         Where I&apos;ve been and what I took away from it.
                     </p>
                 </header>
 
                 {events.length === 0 ? (
-                    <p className="text-muted-foreground font-mono text-sm border border-dashed border-border p-12 text-center">
+                    <p className="text-muted-foreground rounded-3xl border border-dashed border-border p-12 text-center">
                         No write-ups yet. The next one goes up after the next event.
                     </p>
                 ) : (

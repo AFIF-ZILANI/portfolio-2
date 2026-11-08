@@ -8,7 +8,7 @@
  */
 
 import { staticImage, type ImageRef } from "@/lib/image-utils";
-import { PORTRAIT } from "@/lib/site";
+import { ABOUT_PORTRAIT, PORTRAIT } from "@/lib/site";
 
 export type Experience = {
     id: string;
@@ -51,7 +51,7 @@ export type SiteStats = {
     label: string;
 };
 
-/** `icon` is a react-icons/si export name; see SKILL_ICONS in src/lib/icons.tsx. */
+/** `icon` is a react-icons/si export name (see SKILL_ICONS in src/lib/icons.tsx); optional, the homepage no longer shows it. */
 export type Skill = {
     id: string;
     name: string;
@@ -116,7 +116,7 @@ export const DEFAULT_HERO_IMAGE = staticImage(
     "Afif Zilani (Kazi Afif Zilani) — entrepreneur, General Manager of ZeroD Farms and Co-Founder of ZeroD, Naogaon, Bangladesh"
 );
 export const DEFAULT_ABOUT_IMAGE = staticImage(
-    "/afifzilani-about.webp",
+    ABOUT_PORTRAIT.url,
     "Kazi Afif Zilani (AFIF ZILANI) — business owner and programmer from Naogaon, Bangladesh"
 );
 
@@ -225,34 +225,18 @@ export const DEFAULT_SITE_DATA: SiteData = {
         { key: "experience", value: "5+", label: "years building" },
         { key: "delivery", value: "7", label: "day site delivery" },
     ],
-    // Mirrors the list that was hardcoded in skills.tsx, with icons as react-icons
-    // export names so they can be edited and stored.
+    // Broad capabilities, not a tool list: the homepage shows these as two cards.
     skills: [
-        { id: "s1", name: "TypeScript", category: "Languages", icon: "SiTypescript" },
-        { id: "s2", name: "JavaScript", category: "Languages", icon: "SiJavascript" },
-        { id: "s3", name: "Python", category: "Languages", icon: "SiPython" },
-        { id: "s4", name: "Go", category: "Languages", icon: "SiGo" },
-        { id: "s5", name: "Rust", category: "Languages", icon: "SiRust" },
-        { id: "s6", name: "Kotlin", category: "Languages", icon: "SiKotlin" },
-        { id: "s7", name: "C", category: "Languages", icon: "SiC" },
-        { id: "s8", name: "C++", category: "Languages", icon: "SiCplusplus" },
-        { id: "s9", name: "React", category: "WebDev", icon: "SiReact" },
-        { id: "s10", name: "Next.js", category: "WebDev", icon: "SiNextdotjs" },
-        { id: "s11", name: "Tailwind CSS", category: "WebDev", icon: "SiTailwindcss" },
-        { id: "s12", name: "Node.js", category: "WebDev", icon: "SiNodedotjs" },
-        { id: "s13", name: "Hono", category: "WebDev", icon: "SiHono" },
-        { id: "s14", name: "Express.js", category: "WebDev", icon: "SiExpress" },
-        { id: "s15", name: "Bun.js", category: "WebDev", icon: "SiBun" },
-        { id: "s16", name: "Docker", category: "DevOps", icon: "SiDocker" },
-        { id: "s17", name: "Linux", category: "DevOps", icon: "SiLinux" },
-        { id: "s18", name: "Git", category: "DevOps", icon: "SiGit" },
-        { id: "s19", name: "Git Hub", category: "DevOps", icon: "SiGithub" },
-        { id: "s20", name: "PostgreSQL", category: "Database", icon: "SiPostgresql" },
-        { id: "s21", name: "MongoDB", category: "Database", icon: "SiMongodb" },
-        { id: "s22", name: "SQLite", category: "Database", icon: "SiSqlite" },
-        { id: "s23", name: "Redis", category: "Database", icon: "SiRedis" },
-        { id: "s24", name: "Drizzle ORM", category: "Database", icon: "SiDrizzle" },
-        { id: "s25", name: "Prisma", category: "Database", icon: "SiPrisma" },
+        { id: "s1", name: "Business leadership", category: "Business", icon: "" },
+        { id: "s2", name: "Operations management", category: "Business", icon: "" },
+        { id: "s3", name: "Strategy and planning", category: "Business", icon: "" },
+        { id: "s4", name: "Team building", category: "Business", icon: "" },
+        { id: "s5", name: "Sales and partnerships", category: "Business", icon: "" },
+        { id: "s6", name: "Full-stack web development", category: "Technology", icon: "" },
+        { id: "s7", name: "Software architecture", category: "Technology", icon: "" },
+        { id: "s8", name: "Databases and backend systems", category: "Technology", icon: "" },
+        { id: "s9", name: "Cloud and deployment", category: "Technology", icon: "" },
+        { id: "s10", name: "Product and UX design", category: "Technology", icon: "" },
     ],
     projects: [
         {

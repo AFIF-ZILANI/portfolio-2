@@ -28,8 +28,12 @@ export function Footer({ name, socialLinks }: { name: string; socialLinks: Socia
             <div className="container mx-auto px-6 max-w-6xl py-16">
                 <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
                     <div>
-                        <p className="font-serif text-4xl tracking-tight">
-                            Afif <span className="italic text-primary">Zilani</span>
+                        <p className="text-3xl font-extrabold tracking-[-0.04em]">
+                            Afif Zilani
+                            <span
+                                aria-hidden
+                                className="ml-0.5 inline-block h-2 w-2 rounded-full bg-gold align-baseline"
+                            />
                         </p>
                         <p className="mt-3 max-w-sm text-sm text-muted-foreground">
                             Entrepreneur, General Manager of ZeroD Farms, programmer, and Co-Founder
@@ -37,7 +41,7 @@ export function Footer({ name, socialLinks }: { name: string; socialLinks: Socia
                         </p>
                     </div>
                     <nav aria-label="ZeroD companies">
-                        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                             ZeroD
                         </p>
                         <ul className="mt-4 space-y-2 text-sm">
@@ -56,7 +60,7 @@ export function Footer({ name, socialLinks }: { name: string; socialLinks: Socia
                         </ul>
                     </nav>
                     <nav aria-label="Site">
-                        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                             Site
                         </p>
                         <ul className="mt-4 space-y-2 text-sm">

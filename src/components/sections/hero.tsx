@@ -6,6 +6,7 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, MapPin } from "lucide-react";
 import type { ResolvedSiteData } from "@/lib/site-data";
+import { CountUp } from "@/components/count-up";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -37,11 +38,11 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
 
     useEffect(() => {
         if (roles.length < 2 || reduce) return;
-        const t = setInterval(() => setI((n) => (n + 1) % roles.length), 2600);
+        const t = setInterval(() => setI((n) => (n + 1) % roles.length), 3000);
         return () => clearInterval(t);
     }, [roles.length, reduce]);
 
-    // Stored as "AFIF ZILANI"; set in the serif it reads better in title case.
+    // Stored as "AFIF ZILANI"; at display size title case reads better.
     const [first, ...rest] = data.name
         .split(" ")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
@@ -51,11 +52,11 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
             id="hero"
             className="relative min-h-svh flex flex-col justify-center overflow-hidden pt-28 pb-10"
         >
-            {/* Ground: a fine grid fading out from the center, and one slow green glow */}
+            {/* Ground: a fine grid fading out from the center, and one slow glow */}
             <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800f_1px,transparent_1px),linear-gradient(to_bottom,#8080800f_1px,transparent_1px)] bg-size-[56px_56px] mask-[radial-gradient(ellipse_70%_60%_at_50%_40%,#000_40%,transparent_100%)]" />
             <motion.div
                 aria-hidden
-                className="absolute -z-10 top-[-10%] right-[-10%] h-152 w-152 rounded-full bg-primary/15 blur-[120px]"
+                className="absolute -z-10 top-[-10%] right-[-10%] h-152 w-152 rounded-full bg-primary/10 blur-[120px]"
                 animate={
                     reduce ? undefined : { x: [0, -60, 0], y: [0, 40, 0], scale: [1, 1.08, 1] }
                 }
@@ -72,22 +73,29 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                             transition={{ duration: 0.6, ease: EASE }}
                         >
                             <span className="relative flex h-2 w-2">
-                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
-                                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold opacity-60" />
+                                <span className="relative inline-flex h-2 w-2 rounded-full bg-gold" />
                             </span>
                             <MapPin size={12} className="-ml-0.5" />
                             Naogaon, Bangladesh
                         </motion.p>
 
-                        <h1 className="mt-7 font-serif text-[clamp(4.5rem,17vw,7.5rem)] leading-[0.92] tracking-tight">
+                        <h1 className="mt-7 font-extrabold text-[clamp(3.75rem,14vw,6.5rem)] leading-[0.95] tracking-[-0.05em] text-foreground">
                             <span className="sr-only">
                                 {data.name} — {roles.join(", ")}
                             </span>
-                            <span aria-hidden className="block">
-                                <Letters text={first} delay={0.1} />
-                            </span>
-                            <span aria-hidden className="block italic text-primary">
-                                <Letters text={rest.join(" ")} delay={0.35} />
+                            <span aria-hidden>
+                                <Word text={first} delay={0.1} />{" "}
+                                <span className="relative inline-block">
+                                    <Word text={rest.join(" ")} delay={0.22} />
+                                    {/* The one gold flourish: drawn under the surname once the name lands */}
+                                    <motion.span
+                                        className="absolute inset-x-0 bottom-[0.04em] h-[0.09em] origin-left rounded-full bg-gold"
+                                        initial={{ scaleX: 0 }}
+                                        animate={{ scaleX: 1 }}
+                                        transition={{ delay: 0.75, duration: 0.8, ease: EASE }}
+                                    />
+                                </span>
                             </span>
                         </h1>
 
@@ -114,7 +122,7 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                                         <span className="text-muted-foreground">
                                             {/^[AEIOU]/i.test(roles[i] ?? "") ? "an" : "a"}{" "}
                                         </span>
-                                        <span className="font-medium">{roles[i]}</span>
+                                        <span className="font-bold">{roles[i]}</span>
                                     </motion.span>
                                 </AnimatePresence>
                             </span>
@@ -137,7 +145,7 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                         >
                             <a
                                 href="#ventures"
-                                className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5"
+                                className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:brightness-125"
                                 data-testid="button-hero-ventures"
                             >
                                 See the ventures
@@ -148,7 +156,7 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                             </a>
                             <Link
                                 href="/blogs"
-                                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:border-foreground"
+                                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold transition-colors hover:border-foreground"
                             >
                                 Read the journal
                             </Link>
@@ -165,9 +173,9 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                         {/* Offset outline behind the photo: depth without a shadow blob */}
                         <div
                             aria-hidden
-                            className="absolute inset-0 translate-x-3 translate-y-3 rounded-[1.75rem] border border-primary/40"
+                            className="absolute inset-0 translate-x-3 translate-y-3 rounded-4xl border border-gold/60"
                         />
-                        <div className="relative aspect-4/5 overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-2xl shadow-black/10">
+                        <div className="relative aspect-4/5 overflow-hidden rounded-4xl border border-border bg-card shadow-[0_30px_70px_-24px_rgb(20_33_61/0.32)]">
                             <Image
                                 src={data.heroImage.url}
                                 alt={data.heroImage.alt}
@@ -189,7 +197,7 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                                     </span>
                                 </span>
                                 <span className="flex items-center gap-1.5 text-[11px] text-white/80">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                    <span className="h-1.5 w-1.5 rounded-full bg-gold" />
                                     Naogaon
                                 </span>
                             </div>
@@ -201,7 +209,7 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                                 href={v.href}
                                 target="_blank"
                                 rel="noopener"
-                                className={`absolute ${v.pos} group inline-flex items-center gap-2 rounded-full border border-border bg-background/90 backdrop-blur px-3.5 py-2 font-mono text-xs shadow-lg shadow-black/5 transition-colors hover:border-primary`}
+                                className={`absolute ${v.pos} group inline-flex items-center gap-2 rounded-full border border-border bg-background/90 backdrop-blur px-3.5 py-2 font-mono text-xs shadow-[0_10px_30px_-12px_rgb(20_33_61/0.18)] transition-colors hover:border-gold`}
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1, y: reduce ? 0 : [0, -8, 0] }}
                                 transition={{
@@ -215,7 +223,7 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                                     },
                                 }}
                             >
-                                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-gold" />
                                 {v.label}
                                 <ArrowUpRight
                                     size={12}
@@ -227,36 +235,43 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                 </div>
             </div>
 
-            {/* Roles on a slow marquee: the page's one decorative motion that never stops */}
-            <div aria-hidden className="mt-20 border-y border-border py-4 overflow-hidden">
-                <div className="flex w-max animate-[marquee_40s_linear_infinite] gap-12 pr-12 font-serif text-2xl italic text-muted-foreground">
-                    {[...roles, ...roles, ...roles, ...roles].map((r, n) => (
-                        <span key={n} className="flex items-center gap-12 whitespace-nowrap">
-                            {r}
-                            <span className="h-1.5 w-1.5 rounded-full bg-primary not-italic" />
-                        </span>
-                    ))}
-                </div>
-            </div>
+            {/* Stats strip: the figures that back the roles, counted up once */}
+            {data.stats.length > 0 && (
+                <motion.div
+                    className="container mx-auto px-6 max-w-6xl mt-20"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2, duration: 0.7, ease: EASE }}
+                >
+                    <dl className="grid grid-cols-2 md:grid-cols-4 gap-px overflow-hidden rounded-3xl border border-border bg-border">
+                        {data.stats.map((st) => (
+                            // dt must come first in a dl; flex-col-reverse puts the figure on top
+                            <div key={st.key} className="flex flex-col-reverse bg-card px-6 py-5">
+                                <dt className="text-sm text-muted-foreground">{st.label}</dt>
+                                <dd className="text-3xl md:text-4xl font-extrabold tracking-[-0.04em] text-foreground">
+                                    <CountUp value={st.value} />
+                                </dd>
+                            </div>
+                        ))}
+                    </dl>
+                </motion.div>
+            )}
         </section>
     );
 }
 
-/** Each letter rises out of a mask, staggered. */
-function Letters({ text, delay }: { text: string; delay: number }) {
+/** A whole word rises out of a mask. */
+function Word({ text, delay }: { text: string; delay: number }) {
     return (
-        <span className="inline-block overflow-hidden pb-[0.08em] align-top">
-            {text.split("").map((ch, i) => (
-                <motion.span
-                    key={i}
-                    className="inline-block"
-                    initial={{ y: "100%" }}
-                    animate={{ y: 0 }}
-                    transition={{ delay: delay + i * 0.035, duration: 0.8, ease: EASE }}
-                >
-                    {ch === " " ? " " : ch}
-                </motion.span>
-            ))}
+        <span className="inline-block overflow-hidden pb-[0.1em] align-top">
+            <motion.span
+                className="inline-block"
+                initial={{ y: "105%" }}
+                animate={{ y: 0 }}
+                transition={{ delay, duration: 0.8, ease: EASE }}
+            >
+                {text}
+            </motion.span>
         </span>
     );
 }

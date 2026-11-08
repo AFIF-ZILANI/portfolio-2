@@ -12,8 +12,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     const { name, socialLinks } = await getSiteData();
 
     return (
-        // The root body is mono for the admin; the public site reads in the sans
-        <div className="font-sans">
+        // The root body is mono for the admin; the public site reads in the sans.
+        // .site-root also switches globals.css to the navy & gold palette.
+        <div className="site-root font-sans">
             <Navbar />
             <PersonSchema />
             {children}

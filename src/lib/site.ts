@@ -27,5 +27,10 @@ export const abs = (path: string) => `${SITE_URL}${path.startsWith("/") ? path :
 const PORTRAIT_PATH = "v1794125968/joehmler3jqra7elnyon.webp";
 const CLOUDINARY = "https://res.cloudinary.com/dqsgrsfq8/image/upload";
 export const PORTRAIT = { url: `${CLOUDINARY}/${PORTRAIT_PATH}`, width: 1122, height: 1402 };
+export const ABOUT_PORTRAIT = {
+    url: `${CLOUDINARY}/v1794127134/jpyxcpzyfpbvjx7dyghu.webp`,
+    width: 1254,
+    height: 1254,
+};
 /** Square face crop for the app icon. */
 export const PORTRAIT_SQUARE = `${CLOUDINARY}/c_fill,g_face,w_512,h_512/${PORTRAIT_PATH}`;

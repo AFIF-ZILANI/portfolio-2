@@ -43,13 +43,13 @@ export default async function BlogsPage() {
             <main className="pt-36 pb-24">
                 <div className="container mx-auto px-6 max-w-6xl space-y-12">
                     <header className="space-y-5 border-b border-border pb-12">
-                        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-ink">
                             Journal
                         </p>
-                        <h1 className="font-serif text-5xl md:text-7xl leading-[0.95] tracking-tight">
+                        <h1 className="font-extrabold text-5xl md:text-7xl leading-[0.98] tracking-[-0.045em]">
                             Notes from the farm
                             <br />
-                            <span className="italic text-muted-foreground">and the keyboard.</span>
+                            <span className="text-muted-foreground">and the keyboard.</span>
                         </h1>
                         <p className="text-lg text-muted-foreground max-w-2xl">
                             What I learn running ZeroD Farms, building software at ZeroD Agency, and

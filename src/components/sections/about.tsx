@@ -1,15 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
-import {
-    animate,
-    motion,
-    useInView,
-    useReducedMotion,
-    useScroll,
-    useTransform,
-} from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { SocialIconGlyph } from "@/lib/icons";
 import type { ResolvedSiteData } from "@/lib/site-data";
@@ -70,23 +63,6 @@ export function About({ data }: { data: ResolvedSiteData }) {
                             ))}
                         </div>
 
-                        <dl className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border">
-                            {data.stats.map((s) => (
-                                // dt must come first in a dl; flex-col-reverse puts the figure on top
-                                <div
-                                    key={s.key}
-                                    className="flex flex-col-reverse bg-background p-5 md:p-6"
-                                >
-                                    <dt className="mt-1 text-sm text-muted-foreground">
-                                        {s.label}
-                                    </dt>
-                                    <dd className="font-serif text-4xl md:text-5xl tracking-tight">
-                                        <CountUp value={s.value} />
-                                    </dd>
-                                </div>
-                            ))}
-                        </dl>
-
                         <ul className="mt-10 flex flex-wrap gap-2">
                             {data.socialLinks.map((link) => (
                                 <li key={link.id}>
@@ -113,34 +89,5 @@ export function About({ data }: { data: ResolvedSiteData }) {
                 </div>
             </div>
         </section>
-    );
-}
-
-/**
- * Counts the leading number of a stat ("10k", "5+", "40+") up from zero the first
- * time it is seen, keeping whatever follows the digits. Non-numeric values render
- * as they are.
- */
-function CountUp({ value }: { value: string }) {
-    const ref = useRef<HTMLSpanElement>(null);
-    const seen = useInView(ref, { once: true, margin: "-40px" });
-    const reduce = useReducedMotion();
-    const m = value.match(/^(\d+(?:\.\d+)?)(.*)$/);
-    const target = m ? Number(m[1]) : 0;
-    const [n, setN] = useState(m && !reduce ? 0 : target);
-
-    useEffect(() => {
-        if (!m || !seen || reduce) return;
-        const c = animate(0, target, { duration: 1.4, ease: EASE, onUpdate: (v) => setN(v) });
-        return () => c.stop();
-    }, [seen, target, reduce]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    if (!m) return <span>{value}</span>;
-    const decimals = m[1].includes(".") ? 1 : 0;
-    return (
-        <span ref={ref} className="tabular-nums">
-            {n.toFixed(decimals)}
-            <span className="text-primary">{m[2]}</span>
-        </span>
     );
 }

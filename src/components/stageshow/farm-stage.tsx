@@ -16,6 +16,20 @@ import "./farm-stage.css";
 // Figures are illustrative but sized to the farm's real numbers: 5 sheds,
 // 10,000-bird capacity, ~5,000 birds a month (farms.zerod.bd).
 
+// The site's navy & gold neutrals, so the stage sits in the page instead of on
+// the kit's own grays.
+const PAPER_LIGHT = { "--ss-well": "#EFEDE6" };
+const NAVY_DARK = {
+    "--ss-well": "#0D1426",
+    "--ss-canvas": "#111830",
+    "--ss-surface": "#18213D",
+    "--ss-chrome": "#1A2442",
+    "--ss-fill": "#243052",
+    "--ss-text": "#8C94A8",
+    "--ss-text-strong": "#F3F1EA",
+    "--ss-text-faint": "#5E6782",
+};
+
 type S = { logging: boolean; logged: boolean; ready: boolean };
 
 const initial: S = { logging: false, logged: false, ready: false };
@@ -70,7 +84,8 @@ export function FarmStage() {
             script={script}
             play="once"
             theme={theme}
-            accent="#16a34a"
+            accent={theme === "dark" ? "#D4A72C" : "#14213D"}
+            tokens={theme === "dark" ? NAVY_DARK : PAPER_LIGHT}
             className="fs"
         >
             {(s) => (
