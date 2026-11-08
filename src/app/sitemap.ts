@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { publishedWhere } from "@/lib/blog";
 import { publishedEventWhere } from "@/lib/events";
-import { SITE_URL } from "@/lib/site";
+import { PORTRAIT, SITE_URL } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Same PUBLISHED guards as every public query — drafts and scheduled entries
@@ -40,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             lastModified: new Date(),
             changeFrequency: "monthly",
             priority: 1,
-            images: [`${SITE_URL}/afifzilani-profile.webp`, `${SITE_URL}/afifzilani-about.webp`],
+            images: [PORTRAIT.url, `${SITE_URL}/afifzilani-about.webp`],
         },
         {
             url: `${SITE_URL}/blogs`,

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Instrument_Serif, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { SITE_URL } from "@/lib/site";
+import { PORTRAIT, SITE_URL } from "@/lib/site";
 
 // Self-hosted at build time: no fonts.googleapis.com round-trip on first paint,
 // and a size-adjusted fallback so swapping in the real face doesn't shift layout.
@@ -64,9 +64,9 @@ export const metadata: Metadata = {
         description: DESCRIPTION,
         images: [
             {
-                url: "/afifzilani-profile.webp",
-                width: 1535,
-                height: 1536,
+                url: PORTRAIT.url,
+                width: PORTRAIT.width,
+                height: PORTRAIT.height,
                 alt: "Afif Zilani — Entrepreneur and Co-Founder of ZeroD",
                 type: "image/webp",
             },
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
         description: DESCRIPTION,
         images: [
             {
-                url: "/afifzilani-profile.webp",
+                url: PORTRAIT.url,
                 alt: "Afif Zilani — Entrepreneur and Co-Founder of ZeroD",
             },
         ],
