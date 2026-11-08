@@ -15,13 +15,14 @@ const VENTURES = [
     {
         label: "farms.zerod.bd",
         href: "https://farms.zerod.bd",
-        pos: "-right-4 top-1/2 md:-right-14",
+        pos: "-right-4 top-[46%] md:-right-14",
         bob: 0.8,
     },
     {
         label: "agency.zerod.bd",
         href: "https://agency.zerod.bd",
-        pos: "left-2 -bottom-4 md:-left-6",
+        // Kept clear of the name plate along the photo's foot
+        pos: "-left-6 top-[62%] md:-left-16",
         bob: 1.6,
     },
 ];
@@ -48,13 +49,13 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
     return (
         <section
             id="hero"
-            className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden pt-28 pb-10"
+            className="relative min-h-svh flex flex-col justify-center overflow-hidden pt-28 pb-10"
         >
             {/* Ground: a fine grid fading out from the center, and one slow green glow */}
             <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800f_1px,transparent_1px),linear-gradient(to_bottom,#8080800f_1px,transparent_1px)] bg-size-[56px_56px] mask-[radial-gradient(ellipse_70%_60%_at_50%_40%,#000_40%,transparent_100%)]" />
             <motion.div
                 aria-hidden
-                className="absolute -z-10 top-[-10%] right-[-10%] h-[38rem] w-[38rem] rounded-full bg-primary/15 blur-[120px]"
+                className="absolute -z-10 top-[-10%] right-[-10%] h-152 w-152 rounded-full bg-primary/15 blur-[120px]"
                 animate={
                     reduce ? undefined : { x: [0, -60, 0], y: [0, 40, 0], scale: [1, 1.08, 1] }
                 }
@@ -142,7 +143,7 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                                 See the ventures
                                 <ArrowDownRight
                                     size={16}
-                                    className="transition-transform group-hover:rotate-[-45deg]"
+                                    className="transition-transform group-hover:-rotate-45"
                                 />
                             </a>
                             <Link
@@ -156,12 +157,17 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
 
                     {/* Portrait, with the three ventures floating around it as live links */}
                     <motion.div
-                        className="relative mx-auto w-[17rem] md:w-[22rem]"
+                        className="relative mx-auto w-68 md:w-88"
                         initial={{ opacity: 0, scale: 0.94, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 1, ease: EASE }}
                     >
-                        <div className="relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-[2rem] border border-border bg-card">
+                        {/* Offset outline behind the photo: depth without a shadow blob */}
+                        <div
+                            aria-hidden
+                            className="absolute inset-0 translate-x-3 translate-y-3 rounded-[1.75rem] border border-primary/40"
+                        />
+                        <div className="relative aspect-4/5 overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-2xl shadow-black/10">
                             <Image
                                 src={data.heroImage.url}
                                 alt={data.heroImage.alt}
@@ -171,7 +177,22 @@ export function Hero({ data }: { data: ResolvedSiteData }) {
                                 className="object-cover object-top"
                                 data-testid="img-profile-hero"
                             />
-                            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background/60 to-transparent" />
+                            <div className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-black/55 to-transparent" />
+                            {/* Name plate */}
+                            <div className="absolute inset-x-3 bottom-3 flex items-center justify-between rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-white backdrop-blur-md">
+                                <span>
+                                    <span className="block text-sm font-medium leading-tight">
+                                        {[first, ...rest].join(" ")}
+                                    </span>
+                                    <span className="block text-xs text-white/70">
+                                        Founder, ZeroD
+                                    </span>
+                                </span>
+                                <span className="flex items-center gap-1.5 text-[11px] text-white/80">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                    Naogaon
+                                </span>
+                            </div>
                         </div>
 
                         {VENTURES.map((v, n) => (
