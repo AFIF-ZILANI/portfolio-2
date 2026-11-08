@@ -15,6 +15,8 @@ export type Experience = {
     role: string;
     period: string;
     description: string;
+    /** The venture's site, shown as its link on the homepage. Optional: older records lack it. */
+    url?: string;
 };
 
 /** Keys must exist in SOCIAL_ICONS (src/lib/icons.tsx) or the link renders no icon. */
@@ -110,25 +112,23 @@ export type ResolvedSiteData = Omit<SiteData, "heroImageId" | "aboutImageId" | "
  */
 export const DEFAULT_HERO_IMAGE = staticImage(
     "/afifzilani-profile.webp",
-    "Afif Zilani (Kazi Afif Zilani) — Full-Stack Developer and Co-Founder of ZeroD, Naogaon, Bangladesh"
+    "Afif Zilani (Kazi Afif Zilani) — entrepreneur, General Manager of ZeroD Farms and Co-Founder of ZeroD, Naogaon, Bangladesh"
 );
 export const DEFAULT_ABOUT_IMAGE = staticImage(
     "/afifzilani-about.webp",
-    "Kazi Afif Zilani (AFIF ZILANI) — Entrepreneur and Full-Stack Developer from Naogaon, Bangladesh"
+    "Kazi Afif Zilani (AFIF ZILANI) — business owner and programmer from Naogaon, Bangladesh"
 );
 
 export const DEFAULT_SITE_DATA: SiteData = {
     name: "AFIF ZILANI",
-    title: "Full-Stack Developer.",
+    // The hero rotates through these: split on " · ".
+    title: "Entrepreneur · General Manager, ZeroD Farms · Programmer · Co-Founder, ZeroD Umb",
     tagline:
-        "I engineer high-performance systems and build precise, scalable digital experiences. Obsessed with clean code, elegant architecture, and shipping products that work flawlessly.",
+        "I run a poultry farm, build software for Bangladeshi businesses, and grow ZeroD, the group that holds them both. Based in Naogaon, Bangladesh.",
     bio: [
-        "Passionate engineer who thrives at the intersection of",
-        "backend logic and polished UIs. Started with automation",
-        "scripts, evolved into architecting scalable systems.",
-        "Building accessible, human-centered products and",
-        "exploring distributed systems + modern web architecture.",
-        "Open to work — let's build something great.",
+        "I'm Kazi Afif Zilani, a business owner from Naogaon, Bangladesh. I co-founded ZeroD, a small group of companies that put good systems to work on real problems.",
+        "As General Manager of ZeroD Farms I run a family poultry operation in Mahadebpur: five sheds, a 10,000-bird capacity, and every batch tracked from chick to sale.",
+        "I'm also a programmer. Through ZeroD Agency I design and build websites and web apps for local businesses, from the database to the last pixel.",
     ],
     // Empty means "no stored selection", which resolves to the repo portraits above.
     heroImageId: "",
@@ -191,35 +191,38 @@ export const DEFAULT_SITE_DATA: SiteData = {
     ],
     experiences: [
         {
-            id: "1",
-            company: "ZeroD Farms",
-            role: "Co-Founder & CEO",
-            period: "2022 — Present",
-            description:
-                "Co-founded and managing ZeroD Farms with a focus on sustainable poultry farming, operational management, and long-term business growth. Overseeing daily farm operations, workforce coordination, supply management, and business expansion strategies.",
-        },
-        {
             id: "2",
             company: "ZeroD Umb",
             role: "Co-Founder",
-            period: "Mar 4, 2023 — Present",
+            period: "Mar 2023 — Present",
             description:
-                "Building the foundation and long-term vision of the ZeroD ecosystem. Working on business planning, branding, digital infrastructure, and future technology-driven initiatives across multiple sectors including software, AI, and social impact projects.",
+                "The umbrella that holds the ZeroD companies. I set its direction, brand, and shared infrastructure, and decide where the group goes next: software, agriculture, and social-impact work.",
+            url: "https://zerod.bd",
+        },
+        {
+            id: "1",
+            company: "ZeroD Farms",
+            role: "General Manager",
+            period: "2022 — Present",
+            description:
+                "A family-run poultry farm in Mahadebpur, Naogaon. I manage daily operations, the team, feed and supply, and sales across five sheds with a 10,000-bird capacity, raising around 5,000 birds a month.",
+            url: "https://farms.zerod.bd",
         },
         {
             id: "3",
-            company: "ZeroD Agencies",
-            role: "Co-Founder & Full-Stack Developer",
-            period: "Mar 28, 2026 — Present",
+            company: "ZeroD Agency",
+            role: "Co-Founder & Lead Developer",
+            period: "Mar 2026 — Present",
             description:
-                "Developing scalable websites and web applications for clients using React, Next.js, Golang, PostgreSQL, Tailwind CSS, and Redis. Handling frontend architecture, backend APIs, authentication systems, database design, deployment pipelines, and overall product engineering.",
+                "Websites and web apps for Bangladeshi businesses, delivered in about a week. I lead the engineering: Next.js, Go, PostgreSQL, and Redis, from architecture to deployment.",
+            url: "https://agency.zerod.bd",
         },
     ],
     stats: [
-        { key: "experience", value: "5+", label: "years" },
-        { key: "projects", value: "40+", label: "shipped" },
-        { key: "stack", value: "15+", label: "technologies" },
-        { key: "commits", value: "1k+", label: "contributions" },
+        { key: "ventures", value: "3", label: "companies" },
+        { key: "capacity", value: "10k", label: "bird capacity" },
+        { key: "experience", value: "5+", label: "years building" },
+        { key: "delivery", value: "7", label: "day site delivery" },
     ],
     // Mirrors the list that was hardcoded in skills.tsx, with icons as react-icons
     // export names so they can be edited and stored.

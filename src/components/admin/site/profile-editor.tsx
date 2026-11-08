@@ -47,7 +47,7 @@ export function ProfileEditor({ data }: { data: ResolvedSiteData }) {
                     <Label className={labelClass}>Headline</Label>
                     <Input value={title} onChange={(e) => setTitle(e.target.value)} />
                     <p className="text-xs text-muted-foreground">
-                        Shown under your name in the hero, e.g. “Full-Stack Developer.”
+                        The roles the hero cycles through, separated by “ · ”, e.g. “Entrepreneur · Programmer”.
                     </p>
                 </div>
                 <div className="space-y-2">

@@ -30,17 +30,17 @@ export function Skills({ skills }: { skills: Skill[] }) {
     const categories = Array.from(new Set(skills.map((s) => s.category)));
 
     return (
-        <section id="skills" className="py-24">
-            <div className="container mx-auto px-6 max-w-5xl">
+        <section id="skills" className="py-24 md:py-32 border-t border-border">
+            <div className="container mx-auto px-6 max-w-6xl">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.5 }}
                 >
-                    <SectionHeading path="~/skills.json" title="Skills" />
+                    <SectionHeading eyebrow="Programmer" title="The stack I build with." />
 
-                    <dl className="divide-y divide-border border-y border-border">
+                    <dl className="divide-y divide-border">
                         {categories.map((cat) => {
                             const catSkills = skills.filter((s) => s.category === cat);
                             return (
@@ -48,7 +48,7 @@ export function Skills({ skills }: { skills: Skill[] }) {
                                     key={cat}
                                     className="grid sm:grid-cols-[9rem_1fr] gap-x-8 gap-y-3 py-6"
                                 >
-                                    <dt className="font-mono text-xs uppercase tracking-wider text-muted-foreground pt-1.5">
+                                    <dt className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground pt-2">
                                         {cat}
                                         <span className="text-primary/60 ml-2">
                                             {catSkills.length}
@@ -66,16 +66,14 @@ export function Skills({ skills }: { skills: Skill[] }) {
                                             <motion.span
                                                 key={skill.id}
                                                 variants={chipVariants}
-                                                className="group inline-flex items-center gap-2 border border-border bg-card px-3 py-1.5 hover:border-primary transition-colors"
+                                                className="group inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 transition-all hover:-translate-y-0.5 hover:border-primary"
                                             >
                                                 <SkillIcon
                                                     name={skill.icon}
                                                     size={16}
                                                     className="text-muted-foreground group-hover:text-primary transition-colors shrink-0"
                                                 />
-                                                <span className="font-mono text-xs">
-                                                    {skill.name}
-                                                </span>
+                                                <span className="text-sm">{skill.name}</span>
                                             </motion.span>
                                         ))}
                                     </motion.dd>

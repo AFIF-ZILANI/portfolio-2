@@ -22,14 +22,14 @@ export default function PersonSchema() {
             "@id": `${SITE_URL}/#image`,
             url: `${SITE_URL}/afifzilani-profile.webp`,
             contentUrl: `${SITE_URL}/afifzilani-profile.webp`,
-            caption: "Afif Zilani — Full-Stack Developer and Co-Founder of ZeroD",
-            description: "Portrait of Kazi Afif Zilani, full-stack developer and entrepreneur from Naogaon, Bangladesh",
+            caption: "Afif Zilani — Entrepreneur, General Manager of ZeroD Farms and Co-Founder of ZeroD",
+            description: "Portrait of Kazi Afif Zilani, business owner and programmer from Naogaon, Bangladesh",
             width: 1535,
             height: 1536,
         },
-        jobTitle: "Full-Stack Developer & Co-Founder",
+        jobTitle: ["Entrepreneur", "General Manager, ZeroD Farms", "Co-Founder, ZeroD Umb", "Programmer"],
         description:
-            "Kazi Afif Zilani, known as Afif Zilani, is a full-stack developer, entrepreneur, and co-founder of ZeroD. He builds high-performance web systems and tech for real-world impact from Naogaon, Bangladesh.",
+            "Kazi Afif Zilani, known as Afif Zilani, is a business owner from Naogaon, Bangladesh: General Manager of ZeroD Farms, Co-Founder of ZeroD Umb and ZeroD Agency, and a programmer who builds web systems for local businesses.",
         nationality: {
             "@type": "Country",
             name: "Bangladesh",
@@ -40,13 +40,31 @@ export default function PersonSchema() {
             addressRegion: "Rajshahi Division",
             addressCountry: "BD",
         },
-        worksFor: {
-            "@type": "Organization",
-            "@id": "https://zerod.bd/#organization",
-            name: "ZeroD",
-            url: "https://zerod.bd",
-            description: "ZeroD is a multi-sector technology and entrepreneurship ecosystem founded by Afif Zilani.",
-        },
+        worksFor: [
+            {
+                "@type": "Organization",
+                "@id": "https://zerod.bd/#organization",
+                name: "ZeroD Umb",
+                url: "https://zerod.bd",
+                description: "The ZeroD group: a multi-sector technology and entrepreneurship ecosystem co-founded by Afif Zilani.",
+            },
+            {
+                "@type": "Organization",
+                "@id": "https://farms.zerod.bd/#organization",
+                name: "ZeroD Farms",
+                url: "https://farms.zerod.bd",
+                description: "A family-run poultry farm in Mahadebpur, Naogaon, Bangladesh, managed by Afif Zilani.",
+                parentOrganization: { "@id": "https://zerod.bd/#organization" },
+            },
+            {
+                "@type": "Organization",
+                "@id": "https://agency.zerod.bd/#organization",
+                name: "ZeroD Agency",
+                url: "https://agency.zerod.bd",
+                description: "A web design and development agency for Bangladeshi businesses, based in Naogaon.",
+                parentOrganization: { "@id": "https://zerod.bd/#organization" },
+            },
+        ],
         knowsAbout: [
             "Full-Stack Web Development",
             "React",
@@ -87,7 +105,7 @@ export default function PersonSchema() {
         name: "Afif Zilani",
         alternateName: ["AFIF ZILANI", "Kazi Afif Zilani Portfolio"],
         url: SITE_URL,
-        description: "Official portfolio and personal website of Afif Zilani (Kazi Afif Zilani) — full-stack developer and co-founder of ZeroD, based in Naogaon, Bangladesh.",
+        description: "Official website of Afif Zilani (Kazi Afif Zilani) — entrepreneur, General Manager of ZeroD Farms, Co-Founder of ZeroD, and programmer, based in Naogaon, Bangladesh.",
         author: { "@id": `${SITE_URL}/#person` },
     };
 
@@ -117,13 +135,13 @@ export function ProfilePageSchema() {
         "@type": "ProfilePage",
         "@id": `${SITE_URL}/#webpage`,
         url: SITE_URL,
-        name: "Afif Zilani — Full-Stack Developer, Entrepreneur & Co-Founder of ZeroD",
+        name: "Afif Zilani — Entrepreneur, General Manager of ZeroD Farms & Programmer",
         isPartOf: { "@id": `${SITE_URL}/#website` },
         // Google requires mainEntity (not about) for the ProfilePage rich result.
         mainEntity: { "@id": `${SITE_URL}/#person` },
         primaryImageOfPage: { "@id": `${SITE_URL}/#image` },
         description:
-            "Official portfolio page of Kazi Afif Zilani (AFIF ZILANI), full-stack developer and co-founder of ZeroD, from Naogaon, Bangladesh.",
+            "Official profile page of Kazi Afif Zilani (AFIF ZILANI): entrepreneur, General Manager of ZeroD Farms, Co-Founder of ZeroD Umb, and programmer, from Naogaon, Bangladesh.",
         breadcrumb: {
             "@type": "BreadcrumbList",
             itemListElement: [

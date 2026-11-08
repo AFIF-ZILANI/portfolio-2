@@ -1,38 +1,58 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 /**
- * The heading for a homepage section.
+ * The heading for a public section: a small eyebrow, then a serif title whose
+ * words rise into place the first time it scrolls into view.
  *
- * The site's own vernacular is a shell — the admin says `$ ls posts`, the contact
- * form says `afif@dev:contact$`. This extends that to the public page: each
- * section is labelled by the path it would live at, and the extension says what
- * kind of thing it is (`.md` prose, `.json` data, `.log` history, `/` a
- * directory). That encodes something true about the content, which arbitrary
- * `01. / 02. / 03.` numbering never did — the sections are not a sequence, and
- * nothing breaks if their order changes.
- *
- * The rule runs from the path to the right edge, so the label sits *in* the
- * structure rather than floating above it.
+ * The hairline runs from the eyebrow to the right edge so the label sits in the
+ * page's structure rather than floating above it; `action` (e.g. "all posts →")
+ * ends that line.
  */
 export function SectionHeading({
-    path,
+    eyebrow,
     title,
     action,
 }: {
-    /** Where this section would live on disk, e.g. `~/about.md`. */
-    path: string;
+    eyebrow: string;
     title: string;
-    /** Optional trailing link, e.g. "all posts →". */
     action?: ReactNode;
 }) {
+    const words = title.split(" ");
     return (
-        <div className="mb-12">
+        <div className="mb-12 md:mb-16">
             <div className="flex items-center gap-4">
-                <span className="font-mono text-xs text-primary shrink-0">{path}</span>
-                <span aria-hidden className="h-px flex-1 bg-border" />
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary shrink-0">
+                    {eyebrow}
+                </span>
+                <motion.span
+                    aria-hidden
+                    className="h-px flex-1 bg-border origin-left"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                />
                 {action}
             </div>
-            <h2 className="mt-4 text-3xl md:text-4xl font-bold tracking-tight">{title}</h2>
+            <h2 className="mt-5 font-serif text-4xl md:text-6xl leading-[1.05] tracking-tight">
+                {words.map((w, i) => (
+                    <span key={i} className="inline-block overflow-hidden pb-1 -mb-1 align-bottom">
+                        <motion.span
+                            className="inline-block"
+                            initial={{ y: "105%" }}
+                            whileInView={{ y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.7, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            {w}
+                            {i < words.length - 1 ? " " : ""}
+                        </motion.span>
+                    </span>
+                ))}
+            </h2>
         </div>
     );
 }

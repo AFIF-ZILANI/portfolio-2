@@ -60,3 +60,7 @@ docs/
 *.jpeg
 *.gif
 *.ico
+
+# Vendored
+src/components/stageshow/kit/
+

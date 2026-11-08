@@ -1,0 +1,89 @@
+/* Three windows at one height and top, one 24px gap. The middle one is
+   centered; the outer two run off both sides by about a third. */
+.fs .ss-stage {
+  overflow: hidden;
+  background: var(--ss-well);
+  border-radius: 20px;
+}
+
+.fs .fs-win {
+  position: absolute;
+  top: 36px;
+  width: 400px;
+  height: 400px;
+}
+
+.fs .fs-win--hero {
+  left: 280px;
+  z-index: 1;
+  box-shadow: var(--ss-shadow-hero);
+}
+
+.fs .fs-win--left {
+  left: -144px;
+}
+
+.fs .fs-win--right {
+  left: 704px;
+}
+
+.fs .fs-body {
+  display: grid;
+  gap: 14px;
+  padding: 20px 22px 0;
+}
+
+.fs .fs-head {
+  display: grid;
+  gap: 4px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ss-line);
+}
+
+.fs .fs-label {
+  color: var(--ss-text);
+  font-size: 12px;
+}
+
+.fs .fs-total {
+  color: var(--ss-text-strong);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.fs .fs-shed__name {
+  color: var(--ss-text);
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+
+.fs .fs-shed[data-live] .fs-shed__name {
+  color: var(--ss-text-strong);
+}
+
+.fs .fs-shed__count {
+  color: var(--ss-text-strong);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fs .fs-foot {
+  margin-top: 2px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ss-line);
+}
+
+/* Narrow: the neighbors would be slivers, so the hero stands alone a gutter in
+   from each side and runs off the bottom */
+.fs .ss-stage[data-layout='compact'] .fs-win--left,
+.fs .ss-stage[data-layout='compact'] .fs-win--right {
+  display: none;
+}
+
+.fs .ss-stage[data-layout='compact'] .fs-win--hero {
+  left: 16px;
+  top: 28px;
+  width: 310px;
+}

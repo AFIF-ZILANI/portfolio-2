@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: "Afif Zilani — Full-Stack Developer & Co-Founder of ZeroD",
+        name: "Afif Zilani — Entrepreneur & Co-Founder of ZeroD",
         short_name: "Afif Zilani",
         description:
             "Kazi Afif Zilani (AFIF ZILANI) — Full-stack developer, entrepreneur, and co-founder of ZeroD, based in Naogaon, Bangladesh.",

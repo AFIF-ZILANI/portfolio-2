@@ -3,8 +3,7 @@ import { getPublishedPosts } from "@/lib/blog";
 import { Hero } from "@/components/sections/hero";
 import { About } from "@/components/sections/about";
 import { Skills } from "@/components/sections/skills";
-import { Projects } from "@/components/sections/projects";
-import { Experience } from "@/components/sections/experience";
+import { Ventures } from "@/components/sections/ventures";
 import { Contact } from "@/components/sections/contact";
 import { ProfilePageSchema } from "@/components/PersonaSchema";
 import { ScrollToHash } from "@/components/layout/scroll-to-hash";
@@ -28,10 +27,9 @@ export default async function Home() {
         <main className="flex flex-col">
             <ScrollToHash />
             <Hero data={data} />
+            <Ventures experiences={data.experiences} />
             <About data={data} />
             <Skills skills={data.skills} />
-            <Projects projects={data.projects} />
-            <Experience experiences={data.experiences} />
             <LatestPosts posts={posts.slice(0, 3)} />
             <LatestEvents events={events} />
             <Contact heading={data.contact.heading} />

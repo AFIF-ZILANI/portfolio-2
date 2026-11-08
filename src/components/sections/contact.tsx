@@ -19,6 +19,12 @@ type HistoryLine = {
     text: string;
 };
 
+const CONTACT_VENTURES = [
+    { name: "ZeroD Farms", note: "Poultry orders and farm visits", href: "https://farms.zerod.bd" },
+    { name: "ZeroD Agency", note: "Websites for your business", href: "https://agency.zerod.bd" },
+    { name: "ZeroD", note: "The group and partnerships", href: "https://zerod.bd" },
+];
+
 type Step = "name" | "email" | "message" | "confirm" | "loading" | "success";
 
 const INITIAL_HISTORY: HistoryLine[] = [
@@ -248,125 +254,152 @@ export function Contact({ heading }: { heading: string }) {
     const interactive = step !== "loading" && step !== "success";
 
     return (
-        <section id="contact" className="py-24 mb-12">
-            <div className="container mx-auto px-6 max-w-3xl">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.5 }}
-                >
-                    <SectionHeading path="~/contact --interactive" title={heading} />
-                    <p className="text-muted-foreground font-mono text-sm mb-8 -mt-8">
-                        # Type directly in the terminal below.
-                    </p>
-
-                    {/* Terminal window */}
-                    <div className="bg-background border border-border rounded-sm shadow-2xl overflow-hidden">
-                        {/* Title bar */}
-                        <div className="flex items-center gap-1.5 bg-card border-b border-border px-3 py-2 select-none">
-                            <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-                            <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
-                            <span className="w-3 h-3 rounded-full bg-[#28c840]" />
-                            <span className="ml-3 font-mono text-xs text-muted-foreground tracking-wide">
-                                bash — afif@dev — contact_form
-                            </span>
-                            {step === "loading" && (
-                                <span className="ml-auto font-mono text-xs text-yellow-400 flex items-center gap-1">
-                                    <SpinnerChar /> transmitting
-                                </span>
-                            )}
-                            {step === "success" && (
-                                <span className="ml-auto font-mono text-xs text-green-400">
-                                    ● success — resetting
-                                </span>
-                            )}
-                        </div>
-
-                        {/* Body */}
-                        <div
-                            ref={bodyRef}
-                            role="log"
-                            aria-live="polite"
-                            aria-label="Contact terminal output"
-                            className="p-5 font-mono text-sm min-h-[380px] max-h-[520px] overflow-y-auto overflow-x-hidden space-y-[3px] cursor-text focus-within:ring-2 focus-within:ring-primary focus-within:ring-inset"
-                            onClick={() => inputRef.current?.focus()}
-                        >
-                            {history.map((line, i) => (
-                                <div
-                                    key={i}
-                                    className={`leading-relaxed whitespace-pre-wrap wrap-break-word ${lineColor(line.type)}`}
-                                >
-                                    {line.type === "loading" ? (
-                                        <span className="flex items-center gap-2">
-                                            <SpinnerChar />
-                                            <span>{line.text}</span>
+        <section id="contact" className="py-24 md:py-32 border-t border-border">
+            <div className="container mx-auto px-6 max-w-6xl">
+                <SectionHeading eyebrow="Contact" title={heading} />
+                <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-12 items-start">
+                    <div className="space-y-8">
+                        <p className="text-lg leading-relaxed text-muted-foreground">
+                            Orders for the farm, a website for your business, or a conversation
+                            about ZeroD: send a message and I&apos;ll get back to you. I&apos;m a
+                            programmer, so the form is a terminal. Just type.
+                        </p>
+                        <ul className="divide-y divide-border border-y border-border">
+                            {CONTACT_VENTURES.map((v) => (
+                                <li key={v.href}>
+                                    <a
+                                        href={v.href}
+                                        target="_blank"
+                                        rel="noopener"
+                                        className="group flex items-center justify-between py-4 transition-colors hover:text-primary"
+                                    >
+                                        <span>
+                                            <span className="block font-medium">{v.name}</span>
+                                            <span className="block text-sm text-muted-foreground">
+                                                {v.note}
+                                            </span>
                                         </span>
-                                    ) : (
-                                        line.text
-                                    )}
-                                </div>
+                                        <span className="font-mono text-xs text-muted-foreground group-hover:text-primary">
+                                            {v.href.replace("https://", "")} ↗
+                                        </span>
+                                    </a>
+                                </li>
                             ))}
-
-                            {/* Loading last-line pulse */}
-                            {step === "loading" && (
-                                <div className="flex items-center gap-2 text-yellow-400 mt-1">
-                                    <SpinnerChar />
-                                    <span>Processing{dots}</span>
-                                </div>
-                            )}
-
-                            {/* Active input line */}
-                            {interactive && (
-                                <div className="mt-1">
-                                    <div className="text-primary">{PROMPT_TEXT[step]}</div>
-                                    {/* Invisible input captures keys; visible span + cursor render text */}
-                                    <div className="relative flex items-center mt-0.5">
-                                        <span className="text-muted-foreground select-none">
-                                            &gt;&nbsp;
-                                        </span>
-                                        {/* Rendered text + cursor, visually inline */}
-                                        <span className="text-foreground">{input}</span>
-                                        <BlinkingCursor />
-                                        {/* Hidden real input — position absolute so it doesn't affect layout */}
-                                        <input
-                                            ref={inputRef}
-                                            type="text"
-                                            value={input}
-                                            onChange={(e) => setInput(e.target.value)}
-                                            onKeyDown={handleKey}
-                                            className="absolute inset-0 opacity-0 w-full bg-transparent outline-none border-none font-mono text-sm"
-                                            aria-label={PROMPT_TEXT[step] || "Terminal input"}
-                                            autoComplete="off"
-                                            autoCorrect="off"
-                                            autoCapitalize="off"
-                                            spellCheck={false}
-                                            data-testid={`input-terminal-${step}`}
-                                        />
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Footer */}
-                        <div className="border-t border-border bg-card px-4 py-1.5 flex justify-between font-mono text-xs text-muted-foreground select-none">
-                            <span>
-                                {step === "loading" || step === "success"
-                                    ? "Please wait..."
-                                    : "Press Enter to submit"}
-                            </span>
-                            <span>
-                                {step === "confirm"
-                                    ? "Y or Enter → send  |  N → cancel"
-                                    : step === "loading"
-                                      ? "Encrypting & transmitting..."
-                                      : step === "success"
-                                        ? "Resetting in 5s..."
-                                        : `step: ${step}`}
-                            </span>
-                        </div>
+                        </ul>
                     </div>
-                </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        {/* Terminal window */}
+                        <div className="bg-background border border-border rounded-2xl shadow-2xl shadow-black/10 overflow-hidden">
+                            {/* Title bar */}
+                            <div className="flex items-center gap-1.5 bg-card border-b border-border px-3 py-2 select-none">
+                                <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+                                <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
+                                <span className="w-3 h-3 rounded-full bg-[#28c840]" />
+                                <span className="ml-3 font-mono text-xs text-muted-foreground tracking-wide">
+                                    bash — afif@dev — contact_form
+                                </span>
+                                {step === "loading" && (
+                                    <span className="ml-auto font-mono text-xs text-yellow-400 flex items-center gap-1">
+                                        <SpinnerChar /> transmitting
+                                    </span>
+                                )}
+                                {step === "success" && (
+                                    <span className="ml-auto font-mono text-xs text-green-400">
+                                        ● success — resetting
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Body */}
+                            <div
+                                ref={bodyRef}
+                                role="log"
+                                aria-live="polite"
+                                aria-label="Contact terminal output"
+                                className="p-5 font-mono text-sm min-h-[380px] max-h-[520px] overflow-y-auto overflow-x-hidden space-y-[3px] cursor-text focus-within:ring-2 focus-within:ring-primary focus-within:ring-inset"
+                                onClick={() => inputRef.current?.focus()}
+                            >
+                                {history.map((line, i) => (
+                                    <div
+                                        key={i}
+                                        className={`leading-relaxed whitespace-pre-wrap wrap-break-word ${lineColor(line.type)}`}
+                                    >
+                                        {line.type === "loading" ? (
+                                            <span className="flex items-center gap-2">
+                                                <SpinnerChar />
+                                                <span>{line.text}</span>
+                                            </span>
+                                        ) : (
+                                            line.text
+                                        )}
+                                    </div>
+                                ))}
+
+                                {/* Loading last-line pulse */}
+                                {step === "loading" && (
+                                    <div className="flex items-center gap-2 text-yellow-400 mt-1">
+                                        <SpinnerChar />
+                                        <span>Processing{dots}</span>
+                                    </div>
+                                )}
+
+                                {/* Active input line */}
+                                {interactive && (
+                                    <div className="mt-1">
+                                        <div className="text-primary">{PROMPT_TEXT[step]}</div>
+                                        {/* Invisible input captures keys; visible span + cursor render text */}
+                                        <div className="relative flex items-center mt-0.5">
+                                            <span className="text-muted-foreground select-none">
+                                                &gt;&nbsp;
+                                            </span>
+                                            {/* Rendered text + cursor, visually inline */}
+                                            <span className="text-foreground">{input}</span>
+                                            <BlinkingCursor />
+                                            {/* Hidden real input — position absolute so it doesn't affect layout */}
+                                            <input
+                                                ref={inputRef}
+                                                type="text"
+                                                value={input}
+                                                onChange={(e) => setInput(e.target.value)}
+                                                onKeyDown={handleKey}
+                                                className="absolute inset-0 opacity-0 w-full bg-transparent outline-none border-none font-mono text-sm"
+                                                aria-label={PROMPT_TEXT[step] || "Terminal input"}
+                                                autoComplete="off"
+                                                autoCorrect="off"
+                                                autoCapitalize="off"
+                                                spellCheck={false}
+                                                data-testid={`input-terminal-${step}`}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Footer */}
+                            <div className="border-t border-border bg-card px-4 py-1.5 flex justify-between font-mono text-xs text-muted-foreground select-none">
+                                <span>
+                                    {step === "loading" || step === "success"
+                                        ? "Please wait..."
+                                        : "Press Enter to submit"}
+                                </span>
+                                <span>
+                                    {step === "confirm"
+                                        ? "Y or Enter → send  |  N → cancel"
+                                        : step === "loading"
+                                          ? "Encrypting & transmitting..."
+                                          : step === "success"
+                                            ? "Resetting in 5s..."
+                                            : `step: ${step}`}
+                                </span>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
             </div>
         </section>
     );

@@ -9,6 +9,10 @@ const compat = new FlatCompat({
     baseDirectory: __dirname,
 });
 
-const eslintConfig = [...compat.extends("next/core-web-vitals", "next/typescript")];
+const eslintConfig = [
+    // Vendored from the stageshow skill; kept as shipped so it can be re-synced.
+    { ignores: ["src/components/stageshow/kit/**"] },
+    ...compat.extends("next/core-web-vitals", "next/typescript"),
+];
 
 export default eslintConfig;
